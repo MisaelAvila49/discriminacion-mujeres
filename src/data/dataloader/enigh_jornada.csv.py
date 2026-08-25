@@ -36,6 +36,7 @@ import pandas as pd
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
 from utils_enadis import escribir  # noqa: E402
+import deflactor  # noqa: E402
 
 # El loader base se llama `enigh.csv.py`, que no es un nombre de módulo válido
 # para un import normal (el punto se interpreta como separador de paquete), así
@@ -95,6 +96,11 @@ def indicadores(pob, ing, year):
         m = p.merge(ing, on=["folioviv", "foliohog", "numren"], how="left")
         m = m[(m["ing_mensual"].fillna(0) > 0) & (m["horas"].fillna(0) > 0)].copy()
         if len(m):
+            # A pesos constantes ANTES de calcular el valor por hora, para que
+            # el recorte del 1% de abajo compare contra un umbral en la misma
+            # unidad en todas las ediciones. Deflactar después dejaría el tope
+            # calculado sobre pesos nominales de cada año.
+            m["ing_mensual"] = m["ing_mensual"] * deflactor.factor(year)
             m["_pph"] = (m["ing_mensual"] / 4.33) / m["horas"]
             # Se recorta el 1% superior: unos pocos registros con muy pocas
             # horas declaradas y un ingreso alto producen valores por hora

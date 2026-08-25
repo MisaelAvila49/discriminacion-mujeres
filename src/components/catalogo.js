@@ -80,7 +80,12 @@ export const CATALOGO = {
          salarial.`,
        explica: `Promedio de pesos al mes que recibe cada persona por su
          trabajo, entre quienes sí perciben un ingreso laboral. No incluye
-         pensiones, apoyos ni ingresos de otros integrantes del hogar.`},
+         pensiones, apoyos ni ingresos de otros integrantes del hogar.
+         Expresado en pesos constantes de 2024: cada edición viene en pesos
+         de su propio año y se deflactó con el INPC del periodo de
+         levantamiento, de modo que los montos sí se pueden comparar entre
+         años. Sin ese ajuste el ingreso "crecía" 56% de 2020 a 2024, casi
+         todo inflación.`},
       {encuesta: "enigh", indicador: "Horas de trabajo remunerado a la semana", formato: "horas",
        nota: `La jornada explica buena parte de la brecha anterior: las mujeres
          sin discapacidad trabajan nueve horas menos a la semana que los
@@ -96,7 +101,8 @@ export const CATALOGO = {
        explica: `El ingreso mensual dividido entre las horas efectivamente
          trabajadas. Sirve para separar dos cosas que el ingreso mensual
          mezcla: cuánto se paga por el trabajo y cuánto tiempo se puede
-         dedicar a él.`},
+         dedicar a él. En pesos constantes de 2024, igual que el ingreso
+         mensual.`},
     ],
   },
   tecnologia: {
@@ -218,7 +224,10 @@ export const CATALOGO = {
          gasta el que gasta", no diluido con los hogares en cero.`,
        explica: `Promedio de pesos gastados en el trimestre, entre las
          personas cuyo hogar registró algún gasto asociado a discapacidad.
-         No incluye a quienes viven en un hogar sin ese gasto.`},
+         No incluye a quienes viven en un hogar sin ese gasto. En pesos
+         constantes de 2024: la ENIGH estandariza el gasto a precios de
+         agosto de su propia edición, lo que lo deja comparable dentro de un
+         año pero no entre años.`},
       {encuesta: "enigh", indicador: "Gasto en: Lentes y apoyos visuales", formato: "pct",
        explica: `Porcentaje de personas que viven en un hogar que gastó en
          anteojos, lentes de contacto o intraoculares u otros apoyos

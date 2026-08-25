@@ -28,6 +28,7 @@ import pandas as pd
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
 from utils_enadis import ENTIDADES, RANGOS_EDAD, TIPOS_DISC, escribir  # noqa: E402
+import deflactor  # noqa: E402
 
 BASE_ENIGH = os.environ.get(
     "ENIGH_DIR",
@@ -310,6 +311,15 @@ def indicadores(pob, ing, year):
             p[k] = p[k].astype(str).str.strip()
         p = p.merge(ing, on=["folioviv", "foliohog", "numren"], how="left")
         con_ing = p[p["ing_mensual"].fillna(0) > 0].copy()
+
+        # A pesos constantes ANTES de ponderar. Cada edición viene en pesos
+        # nominales de su propio año, así que sin esto la serie mezcla
+        # unidades: el ingreso "creció" 56% de 2020 a 2024 y casi todo era
+        # inflación. El factor es común dentro del año, de modo que las
+        # brechas y razones no cambian; lo que se corrige son los niveles.
+        defl = deflactor.factor(year)
+        con_ing["ing_mensual"] = con_ing["ing_mensual"] * defl
+
         con_ing["_masa"] = con_ing["ing_mensual"] * con_ing["factor"]
 
         g = con_ing.groupby(llaves, dropna=True, observed=True).apply(

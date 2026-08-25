@@ -12,6 +12,7 @@ src/data/raw/
 # *.CSV de arriba los atrapa porque git en Windows no distingue mayúsculas.
 !src/data/indicadores.csv
 !src/data/indicadores_tipo_disc.csv
+!src/data/inpc.csv
 __pycache__/
 *.pyc
 .DS_Store

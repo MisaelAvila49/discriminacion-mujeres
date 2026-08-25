@@ -117,3 +117,33 @@ predeterminada.
 Como regla de lectura: **si una comparación mezcla edades, la composición por
 edad puede estar produciendo el resultado**. El filtro de rango de edad está en
 todas las páginas para poder descartarlo.
+
+<span class="kicker">06 · Pesos constantes</span>
+
+Los indicadores monetarios —ingreso laboral mensual, ingreso por hora y gasto
+trimestral por discapacidad— están expresados en **pesos constantes de 2024**.
+
+Cada edición de la ENIGH capta los montos en pesos de su propio año, así que
+compararlos directamente confunde inflación con poder adquisitivo: sin ajustar,
+el ingreso laboral promedio de las mujeres con discapacidad pasaba de 8,617
+pesos en 2020 a 13,444 en 2024, un crecimiento de 56 por ciento que es casi todo
+alza de precios.
+
+El ajuste usa el INPC promedio del **periodo de levantamiento** de cada edición,
+de agosto a noviembre, y no el promedio del año calendario: la encuesta capta el
+ingreso de los meses previos a la entrevista, de modo que los primeros meses del
+año no corresponden a ningún monto declarado. El INEGI ya estandariza cada
+edición a precios de agosto de ese mismo año, lo que la deja comparable
+internamente pero no entre ediciones; el deflactor cubre justo esa distancia.
+
+Es importante señalar que **las brechas no cambian con este ajuste**. El
+deflactor es un factor común dentro de un mismo año, así que se cancela al
+dividir: las mujeres con discapacidad ganaban 65 centavos por cada peso de un
+hombre sin discapacidad antes y después de deflactar. Lo que corrige el ajuste
+son los niveles y su comparación en el tiempo, no las distancias entre grupos de
+una misma edición.
+
+La serie del INPC vive en `src/data/inpc.csv` y se captura desde el
+[INPC del INEGI](https://www.inegi.org.mx/temas/inpc/), base segunda quincena de
+julio de 2018 igual a 100. Si falta el índice de alguna edición, los data
+loaders abortan en vez de publicar una serie con pesos mezclados.

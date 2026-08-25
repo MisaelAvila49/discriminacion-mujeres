@@ -102,6 +102,7 @@ import pandas as pd
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
 from utils_enadis import escribir  # noqa: E402
+import deflactor  # noqa: E402
 
 _ruta = os.path.join(os.path.dirname(os.path.abspath(__file__)), "enigh.csv.py")
 _spec = importlib.util.spec_from_file_location("enigh_base", _ruta)
@@ -268,11 +269,14 @@ def indicadores(pob, year):
                 set(sel["_llave"]),
                 "Su hogar gasta en aparatos o cuidados por discapacidad",
                 "Personas de 18 años o más")
-            # gasto_tri: gasto trimestral ya deflactado/estandarizado por la
-            # ENIGH. Viene como texto (a veces con blancos): forzar a
-            # numérico o el groupby suma cadenas en vez de pesos.
+            # gasto_tri: gasto trimestral estandarizado por la ENIGH a precios
+            # de AGOSTO DE SU PROPIA EDICIÓN. Eso lo deja comparable dentro de
+            # un año pero NO entre ediciones, así que aquí se lleva al año base
+            # como el resto de los montos. Viene como texto (a veces con
+            # blancos): forzar a numérico o el groupby suma cadenas.
             sel = sel.copy()
             sel["gasto_tri"] = pd.to_numeric(sel["gasto_tri"], errors="coerce").fillna(0.0)
+            sel["gasto_tri"] = sel["gasto_tri"] * deflactor.factor(year)
             montos = sel.groupby("_llave")["gasto_tri"].sum().to_dict()
             agrega_monto(
                 montos, "Gasto trimestral en aparatos o cuidados por discapacidad")
