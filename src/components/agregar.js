@@ -38,19 +38,23 @@ export function agrupar(datos, llaves) {
   return [...mapa.values()];
 }
 
-// Agrega pct = num/den*100 y la bandera de fragilidad. pct queda null si no hay
+// Agrega pct = num/den y la bandera de fragilidad. pct queda null si no hay
 // denominador (no es cero: es "no calculable", y una barra en cero mentiría).
-export function conPorcentaje(filas) {
+// El ×100 solo aplica cuando el indicador es un porcentaje: en pesos u horas,
+// num/den YA es la cifra final (pesos, horas), y multiplicarla por 100 la
+// infla cien veces — $13,444 de ingreso mensual se convertía en $1,344,400.
+export function conPorcentaje(filas, formato = "pct") {
+  const escala = formato === "pct" ? 100 : 1;
   return filas.map((f) => ({
     ...f,
-    pct: f.den > 0 ? (f.num / f.den) * 100 : null,
+    pct: f.den > 0 ? (f.num / f.den) * escala : null,
     fragil: f.casos < MIN_CASOS,
   }));
 }
 
 // Atajo: agrupar + porcentaje en un paso.
-export function tasaPorGrupo(datos, llaves) {
-  return conPorcentaje(agrupar(datos, llaves));
+export function tasaPorGrupo(datos, llaves, formato = "pct") {
+  return conPorcentaje(agrupar(datos, llaves), formato);
 }
 
 // ¿Alguna celda de la selección quedó por debajo del umbral? Lo usa el aviso

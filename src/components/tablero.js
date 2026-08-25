@@ -34,7 +34,7 @@ const ETIQUETA_DIM = {
 function bloqueGrafica(filas, {comparacion, geo, formato, titulo,
     fuente, explica = null}) {
   const dims = [geo.facetaCol, geo.facetaFila, geo.dimX].filter(Boolean);
-  const series = prepararSeries(filas, {comparacion, dim: dims});
+  const series = prepararSeries(filas, {comparacion, dim: dims, formato});
   if (!series.length) {
     return html`<div class="card"><p class="aviso-muestra">Sin datos para esta
       combinación de filtros. Prueba con otro año o quita el filtro de
@@ -155,7 +155,9 @@ export function dashboardTema(clave, datos, {geoEntidades = null, datosTipoDisc 
       // toma la más reciente y la tarjeta lo dice.
       const anioKpi = v.anio === POR_SEPARADO ? anios.at(-1) : v.anio;
       const filasKpi = filas.filter((d) => String(d.anio) === String(anioKpi));
-      const total = prepararSeries(filasKpi, {comparacion: v.comparacion, dim: null});
+      const total = prepararSeries(filasKpi, {
+        comparacion: v.comparacion, dim: null, formato: tema.formato,
+      });
       const brecha = brechaDe(total, v.comparacion, {formato: tema.formato});
 
       const tarjetas = [];
@@ -304,7 +306,7 @@ export function dashboardTema(clave, datos, {geoEntidades = null, datosTipoDisc 
             return {
               filas,
               porEnt: prepararSeries(filas, {
-                comparacion: v.comparacion, dim: "entidad",
+                comparacion: v.comparacion, dim: "entidad", formato: tema.formato,
               }),
             };
           };
@@ -418,7 +420,13 @@ export function dashboardTema(clave, datos, {geoEntidades = null, datosTipoDisc 
               return {
                 etiqueta: s,
                 valores: new Map(foco.map((d) => [d.entidad, d.pct])),
-                casos: new Map(foco.map((d) => [d.entidad, d.casos])),
+                // `num`, no `den`: es la cuenta de quienes cumplen la
+                // condición, ya expandida. Solo tiene sentido como
+                // "población" en indicadores de porcentaje — en pesos u
+                // horas sería masa de dinero o de tiempo.
+                poblacion: tema.formato === "pct"
+                  ? new Map(foco.map((d) => [d.entidad, d.num]))
+                  : null,
                 foco,
               };
             }).filter((g) => g.foco.length >= 2);

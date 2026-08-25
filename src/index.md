@@ -117,7 +117,7 @@ const datosPrev = ORDEN_EDAD.flatMap((edad) =>
     const f = prev.filter((d) => d.rango_edad === edad && d.sexo === sexo);
     const num = d3.sum(f, (d) => d.num), den = d3.sum(f, (d) => d.den);
     return {rango_edad: edad, serie: sexo, pct: den ? num / den * 100 : null,
-            casos: d3.sum(f, (d) => d.casos), fragil: false};
+            num, den, casos: d3.sum(f, (d) => d.casos), fragil: false};
   })
 );
 
@@ -138,11 +138,15 @@ const porEnt = d3.rollups(
 const totalEnt = d3.rollups(pobl, (v) => d3.sum(v, (d) => d.num), (d) => d.entidad);
 const totalPorEnt = new Map(totalEnt);
 const valores = new Map(porEnt.map(([ent, n]) => [ent, n / totalPorEnt.get(ent) * 100]));
+// Población: personas con discapacidad por entidad (el numerador), no el
+// total de adultos — es la cuenta real detrás del porcentaje de prevalencia.
+const poblacionPorEnt = new Map(porEnt);
 
 display(resize((width) => mapaEntidades(geoEntidades, valores, {
   titulo: `Porcentaje de población adulta con discapacidad · ${anio}`,
   fuente: "ENIGH (INEGI)",
-  formato: "pct", etiquetaValor: "Prevalencia", width,
+  formato: "pct", etiquetaValor: "Prevalencia",
+  poblacion: poblacionPorEnt, width,
 })));
 ```
 

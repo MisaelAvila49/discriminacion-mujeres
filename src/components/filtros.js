@@ -251,7 +251,7 @@ export function geometria(v, {aniosDisponibles = []} = {}) {
 // `dim` puede ser un nombre de columna o un arreglo de nombres: al facetar por
 // año y edad a la vez, la agregación tiene que respetar ambas llaves para que
 // cada panel de la rejilla tenga su propia cifra en vez de repetir el total.
-export function prepararSeries(datos, {comparacion, dim = null}) {
+export function prepararSeries(datos, {comparacion, dim = null, formato = "pct"}) {
   const comp = COMPARACIONES.find((c) => c.clave === comparacion);
   if (!comp) return [];
   const dims = (Array.isArray(dim) ? dim : [dim]).filter(Boolean);
@@ -267,7 +267,7 @@ export function prepararSeries(datos, {comparacion, dim = null}) {
     })
     .map((d) => ({...d, serie: serieDe(d, comparacion)}));
 
-  const agregadas = tasaPorGrupo(filas, ["serie", ...dims]);
+  const agregadas = tasaPorGrupo(filas, ["serie", ...dims], formato);
 
   // Orden estable: primero por las dimensiones (edad en su orden ordinal, no
   // alfabético), luego por el orden de las series declaradas en la

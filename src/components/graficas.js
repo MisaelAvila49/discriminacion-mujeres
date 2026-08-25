@@ -103,14 +103,36 @@ function textoBarra(formato) {
   return (d) => formatear(d.pct, formato) + (d.fragil ? " *" : "");
 }
 
-// Canales del tooltip. Siempre incluye los casos sin expandir: es el dato que
-// permite juzgar si la cifra aguanta.
+// Cuánta gente (ya expandida por el factor) respalda la barra. `num` es la
+// cuenta de personas que cumplen la condición — el número real detrás del
+// porcentaje —, así que es la única cifra de población que va en el tooltip;
+// se omite en pesos/horas, donde `num` es masa de dinero o de tiempo, no
+// gente. La tabla de respaldo (`tablaDatos`) trae el detalle completo,
+// incluidos los casos de muestra sin expandir; el tooltip se queda corto a
+// propósito para no repetir ahí la misma explicación.
+function fmtPoblacion(v) {
+  return v == null || !isFinite(v) ? "s/d" : Math.round(v).toLocaleString("es-MX");
+}
+function fmtPoblacionCorta(v) {
+  if (v == null || !isFinite(v)) return "s/d";
+  const abs = Math.abs(v);
+  if (abs >= 1e6) return (v / 1e6).toFixed(2) + " M";
+  if (abs >= 1e3) return (v / 1e3).toFixed(2) + " mil";
+  return Math.round(v).toLocaleString("es-MX");
+}
+function canalesPoblacion(formato) {
+  return formato === "pct" ? {"Población": (d) => fmtPoblacionCorta(d.num)} : {};
+}
+
+// Canales del tooltip: la dimensión, el grupo, el valor y la población que
+// hay detrás. Deliberadamente corto — el detalle completo (casos de muestra
+// incluidos) vive en la tabla de respaldo, no aquí.
 function canales(formato, dimLabel) {
   return {
     [dimLabel]: (d) => d[dimLabel === "Entidad" ? "entidad" : "rango_edad"],
     "Grupo": (d) => d.serie,
     [etiquetaMedida(formato)]: (d) => formatear(d.pct, formato),
-    "Casos en muestra": (d) => d.casos?.toLocaleString("es-MX") ?? "s/d",
+    ...canalesPoblacion(formato),
   };
 }
 
@@ -268,7 +290,7 @@ export function serieTemporal(datos, {comparacion, titulo = "", subtitulo = "",
       Plot.lineY(datos, {
         x: "anio", y: "pct", stroke: "serie", strokeWidth: 2, marker: "circle",
         channels: {"Grupo": (d) => d.serie,
-                   "Casos": (d) => d.casos?.toLocaleString("es-MX")},
+                   ...canalesPoblacion(formato)},
         tip: {format: {x: true, y: true, stroke: false}},
       }),
       Plot.text(datos, {
@@ -305,7 +327,7 @@ export function rankingEntidades(datos, {titulo = "", subtitulo = "",
         insetTop: 1, insetBottom: 1,
         channels: {
           "Porcentaje": (d) => formatear(d.pct, formato),
-          "Casos en muestra": (d) => d.casos?.toLocaleString("es-MX"),
+          ...canalesPoblacion(formato),
         },
         tip: {format: {x: false, y: false, fill: false}},
       }),
@@ -377,6 +399,8 @@ export function tablaDatos(filas, {dimLabel = "Grupo", dim = "serie",
       <thead><tr>
         <th>${dimLabel}</th><th>Grupo</th>
         <th>${etiquetaMedida(formato)}</th>
+        ${formato === "pct" ? html`<th>Pob. cumple</th>` : ""}
+        <th>Pob. total</th>
         <th>Casos en muestra</th>
       </tr></thead>
       <tbody>
@@ -384,6 +408,8 @@ export function tablaDatos(filas, {dimLabel = "Grupo", dim = "serie",
           <td>${f[dim] ?? ""}</td>
           <td>${f.serie ?? ""}</td>
           <td>${formatear(f.pct, formato)}${f.fragil ? " *" : ""}</td>
+          ${formato === "pct" ? html`<td>${fmtPoblacion(f.num)}</td>` : ""}
+          <td>${fmtPoblacion(f.den)}</td>
           <td>${f.casos?.toLocaleString("es-MX") ?? "s/d"}</td>
         </tr>`)}
       </tbody>
@@ -413,8 +439,8 @@ export const ISO_A_ENTIDAD = {
 // Dibuja el mapa. `valores` es un Map de nombre de entidad al valor a colorear.
 // La escala es secuencial de un solo tono (magnitud), nunca un arcoíris.
 export function mapaEntidades(geo, valores, {titulo = "", subtitulo = "",
-    fuente = "", formato = "pct", etiquetaValor = "valor", casos = null,
-    width = undefined, conLeyenda = true, alto = 300} = {}) {
+    fuente = "", formato = "pct", etiquetaValor = "valor",
+    poblacion = null, width = undefined, conLeyenda = true, alto = 300} = {}) {
   const feats = geo.features.map((f) => {
     const nombre = ISO_A_ENTIDAD[f.properties.id] ?? f.properties.name;
     return {...f, properties: {...f.properties, nombre,
@@ -425,8 +451,10 @@ export function mapaEntidades(geo, valores, {titulo = "", subtitulo = "",
     "Entidad": (d) => d.properties.nombre,
     [etiquetaValor]: (d) => d.properties.valor == null
       ? "sin dato" : formatear(d.properties.valor, formato),
-    ...(casos ? {"Casos en muestra": (d) =>
-      casos.get(d.properties.nombre)?.toLocaleString("es-MX") ?? "sin dato"} : {}),
+    // `poblacion` trae la cuenta de personas que cumplen la condición
+    // (num), ya expandida — el mismo criterio que en canalesPoblacion().
+    ...(poblacion ? {"Población": (d) =>
+      fmtPoblacionCorta(poblacion.get(d.properties.nombre))} : {}),
   };
 
   // Escala fija de 0 a 100 para los porcentajes, con los extremos marcados.
@@ -537,7 +565,7 @@ export function heatmapEdadAnio(datos, {comparacion, titulo = "",
           "Año": (d) => String(d.anio),
           "Edad": (d) => d.rango_edad,
           [etiquetaMedida(formato)]: (d) => formatear(d.pct, formato),
-          "Casos en muestra": (d) => d.casos?.toLocaleString("es-MX") ?? "s/d",
+          ...canalesPoblacion(formato),
         },
         tip: {format: {x: false, y: false, fx: false, fill: false}},
       }),
@@ -575,18 +603,19 @@ export function heatmapEdadAnio(datos, {comparacion, titulo = "",
 // escalas independientes el mismo rojo significaría cosas distintas en cada
 // panel y la comparación visual engañaría.
 //
-// `grupos` es un arreglo de {etiqueta, valores, casos}: un panel por elemento.
+// `grupos` es un arreglo de {etiqueta, valores, poblacion}: un panel por
+// elemento. `poblacion` es opcional.
 export function mapasMultiples(geo, grupos, {titulo = "", fuente = "",
     formato = "pct", etiquetaValor = "valor", width = undefined} = {}) {
   const anchoPanel = width
     ? Math.max(190, Math.floor(width / Math.min(grupos.length, 2)) - 12)
     : 300;
 
-  const paneles = grupos.map(({etiqueta, valores, casos}) =>
+  const paneles = grupos.map(({etiqueta, valores, poblacion}) =>
     html`<figure class="mapa-panel">
       <figcaption class="mapa-panel-titulo">${etiqueta}</figcaption>
       ${mapaEntidades(geo, valores, {
-        formato, etiquetaValor, casos,
+        formato, etiquetaValor, poblacion,
         width: anchoPanel,
         // La leyenda se dibuja una sola vez para toda la rejilla: repetirla
         // en cada panel gasta el espacio que necesitan los mapas.
@@ -680,7 +709,7 @@ export function barrasPorEntidad(datos, {comparacion, titulo = "",
           "Entidad": (d) => d.entidad,
           "Grupo": (d) => d.serie,
           [etiquetaMedida(formato)]: (d) => formatear(d.pct, formato),
-          "Casos en muestra": (d) => d.casos?.toLocaleString("es-MX") ?? "s/d",
+          ...canalesPoblacion(formato),
         },
         tip: {format: {fx: false, x: false, y: false, fill: false}},
       }),
@@ -762,7 +791,7 @@ export function heatmapEntidades(celdas, {titulo = "", fuente = "",
           [etiquetaGrupo]: (d) => d.grupo,
           ...(jerarquia ? {[etiquetaSub]: (d) => d.sub} : {}),
           [etiquetaMedida(formato)]: (d) => formatear(d.pct, formato),
-          "Casos en muestra": (d) => d.casos?.toLocaleString("es-MX") ?? "s/d",
+          ...canalesPoblacion(formato),
         },
         tip: {format: {fx: false, x: false, y: false, fill: false}},
       }),
