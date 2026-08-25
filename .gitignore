@@ -1,0 +1,21 @@
+node_modules/
+dist/
+.observablehq/cache/
+src/.observablehq/cache/
+
+# Microdatos crudos: pesan GB y se descargan del INEGI, no se versionan.
+src/data/raw/
+*.CSV
+
+# Los dos CSV ya calculados SÍ se versionan: son lo único que el sitio lee en
+# tiempo de build, y sin ellos el deploy publica un tablero vacío. La regla
+# *.CSV de arriba los atrapa porque git en Windows no distingue mayúsculas.
+!src/data/indicadores.csv
+!src/data/indicadores_tipo_disc.csv
+__pycache__/
+*.pyc
+.DS_Store
+
+# Reportes: entregables generados con Quarto. Se reconstruyen con
+# `quarto render` desde los .qmd, que sí se versionan.
+reportes/

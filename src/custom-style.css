@@ -1,0 +1,2006 @@
+/* --- 1. Theme Imports (replican theme: ["wide", "light"]) --- */
+@import url("observablehq:default.css");
+@import url("observablehq:theme-air.css");
+@import url("observablehq:theme-wide.css");
+
+/* --- 2. Tipografía (Google Fonts) --- */
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap");
+
+/* --- 3. Variables de marca y overrides de tema --- */
+:root {
+  /* Paleta Social Data IBERO */
+  --brand-red: #E30A18;
+  --brand-red-dark: #B8000F;
+  --brand-dark: #1D1D1B;
+  --brand-gray: #A7A3A2;
+  --brand-light-gray: #F6F6F6;
+
+  /* Capa semántica (consumida por el chrome: sidebar/header/footer).
+     Da nombres de intención sobre la paleta de marca, para que los
+     componentes no dependan directamente de los --brand-*. */
+  --surface-1: #FFFFFF;
+  --surface-2: var(--brand-light-gray);
+  --text-primary: var(--brand-dark);
+  --text-muted: var(--brand-gray);
+  --border-subtle: color-mix(in srgb, var(--brand-dark) 12%, transparent);
+  --border-strong: color-mix(in srgb, var(--brand-dark) 22%, transparent);
+
+  /* Overrides de Observable Framework */
+  --sans-serif: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  --monospace: "JetBrains Mono", Menlo, Consolas, monospace;
+  --theme-foreground: var(--text-primary);
+  --theme-foreground-focus: #C4101B;
+  --theme-background-a: var(--surface-1);
+  --theme-red: var(--brand-red);
+}
+
+/* --- 4. Tipografía base --- */
+body {
+  font: 16px/1.65 var(--sans-serif);
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--sans-serif);
+  letter-spacing: -0.01em;
+}
+
+h1 {
+  font-size: 2rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 3px solid var(--brand-red);
+  margin-bottom: 1rem;
+}
+
+h2 {
+  font-size: 1.45rem;
+  margin-top: 2rem;
+}
+
+h3 {
+  font-size: 1.15rem;
+  margin-top: 1.5rem;
+}
+
+/* Subtítulo debajo de h1 (patrón h1 + h2 de Observable) */
+h1 + h2 {
+  border: none;
+  color: var(--brand-gray);
+  font-size: 1.1rem;
+  padding-bottom: 0;
+}
+
+/* --- 5. Enlaces --- */
+a[href] {
+  color: var(--theme-foreground-focus);
+  transition: color 0.15s ease;
+}
+
+a[href]:hover,
+a[href]:focus {
+  color: var(--brand-red-dark);
+}
+
+/* --- 6. Details / Summary (reemplaza estilos inline de capítulos) --- */
+details {
+  margin: 0.75rem 0;
+}
+
+details summary {
+  cursor: pointer;
+  font-size: 0.85rem;
+  font-family: var(--sans-serif);
+  font-weight: 500;
+  color: var(--brand-dark);
+  padding: 0.4rem 0;
+  transition: color 0.15s ease;
+}
+
+details summary:hover {
+  color: var(--brand-red);
+}
+
+details summary::marker {
+  color: var(--brand-red);
+}
+
+details[open] summary {
+  margin-bottom: 0.25rem;
+}
+
+/* --- 7. Bloques de código --- */
+pre {
+  background-color: var(--brand-light-gray);
+  border-left: 3px solid var(--brand-gray);
+  border-radius: 6px;
+}
+
+code, tt {
+  font-family: var(--monospace);
+}
+
+/* Código inline */
+:not(pre) > code {
+  background-color: var(--brand-light-gray);
+  padding: 0.15em 0.35em;
+  border-radius: 4px;
+  font-size: 0.9em;
+}
+
+/* --- 8. Bibliografía --- */
+.bibliography-title {
+  color: var(--brand-red);
+  border-top: 2px solid color-mix(in srgb, var(--brand-gray) 50%, transparent);
+  border-bottom: none;
+  padding-top: 1.5rem;
+  margin-top: 3rem;
+  font-size: 1.3rem;
+}
+
+.csl-entry {
+  font-size: 0.9rem;
+  line-height: 1.6;
+  color: var(--theme-foreground-alt);
+  padding: 0.3rem 0;
+}
+
+/* --- 9. Cards --- */
+.card {
+  border-top: 3px solid var(--brand-red);
+  border-radius: 8px;
+}
+
+/* --- 10. Tablas --- */
+thead tr {
+  border-bottom: solid 2px var(--brand-red);
+}
+
+/* --- 11. Separadores --- */
+hr {
+  background: no-repeat center/100% 1px linear-gradient(
+    to right,
+    transparent,
+    var(--brand-gray),
+    transparent
+  );
+}
+
+/* --- 12. Sidebar --- */
+
+/* 12a. Base */
+#observablehq-sidebar {
+  font-family: var(--sans-serif);
+  background: var(--surface-2);
+  color: var(--text-primary);
+}
+
+/* 12b. Separadores entre secciones */
+#observablehq-sidebar > details,
+#observablehq-sidebar > section {
+  border-bottom: 1px solid var(--border-subtle);
+  padding-bottom: 0.5rem;
+  margin: 0.35rem 0;
+}
+
+#observablehq-sidebar > details:last-child,
+#observablehq-sidebar > section:last-child {
+  border-bottom: none;
+}
+
+/* 12c. Headers de sección */
+#observablehq-sidebar summary {
+  font-weight: 700;
+  font-size: 0.75rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--text-primary);
+  position: relative;
+  transition: color 0.2s ease, background-color 0.2s ease;
+}
+
+#observablehq-sidebar summary::before {
+  content: "";
+  position: absolute;
+  left: -0.5rem;
+  top: 0.35rem;
+  bottom: 0.35rem;
+  width: 3px;
+  background: var(--brand-red);
+  border-radius: 2px;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+
+#observablehq-sidebar details[open] > summary::before,
+#observablehq-sidebar details.observablehq-section-active > summary::before {
+  opacity: 1;
+}
+
+#observablehq-sidebar details summary:hover {
+  color: var(--brand-red);
+  background: color-mix(in srgb, var(--brand-red) 4%, transparent);
+}
+
+/* Caret del chevron */
+#observablehq-sidebar details summary::after {
+  background: var(--brand-gray);
+  transition: transform 250ms ease, background 0.2s ease;
+}
+
+#observablehq-sidebar details summary:hover::after {
+  background: var(--brand-red);
+}
+
+/* 12d. Links de capítulo */
+#observablehq-sidebar .observablehq-link a {
+  font-size: 0.85rem;
+  font-weight: 400;
+  color: color-mix(in srgb, var(--text-primary) 75%, transparent);
+  transition: color 0.15s ease, background-color 0.15s ease;
+}
+
+#observablehq-sidebar .observablehq-link a:hover {
+  color: var(--brand-red);
+  background: color-mix(in srgb, var(--brand-red) 5%, transparent);
+}
+
+/* 12e. Página activa */
+#observablehq-sidebar .observablehq-link-active a {
+  color: var(--brand-red);
+  font-weight: 600;
+  background: color-mix(in srgb, var(--brand-red) 6%, transparent);
+}
+
+#observablehq-sidebar .observablehq-link-active::before {
+  background: var(--brand-red);
+}
+
+/* 12f. Bloque de marca (home link sticky con logo + título + sutítulo) */
+/* Anulamos `position: sticky` del tema default: con un brand vertical alto
+   (logo 72px + título + subtítulo) el sticky robaría demasiado espacio del
+   sidebar al scrollear. `relative` preserva el contexto para el ::before
+   que pinta el fondo con `inset: 0 -0.5rem`. */
+#observablehq-sidebar > ol:first-child {
+  position: relative;
+  top: auto;
+  background: var(--surface-2);
+  border-bottom: 1px solid var(--border-subtle);
+  margin-bottom: 0.35rem;
+}
+
+#observablehq-sidebar > ol:first-child::before {
+  background: var(--surface-2);
+}
+
+/* El primer <li> contiene el <a href="/"> que envuelve el bloque de marca:
+   se anula el padding/hover de link normal y se deja respirar al brand. */
+#observablehq-sidebar > ol:first-child > li.observablehq-link {
+  padding: 0;
+  margin: 0;
+}
+
+/* El tema default de Observable Framework fija `height: calc(var(--observablehq-header-height) - 1rem)`
+   al <a> del primer <li> del sidebar (pensado para un brand de una sola línea). Lo anulamos
+   para que el bloque vertical (logo + título + subtítulo) pueda crecer a su altura natural. */
+#observablehq-sidebar > ol:first-child > li.observablehq-link a {
+  display: block;
+  height: auto;
+  padding: 1rem 0.5rem 0.9rem;
+  background: transparent;
+  border-radius: 6px;
+  transition: background-color 0.15s ease;
+}
+
+#observablehq-sidebar > ol:first-child > li.observablehq-link a:hover {
+  background: color-mix(in srgb, var(--brand-red) 6%, transparent);
+}
+
+.sidebar-brand {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.5rem;
+  padding: 0.25rem 0;
+  text-align: center;
+  min-width: 0;
+}
+
+.sidebar-brand-logo {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 72px;
+  max-width: 80%;
+  flex-shrink: 0;
+}
+
+.sidebar-brand-logo svg {
+  display: block;
+  height: 100%;
+  width: auto;
+  max-width: 100%;
+}
+
+.sidebar-brand-text {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-width: 0;
+  line-height: 1.2;
+}
+
+.sidebar-brand-title {
+  font-family: var(--sans-serif);
+  font-weight: 700;
+  font-size: 0.95rem;
+  letter-spacing: -0.005em;
+  color: var(--text-primary);
+}
+
+.sidebar-brand-sub {
+  font-family: var(--monospace);
+  font-size: 0.62rem;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--text-muted);
+  margin-top: 0.15rem;
+}
+
+/* 12g. Búsqueda */
+#observablehq-search {
+  padding: 0.5rem 0.25rem 0.25rem 0.25rem;
+}
+
+#observablehq-search input {
+  background-color: var(--surface-1);
+  color: var(--text-primary);
+  border: 1px solid var(--border-subtle);
+  border-radius: 6px;
+  padding: 6px 8px 6px 2.2em;
+  font-size: 0.8rem;
+  font-family: var(--sans-serif);
+  height: 32px;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+#observablehq-search input:focus {
+  outline: none;
+  border-color: var(--brand-red);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--brand-red) 12%, transparent);
+}
+
+#observablehq-search input::placeholder {
+  color: var(--text-muted);
+  font-size: 0.8rem;
+}
+
+#observablehq-search::before {
+  color: var(--text-muted);
+}
+
+#observablehq-search:focus-within::before {
+  color: var(--brand-red);
+}
+
+/* 12h. Resultados de búsqueda */
+#observablehq-search-results .observablehq-link-active a {
+  background: color-mix(in srgb, var(--brand-red) 8%, transparent);
+}
+
+#observablehq-search-results li.observablehq-link-active:after {
+  background: var(--brand-red);
+}
+
+/* 12i. Pager en español */
+#observablehq-footer nav a[rel=prev]::before {
+  content: "Capítulo anterior";
+}
+
+#observablehq-footer nav a[rel=next]::before {
+  content: "Siguiente capítulo";
+}
+
+#observablehq-footer nav a:hover {
+  border-color: var(--brand-red);
+}
+
+/* --- 13. Header --- */
+/* El tema default fija --observablehq-header-height: 2.2rem y
+   #observablehq-header { display: flex; gap: 0.5rem }. Subimos la altura
+   para dar respiro a la nav agrandada, y forzamos nuestro wrapper
+   .book-header a estirarse (flex: 1) para que justify-content: flex-end
+   pueda empujar la nav al borde derecho. */
+#observablehq-header {
+  --observablehq-header-height: 3.2rem;
+  background: var(--surface-1);
+  border-bottom: 1px solid var(--border-subtle);
+}
+
+.book-header {
+  display: flex;
+  flex: 1;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 1rem;
+  padding: 0.3rem 0;
+}
+
+.book-header-nav {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  flex-shrink: 0;
+}
+
+.book-header-link {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.4rem 0.75rem;
+  border-radius: 5px;
+  font-family: var(--sans-serif);
+  font-size: 0.88rem;
+  font-weight: 500;
+  color: var(--text-muted);
+  text-decoration: none;
+  transition: color 0.15s ease, background 0.15s ease;
+}
+
+.book-header-link:hover {
+  color: var(--text-primary);
+  background: color-mix(in srgb, var(--text-muted) 14%, transparent);
+}
+
+.book-header-link svg {
+  flex-shrink: 0;
+}
+
+@media (max-width: 640px) {
+  .book-header-nav span {
+    display: none;
+  }
+  .book-header-link {
+    padding: 0.4rem;
+  }
+}
+
+/* --- 14. Footer --- */
+#observablehq-footer {
+  font-family: var(--sans-serif);
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  background: var(--surface-1);
+  border-top: 1px solid var(--border-subtle);
+  padding-top: 0;
+}
+
+.book-footer {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  padding-top: 1.25rem;
+}
+
+/* 14a. Grid editorial: marca + 3 columnas (auto-fit colapsa a 1 col en móvil) */
+.book-footer-grid {
+  display: grid;
+  grid-template-columns: minmax(220px, 1.4fr) repeat(3, minmax(150px, 1fr));
+  gap: 1.5rem 2rem;
+  align-items: start;
+}
+
+@media (max-width: 900px) {
+  .book-footer-grid {
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  }
+}
+
+/* 14b. Bloque de marca (ahora el <a> envuelve logo + textos) */
+.book-footer-brand {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  text-decoration: none;
+  color: inherit;
+  min-width: 0;
+}
+
+.book-footer-logo {
+  height: 32px;
+  width: auto;
+  flex-shrink: 0;
+  opacity: 0.75;
+  transition: opacity 0.2s ease;
+}
+
+.book-footer-brand:hover .book-footer-logo {
+  opacity: 1;
+}
+
+.book-footer-brand-text {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  line-height: 1.3;
+}
+
+.book-footer-name {
+  font-weight: 600;
+  font-size: 0.85rem;
+  color: var(--text-primary);
+}
+
+.book-footer-inst {
+  font-size: 0.72rem;
+  color: var(--text-muted);
+}
+
+/* 14c. Columnas editoriales */
+.book-footer-col {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  min-width: 0;
+}
+
+.book-footer-col-title {
+  margin: 0 0 0.35rem 0;
+  font-family: var(--monospace);
+  font-size: 0.62rem;
+  font-weight: 500;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+
+.book-footer-col-line {
+  margin: 0;
+  font-size: 0.8rem;
+  line-height: 1.45;
+  color: var(--text-muted);
+}
+
+.book-footer-col-line a {
+  color: var(--text-primary);
+  text-decoration: none;
+  border-bottom: 1px solid var(--border-subtle);
+  transition: color 0.15s ease, border-color 0.15s ease;
+}
+
+.book-footer-col-line a:hover {
+  color: var(--brand-red);
+  border-bottom-color: var(--brand-red);
+}
+
+.book-footer-version {
+  margin-top: 0.35rem;
+  font-family: var(--monospace);
+  font-size: 0.7rem;
+  color: var(--text-muted);
+}
+
+/* 14d. Banda de agradecimiento institucional */
+.book-footer-ack {
+  margin-top: 0.5rem;
+  padding: 0.65rem 0;
+  border-top: 1px solid var(--border-subtle);
+  font-family: var(--monospace);
+  font-size: 0.72rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: color-mix(in srgb, var(--text-primary) 55%, transparent);
+  text-align: center;
+}
+
+/* 14e. Banda inferior (copyright + built-with) */
+.book-footer-bottom {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  padding-top: 0.75rem;
+  border-top: 1px solid var(--border-subtle);
+  font-size: 0.75rem;
+  color: color-mix(in srgb, var(--text-muted) 85%, transparent);
+}
+
+.book-footer-bottom a {
+  color: var(--text-muted);
+  text-decoration: underline;
+  text-decoration-color: var(--border-subtle);
+  text-underline-offset: 2px;
+  transition: color 0.15s ease, text-decoration-color 0.15s ease;
+}
+
+.book-footer-bottom a:hover {
+  color: var(--brand-red);
+  text-decoration-color: var(--brand-red);
+}
+
+.book-footer-tech {
+  text-align: right;
+}
+
+@media (max-width: 640px) {
+  .book-footer-grid {
+    gap: 1.25rem;
+  }
+  .book-footer-bottom {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  .book-footer-tech {
+    text-align: left;
+  }
+}
+
+/* --- 15. Notas / Callouts --- */
+.note {
+  border-radius: 6px;
+}
+
+/* --- 16. Selección de texto --- */
+::selection {
+  background-color: color-mix(in srgb, var(--brand-red) 20%, transparent);
+}
+
+/* --- 17. Index / Home — portada, metadata editorial y citación --- */
+
+/* Hero principal: contenido + portada animada lado a lado */
+.book-hero {
+  display: grid;
+  grid-template-columns: minmax(0, 640px) clamp(220px, 22vw, 280px);
+  column-gap: clamp(1.5rem, 3vw, 3rem);
+  row-gap: 2rem;
+  align-items: center;
+  justify-content: space-between;
+  max-width: 1100px;
+  margin: 1.5rem 0 2.5rem;
+}
+
+.book-hero-content {
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+  min-width: 0;
+}
+
+.book-hero-eyebrow {
+  font-family: var(--monospace);
+  font-size: 0.72rem;
+  font-weight: 500;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--brand-red);
+  margin-bottom: 0.25rem;
+}
+
+.book-hero-title {
+  font-family: var(--sans-serif);
+  font-size: clamp(2rem, 3.5vw, 3rem);
+  font-weight: 700;
+  line-height: 1.05;
+  letter-spacing: -0.02em;
+  color: var(--brand-dark);
+  margin: 0;
+  border-bottom: none;
+  padding-bottom: 0;
+}
+
+.book-hero-subtitle {
+  font-size: clamp(1.05rem, 1vw + 0.7rem, 1.3rem);
+  font-weight: 500;
+  line-height: 1.4;
+  color: color-mix(in srgb, var(--brand-dark) 78%, transparent);
+  margin: 0;
+}
+
+.book-hero-abstract {
+  font-size: 1rem;
+  line-height: 1.65;
+  color: color-mix(in srgb, var(--brand-dark) 70%, transparent);
+  margin: 0.35rem 0 1rem;
+  max-width: 60ch;
+}
+
+.book-hero-ctas {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  margin-top: 0.25rem;
+}
+
+.book-cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.65rem 1.25rem;
+  border-radius: 999px;
+  border: 1.5px solid var(--brand-red);
+  background: transparent;
+  color: var(--brand-red);
+  font-weight: 600;
+  font-size: 0.95rem;
+  text-decoration: none;
+  transition: background-color 0.18s ease, color 0.18s ease, transform 0.18s ease, box-shadow 0.18s ease;
+}
+
+.book-cta:hover,
+.book-cta:focus-visible {
+  background: color-mix(in srgb, var(--brand-red) 8%, transparent);
+  color: var(--brand-red-dark);
+  transform: translateY(-1px);
+}
+
+a.book-cta-primary {
+  background: var(--brand-red);
+  color: #fff;
+  box-shadow: 0 6px 18px color-mix(in srgb, var(--brand-red) 28%, transparent);
+}
+
+a.book-cta-primary:hover,
+a.book-cta-primary:focus-visible {
+  background: var(--brand-red-dark);
+  color: #fff;
+  box-shadow: 0 8px 22px color-mix(in srgb, var(--brand-red) 35%, transparent);
+}
+
+/* Bloque de metadata editorial */
+.book-meta-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+  gap: 1.25rem 2rem;
+  margin: 0 0 2.5rem;
+  padding: 1.5rem 1.75rem;
+  border: 1px solid color-mix(in srgb, var(--brand-gray) 28%, transparent);
+  border-radius: 10px;
+  background: color-mix(in srgb, var(--brand-light-gray) 55%, transparent);
+}
+
+.book-meta-field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  min-width: 0;
+}
+
+.book-meta-field--wide {
+  grid-column: 1 / -1;
+}
+
+.book-meta-label {
+  font-family: var(--sans-serif);
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+  color: var(--brand-gray);
+  margin: 0;
+}
+
+.book-meta-value {
+  font-size: 0.98rem;
+  font-weight: 500;
+  color: var(--brand-dark);
+  line-height: 1.4;
+  word-break: break-word;
+}
+
+.book-meta-sub {
+  font-size: 0.78rem;
+  color: color-mix(in srgb, var(--brand-dark) 55%, transparent);
+  line-height: 1.35;
+}
+
+.book-meta-placeholder {
+  font-style: italic;
+  color: color-mix(in srgb, var(--brand-gray) 95%, transparent);
+  font-weight: 400;
+}
+
+.book-meta-link {
+  color: var(--brand-red);
+  text-decoration: none;
+  font-weight: 500;
+  border-bottom: 1px dotted color-mix(in srgb, var(--brand-red) 50%, transparent);
+  width: fit-content;
+  word-break: break-all;
+}
+
+.book-meta-link:hover {
+  color: var(--brand-red-dark);
+  border-bottom-style: solid;
+}
+
+.book-authors {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  max-width: none;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  column-gap: 0.75rem;
+  row-gap: 0.5rem;
+}
+
+.book-authors li {
+  flex: 1 1 auto;
+  min-width: max-content;
+  margin: 0;
+  line-height: 1.5;
+  font-size: 0.95rem;
+  color: var(--brand-dark);
+  white-space: nowrap;
+}
+
+.book-authors .orcid-icon {
+  display: inline-block;
+  width: 14px;
+  height: 14px;
+  vertical-align: text-bottom;
+  margin-left: 0.2rem;
+  opacity: 0.85;
+  transition: opacity 0.15s ease;
+}
+
+.book-authors .mail-icon {
+  display: inline-block;
+  width: 14px;
+  height: 14px;
+  vertical-align: text-bottom;
+  margin-left: 0.15rem;
+  color: var(--brand-red);
+  opacity: 0.85;
+  transition: opacity 0.15s ease;
+}
+
+.book-authors a:hover .orcid-icon,
+.book-authors a:hover .mail-icon {
+  opacity: 1;
+}
+
+/* Cómo citar */
+.book-citation {
+  margin: 0 0 2.5rem;
+  padding: 1.5rem 1.75rem;
+  border: 1px solid color-mix(in srgb, var(--brand-gray) 28%, transparent);
+  border-radius: 10px;
+  background: #fff;
+  position: relative;
+}
+
+.book-citation-header {
+  margin-bottom: 1rem;
+}
+
+.book-citation-header h2 {
+  font-size: 1.15rem;
+  font-weight: 700;
+  margin: 0 0 0.35rem;
+  color: var(--brand-dark);
+  border: none;
+  padding: 0;
+  letter-spacing: -0.005em;
+  text-transform: none;
+}
+
+.book-citation-header p {
+  font-size: 0.88rem;
+  color: color-mix(in srgb, var(--brand-dark) 65%, transparent);
+  margin: 0;
+  line-height: 1.5;
+}
+
+.book-citation-tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.15rem;
+  border-bottom: 1px solid color-mix(in srgb, var(--brand-gray) 30%, transparent);
+  margin-bottom: 1rem;
+}
+
+.book-citation-tab {
+  appearance: none;
+  background: transparent;
+  border: none;
+  padding: 0.55rem 0.95rem;
+  font-family: var(--sans-serif);
+  font-size: 0.88rem;
+  font-weight: 500;
+  color: color-mix(in srgb, var(--brand-dark) 60%, transparent);
+  cursor: pointer;
+  border-bottom: 2px solid transparent;
+  margin-bottom: -1px;
+  transition: color 0.15s ease, border-color 0.15s ease;
+}
+
+.book-citation-tab:hover {
+  color: var(--brand-red);
+}
+
+.book-citation-tab.is-active {
+  color: var(--brand-red);
+  border-bottom-color: var(--brand-red);
+  font-weight: 600;
+}
+
+.book-citation-tab:focus-visible {
+  outline: 2px solid color-mix(in srgb, var(--brand-red) 50%, transparent);
+  outline-offset: 2px;
+  border-radius: 3px;
+}
+
+.book-citation-panel {
+  position: relative;
+  padding: 0.25rem 0;
+}
+
+.book-citation-text {
+  font-size: 0.94rem;
+  line-height: 1.65;
+  color: var(--brand-dark);
+  padding-right: 5.5rem;
+}
+
+.book-citation-bibtex {
+  font-family: var(--monospace);
+  font-size: 0.82rem;
+  line-height: 1.55;
+  background: color-mix(in srgb, var(--brand-dark) 4%, transparent);
+  border-left: 3px solid var(--brand-red);
+  border-radius: 4px;
+  padding: 1rem 1.25rem 1rem 1.25rem;
+  margin: 0;
+  overflow-x: auto;
+  color: var(--brand-dark);
+  white-space: pre;
+}
+
+.book-citation-bibtex code {
+  background: none;
+  padding: 0;
+  font-size: inherit;
+  color: inherit;
+  font-family: inherit;
+}
+
+.book-citation-copy {
+  position: absolute;
+  top: 0;
+  right: 0;
+  appearance: none;
+  border: 1px solid color-mix(in srgb, var(--brand-gray) 45%, transparent);
+  background: #fff;
+  color: var(--brand-dark);
+  padding: 0.35rem 0.75rem;
+  font-size: 0.78rem;
+  font-weight: 600;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.15s ease, color 0.15s ease, border-color 0.15s ease;
+}
+
+.book-citation-copy:hover,
+.book-citation-copy:focus-visible {
+  background: var(--brand-red);
+  color: #fff;
+  border-color: var(--brand-red);
+}
+
+.book-citation-copy--code {
+  top: 0.85rem;
+  right: 0.85rem;
+}
+
+.book-citation-feedback {
+  font-size: 0.78rem;
+  color: var(--brand-red);
+  margin-top: 0.5rem;
+  min-height: 1em;
+}
+
+/* --- 18b. Portada del libro --- */
+.book-cover {
+  perspective: 1100px;
+  align-self: start;
+  width: 100%;
+  max-width: 260px;
+  justify-self: start;
+}
+
+.book-cover-inner {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 3 / 4;
+  background-color: var(--brand-dark);
+  background-image:
+    radial-gradient(ellipse at 50% 42%, color-mix(in srgb, var(--brand-red) 16%, transparent) 0%, transparent 55%),
+    radial-gradient(circle at 85% 90%, color-mix(in srgb, var(--brand-red) 10%, transparent) 0%, transparent 45%),
+    radial-gradient(color-mix(in srgb, #ffffff 6%, transparent) 1px, transparent 1.2px),
+    linear-gradient(160deg, #141413 0%, var(--brand-dark) 45%, #2a2a28 100%);
+  background-size: auto, auto, 14px 14px, auto;
+  background-position: center, center, 0 0, center;
+  border-radius: 4px 12px 12px 4px;
+  box-shadow:
+    inset 0 0 60px color-mix(in srgb, #000 55%, transparent),
+    inset 0 1px 0 color-mix(in srgb, #fff 8%, transparent),
+    -4px 0 0 0 color-mix(in srgb, var(--brand-dark) 92%, transparent),
+    -6px 1px 0 0 color-mix(in srgb, var(--brand-dark) 75%, transparent),
+    6px 12px 32px color-mix(in srgb, var(--brand-dark) 45%, transparent),
+    0 18px 40px color-mix(in srgb, var(--brand-red) 10%, transparent);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: clamp(0.75rem, 1.2vw, 1.25rem);
+  padding: clamp(1.25rem, 2.5vw, 2rem) clamp(1rem, 1.8vw, 1.5rem);
+  overflow: hidden;
+  transform: rotateY(-4deg);
+  transition: transform 0.5s cubic-bezier(0.2, 0.7, 0.2, 1);
+  transform-style: preserve-3d;
+}
+
+.book-cover:hover .book-cover-inner {
+  transform: rotateY(0deg) translateZ(4px);
+}
+
+/* Viñeta / brillo superior sobre todo el fondo */
+.book-cover-inner::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(180deg, color-mix(in srgb, #fff 6%, transparent) 0%, transparent 30%),
+    linear-gradient(0deg, color-mix(in srgb, #000 45%, transparent) 0%, transparent 40%);
+  pointer-events: none;
+  z-index: 1;
+}
+
+/* Marco interno tenue */
+.book-cover-inner::after {
+  content: "";
+  position: absolute;
+  inset: 14px;
+  border: 1px solid color-mix(in srgb, #fff 8%, transparent);
+  border-radius: 2px;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.book-cover-accent {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 6px;
+  background: linear-gradient(90deg, var(--brand-red-dark), var(--brand-red) 50%, var(--brand-red-dark));
+  overflow: hidden;
+  z-index: 3;
+  box-shadow: 0 0 14px color-mix(in srgb, var(--brand-red) 55%, transparent);
+}
+
+.book-cover-accent-shimmer {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg, transparent 0%, rgba(255, 255, 255, 0.55) 50%, transparent 100%);
+  transform: translateX(-100%);
+  animation: cover-shimmer 6s ease-in-out infinite;
+}
+
+@keyframes cover-shimmer {
+  0%, 20% { transform: translateX(-100%); }
+  60%, 100% { transform: translateX(100%); }
+}
+
+/* SVG de flujo */
+.book-cover-flow {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 2;
+  opacity: 0.95;
+}
+
+.book-cover-flow .flow-line {
+  fill: none;
+  stroke: color-mix(in srgb, var(--brand-gray) 55%, transparent);
+  stroke-linecap: round;
+  opacity: 0.35;
+}
+
+.book-cover-flow .flow-line-faint {
+  stroke: color-mix(in srgb, var(--brand-red) 50%, transparent);
+  opacity: 0.22;
+}
+
+@keyframes flow-draw {
+  0% { stroke-dashoffset: var(--dash, 360); opacity: 0; }
+  10% { opacity: 0.35; }
+  90% { opacity: 0.35; }
+  100% { stroke-dashoffset: 0; opacity: 0; }
+}
+
+.book-cover-flow .flow-particle {
+  fill: #fff;
+  opacity: 0.6;
+}
+
+.book-cover-flow .flow-particle-accent {
+  fill: var(--brand-red);
+  opacity: 1;
+}
+
+/* Contenido */
+.book-cover-logo {
+  position: relative;
+  z-index: 4;
+  width: 52px;
+  height: auto;
+  opacity: 0.9;
+  filter: drop-shadow(0 2px 6px rgba(0, 0, 0, 0.35));
+  animation: cover-rise 0.9s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+  animation-delay: 0.1s;
+}
+
+.book-cover-text {
+  position: relative;
+  z-index: 4;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 0.45rem;
+  animation: cover-rise 0.9s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+  animation-delay: 0.25s;
+}
+
+.book-cover-eyebrow {
+  font-family: var(--monospace);
+  font-size: 0.58rem;
+  font-weight: 500;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--brand-red);
+  padding: 0.15rem 0.5rem;
+  border: 1px solid color-mix(in srgb, var(--brand-red) 55%, transparent);
+  border-radius: 2px;
+  background: color-mix(in srgb, var(--brand-red) 10%, transparent);
+}
+
+.book-cover-title {
+  font-family: var(--sans-serif);
+  font-size: clamp(1.15rem, 1.3vw + 0.7rem, 1.5rem);
+  font-weight: 700;
+  color: #fff;
+  letter-spacing: -0.015em;
+  line-height: 1.15;
+  text-shadow:
+    0 1px 0 rgba(0, 0, 0, 0.45),
+    0 0 24px color-mix(in srgb, var(--brand-red) 35%, transparent);
+  padding: 0.15rem 0;
+  position: relative;
+}
+
+.book-cover-title::after {
+  content: "";
+  display: block;
+  width: 36px;
+  height: 2px;
+  margin: 0.55rem auto 0.1rem;
+  background: var(--brand-red);
+  border-radius: 2px;
+  box-shadow: 0 0 8px color-mix(in srgb, var(--brand-red) 70%, transparent);
+}
+
+.book-cover-subtitle {
+  font-family: var(--sans-serif);
+  font-size: clamp(0.62rem, 0.35vw + 0.55rem, 0.74rem);
+  font-weight: 400;
+  font-style: italic;
+  color: color-mix(in srgb, #fff 75%, transparent);
+  line-height: 1.45;
+  max-width: 95%;
+}
+
+.book-cover-year {
+  position: relative;
+  z-index: 4;
+  font-family: var(--monospace);
+  font-size: 0.66rem;
+  font-weight: 500;
+  color: color-mix(in srgb, #fff 70%, transparent);
+  letter-spacing: 0.22em;
+  padding-top: 0.4rem;
+  border-top: 1px solid color-mix(in srgb, var(--brand-gray) 25%, transparent);
+  animation: cover-rise 0.9s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+  animation-delay: 0.4s;
+}
+
+@keyframes cover-rise {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Accesibilidad: respeta prefers-reduced-motion */
+@media (prefers-reduced-motion: reduce) {
+  .book-cover-inner,
+  .book-cover:hover .book-cover-inner { transition: none; }
+  .book-cover-flow .flow-line { animation: none !important; stroke-dashoffset: 0 !important; opacity: 0.3; }
+  .book-cover-flow .flow-particles { display: none; }
+  .book-cover-accent-shimmer { animation: none; display: none; }
+  .book-cover-logo,
+  .book-cover-text,
+  .book-cover-year { animation: none; }
+}
+
+/* --- 19. TOC por partes --- */
+.book-toc {
+  margin: 2rem 0;
+}
+
+.book-toc h2 {
+  font-size: 1.3rem;
+  border-bottom: 2px solid var(--brand-red);
+  padding-bottom: 0.4rem;
+}
+
+.book-part {
+  margin: 1.75rem 0;
+  padding: 1.25rem 1.5rem;
+  border-radius: 8px;
+  background: var(--brand-light-gray);
+  border-left: 4px solid color-mix(in srgb, var(--brand-gray) 30%, transparent);
+  transition: border-color 0.2s ease;
+}
+
+.book-part:hover {
+  border-left-color: var(--brand-red);
+}
+
+.book-part-header {
+  display: flex;
+  align-items: flex-start;
+  gap: 1rem;
+  margin-bottom: 0.75rem;
+}
+
+.book-part-number {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 2.5rem;
+  height: 2.5rem;
+  border-radius: 6px;
+  background: var(--brand-red);
+  color: #fff;
+  font-weight: 700;
+  font-size: 1.1rem;
+  font-family: var(--sans-serif);
+  flex-shrink: 0;
+  margin-top: 0.15rem;
+}
+
+.book-part-header h3 {
+  font-size: 1.1rem;
+  font-weight: 600;
+  margin: 0;
+  color: var(--brand-dark);
+  text-transform: none;
+  letter-spacing: normal;
+}
+
+.book-part-desc {
+  font-size: 0.85rem;
+  color: var(--brand-gray);
+  margin: 0.15rem 0 0;
+  line-height: 1.5;
+}
+
+.book-part ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.book-part ul li {
+  padding: 0.35rem 0;
+  padding-left: 1rem;
+  border-left: 2px solid transparent;
+  font-size: 0.95rem;
+  transition: border-color 0.15s ease;
+}
+
+.book-part ul li:hover {
+  border-left-color: var(--brand-red);
+}
+
+.book-part ul li a {
+  text-decoration: none;
+  color: var(--theme-foreground);
+}
+
+.book-part ul li a:hover {
+  color: var(--brand-red);
+}
+
+.book-part ul li.coming-soon {
+  color: var(--brand-gray);
+  opacity: 0.6;
+}
+
+.book-part ul li.coming-soon::after {
+  content: "Próximamente";
+  display: inline-block;
+  font-size: 0.65rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  background: color-mix(in srgb, var(--brand-gray) 20%, transparent);
+  color: var(--brand-gray);
+  padding: 0.1rem 0.4rem;
+  border-radius: 3px;
+  margin-left: 0.5rem;
+  vertical-align: middle;
+}
+
+.book-part ul li.coming-soon:hover {
+  border-left-color: transparent;
+}
+
+@media (max-width: 720px) {
+  .book-hero {
+    grid-template-columns: 1fr;
+    gap: 2rem;
+  }
+  .book-hero-content {
+    order: 2;
+    text-align: left;
+  }
+  .book-hero-title {
+    font-size: clamp(1.75rem, 7vw, 2.4rem);
+  }
+  .book-hero-ctas {
+    justify-content: flex-start;
+  }
+  .book-cover {
+    order: 1;
+    max-width: 220px;
+    margin: 0 auto;
+    justify-self: center;
+  }
+  .book-cover-inner {
+    transform: rotateY(0deg);
+  }
+  .book-cover:hover .book-cover-inner {
+    transform: rotateY(0deg);
+  }
+  .book-meta-grid {
+    padding: 1.25rem 1.25rem;
+    gap: 1rem 1.5rem;
+  }
+  .book-citation {
+    padding: 1.25rem 1.25rem;
+  }
+  .book-citation-text {
+    padding-right: 0;
+  }
+  .book-citation-copy {
+    position: static;
+    margin-top: 0.75rem;
+  }
+  .book-citation-copy--code {
+    margin-top: 0.5rem;
+  }
+  .book-part {
+    padding: 1rem;
+  }
+  .book-part-header {
+    gap: 0.75rem;
+  }
+}
+
+/* --- 20. Figuras numeradas --- */
+figure {
+  margin: 1.75rem 0;
+  padding: 0;
+}
+
+figure > figcaption {
+  font-size: 0.85rem;
+  color: color-mix(in srgb, var(--brand-dark) 70%, transparent);
+  line-height: 1.5;
+  padding: 0.5rem 0 0;
+  border-top: 1px solid color-mix(in srgb, var(--brand-gray) 25%, transparent);
+  margin-top: 0.75rem;
+}
+
+figure > figcaption strong {
+  color: var(--brand-red);
+  font-weight: 600;
+}
+
+figure .mermaid,
+figure svg {
+  display: block;
+  margin: 0 auto;
+  max-width: 100%;
+}
+
+figure.figure-wide {
+  width: min(1360px, calc(100vw - 3rem));
+  max-width: none;
+  margin-left: 50%;
+  transform: translateX(-50%);
+}
+
+figure.figure-wide .mermaid svg {
+  width: 100% !important;
+  max-width: 100% !important;
+  height: auto;
+}
+
+.plot-center {
+  display: flex;
+  justify-content: center;
+  margin: 1.5rem 0;
+}
+
+.plot-center > figure,
+.plot-center > svg {
+  margin: 0;
+  max-width: 100%;
+}
+
+/* --- 21. Callouts --- */
+.callout {
+  margin: 1.25rem 0;
+  padding: 0.85rem 1.1rem;
+  border-left: 4px solid var(--brand-gray);
+  background: color-mix(in srgb, var(--brand-light-gray) 70%, transparent);
+  border-radius: 0 6px 6px 0;
+  font-size: 0.95rem;
+  line-height: 1.6;
+}
+
+.callout > strong:first-child {
+  display: block;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  margin-bottom: 0.35rem;
+  color: var(--brand-gray);
+}
+
+.callout > p { margin: 0.35rem 0; }
+.callout > p:last-child { margin-bottom: 0; }
+
+.callout-key {
+  border-left-color: var(--brand-red);
+  background: color-mix(in srgb, var(--brand-red) 6%, transparent);
+}
+.callout-key > strong:first-child { color: var(--brand-red); }
+
+.callout-tip {
+  border-left-color: #2A7F3E;
+  background: color-mix(in srgb, #2A7F3E 6%, transparent);
+}
+.callout-tip > strong:first-child { color: #2A7F3E; }
+
+.callout-note {
+  border-left-color: var(--brand-gray);
+}
+
+.callout-warning {
+  border-left-color: #C48A00;
+  background: color-mix(in srgb, #C48A00 7%, transparent);
+}
+.callout-warning > strong:first-child { color: #C48A00; }
+
+/* --- 22. Salidas en vivo desde data loaders --- */
+.live-output {
+  margin: 0.5rem 0 1rem 0;
+  padding: 0.6rem 0.9rem;
+  background: color-mix(in srgb, var(--brand-red) 4%, transparent);
+  border-left: 3px solid var(--brand-red);
+  border-radius: 0 4px 4px 0;
+  font-size: 0.9rem;
+  line-height: 1.5;
+}
+.live-output code { font-size: 0.88rem; }
+
+
+/* ---------- Dashboards de anomalias: filtros y tarjetas de grafica ---------- */
+.panel-filtros {
+  display: flex; flex-wrap: wrap; gap: 1rem 1.4rem; align-items: flex-end;
+  padding: 0.8rem 1rem; margin: 0.8rem 0;
+  border: 1px solid #e3e3e3; border-radius: 10px; background: #fafafa;
+}
+.filtro { display: flex; flex-direction: column; gap: 0.28rem; }
+.filtro-etiqueta {
+  font-size: 0.68rem; letter-spacing: 0.07em; text-transform: uppercase;
+  font-weight: 700; color: #6b6b6b;
+}
+.filtro select {
+  border: 1px solid #cfcfcf; border-radius: 8px; padding: 0.4rem 0.65rem;
+  font-size: 0.85rem; background: #fff; min-width: 11rem; color: inherit;
+}
+.filtro select:focus { outline: 2px solid rgba(196, 16, 27, 0.25); border-color: #C4101B; }
+.filtro select:disabled { opacity: 0.45; }
+.chip-info {
+  display: inline-block; border: 1px dashed #cfcfcf; border-radius: 999px;
+  padding: 0.35rem 0.8rem; font-size: 0.8rem; color: #6b6b6b; background: #fff;
+}
+.pastillas { display: flex; flex-wrap: wrap; gap: 0.5rem; margin: 0.6rem 0 0.9rem; }
+.pastilla {
+  border: 1px solid #cfcfcf; border-radius: 999px; padding: 0.4rem 1rem;
+  font-size: 0.85rem; background: #fff; cursor: pointer; color: inherit;
+  transition: background 0.12s, color 0.12s, border-color 0.12s;
+}
+.pastilla:hover { border-color: #C4101B; color: #C4101B; }
+.pastilla[aria-pressed="true"] {
+  background: #C4101B; border-color: #C4101B; color: #fff; font-weight: 600;
+}
+.tarjeta-grafica {
+  border: 1px solid #e3e3e3; border-radius: 10px; background: #fff;
+  padding: 0.9rem 1.1rem; margin: 0.8rem 0;
+}
+.tarjeta-grafica h4 { margin: 0; font-size: 0.95rem; }
+.tarjeta-grafica .sub { color: #6b6b6b; font-size: 0.8rem; margin: 0.15rem 0 0.6rem; }
+
+
+/* ---------- Rediseno de incidencia social ---------- */
+.hero-incidencia {
+  border: 1px solid #e3e3e3; border-left: 6px solid #C4101B; border-radius: 12px;
+  background: linear-gradient(180deg, #fff 0%, #fdf7f7 100%);
+  padding: 1.4rem 1.6rem; margin: 1rem 0 1.4rem;
+}
+.hero-cifra {
+  font-size: 3rem; font-weight: 800; line-height: 1; color: #C4101B;
+  letter-spacing: -0.02em;
+}
+.hero-frase { font-size: 1.05rem; margin: 0.4rem 0 0.2rem; max-width: 46rem; }
+.hero-contexto { font-size: 0.8rem; color: #6b6b6b; }
+.kicker {
+  display: block; font-size: 0.7rem; font-weight: 700; letter-spacing: 0.12em;
+  text-transform: uppercase; color: #C4101B; margin: 1.6rem 0 -0.4rem;
+}
+/* Subtítulo de año dentro de una sección que compara ediciones apilando un
+   bloque de tarjetas por año (apoyos.md), en vez de facetar dentro de una
+   sola gráfica. */
+.subseccion-anio {
+  font-size: 0.95rem; font-weight: 600; margin: 1.2rem 0 0.4rem;
+  color: #3a3a3a; border-top: 1px dashed #d8d8d8; padding-top: 0.8rem;
+}
+.subseccion-anio:first-child { border-top: none; padding-top: 0; margin-top: 0.4rem; }
+
+.tarjeta-grafica { box-shadow: 0 1px 3px rgba(0,0,0,0.05); }
+.card { box-shadow: 0 1px 3px rgba(0,0,0,0.05); }
+.card .big { font-size: 1.7rem; font-weight: 700; }
+.mini-serie { margin-top: 0.3rem; }
+
+
+/* KPI destacada: la cifra primaria de la fila superior (patron F, arriba-izquierda) */
+.card-destacada { border-left: 4px solid #C4101B; }
+.card-destacada .big { color: #C4101B; font-size: 2rem; }
+
+
+/* borde de acento en toda la fila de KPIs (la destacada conserva la cifra roja) */
+.card { border-left: 4px solid #C4101B; }
+
+
+/* animaciones de graficas: entrada al cambiar de caso, pulso al filtrar */
+@keyframes entraCaso {
+  from { opacity: 0; transform: translateY(12px) scale(0.99); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+@keyframes creceBarra {
+  from { transform: scaleY(0); }
+  to { transform: scaleY(1); }
+}
+@keyframes entraEtiqueta {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+.anim-caso { animation: entraCaso 0.35s ease-out; }
+/* al filtrar: las barras crecen desde la base (con escalonado puesto por JS)
+   y las etiquetas de valor aparecen cuando las barras ya llegaron */
+.anim-filtro svg g[aria-label="bar"] rect {
+  transform-box: fill-box;
+  transform-origin: center bottom;
+  animation: creceBarra 0.45s cubic-bezier(0.2, 0.7, 0.3, 1) backwards;
+}
+.anim-filtro svg g[aria-label="text"] text {
+  animation: entraEtiqueta 0.4s ease backwards;
+  animation-delay: 0.35s;
+}
+@media (prefers-reduced-motion: reduce) {
+  .anim-caso,
+  .anim-filtro svg g[aria-label="bar"] rect,
+  .anim-filtro svg g[aria-label="text"] text { animation: none; }
+}
+
+
+/* ---------- Tablero de discriminación y género ----------------------------- */
+/* Color de acento de la capa de dashboard. Convive con --brand-red del chrome
+   (h1, sidebar, tablas): son dos rojos distintos a propósito. */
+:root {
+  --tablero-rojo: #C4101B;
+  --tablero-borde: #e3e3e3;
+  --tablero-superficie: #fafafa;
+}
+
+/* Nota de la fuente dentro del panel de filtros: ocupa el ancho completo para
+   caer debajo de los selectores, no entre ellos. */
+.panel-nota {
+  flex-basis: 100%; margin: 0.2rem 0 0;
+  font-size: 0.78rem; line-height: 1.45; color: #5c5c5c;
+}
+
+/* --- Fila de KPIs (patrón F: cifras arriba, gráfica enseguida) --- */
+.kpi-fila {
+  display: grid; gap: 0.9rem; margin: 1rem 0 1.3rem;
+  grid-template-columns: repeat(auto-fit, minmax(11.5rem, 1fr));
+}
+.kpi-tarjeta {
+  display: flex; flex-direction: column; gap: 0.28rem;
+  padding: 0.85rem 1rem;
+  border: 1px solid var(--tablero-borde); border-radius: 10px;
+  border-left: 4px solid #d9d9d9;
+  background: var(--tablero-superficie);
+  /* Color de texto explícito y no heredado: la tarjeta pinta su propio fondo,
+     así que tiene que pintar también su propio texto. Depender de
+     --theme-foreground acopla la legibilidad de la cifra a un token que esta
+     hoja no controla, y ahí es donde apareció el negro sobre negro. */
+  color: var(--brand-dark);
+  box-shadow: 0 1px 3px rgb(0 0 0 / 0.05);
+}
+/* La cifra primaria: borde de acento rojo, arriba a la izquierda. */
+.kpi-destacado { border-left-color: var(--tablero-rojo); }
+.kpi-etiqueta {
+  font-size: 0.68rem; letter-spacing: 0.07em; text-transform: uppercase;
+  font-weight: 700; color: #6b6b6b;
+}
+.kpi-cifra {
+  font-size: 1.75rem; font-weight: 700; line-height: 1.1;
+  font-variant-numeric: tabular-nums;
+}
+.kpi-destacado .kpi-cifra { color: var(--tablero-rojo); }
+.kpi-nota { font-size: 0.78rem; line-height: 1.4; color: #5c5c5c; }
+
+/* --- Aviso de muestra insuficiente: pegado a la gráfica, no al pie --- */
+.aviso-muestra {
+  margin: 0.5rem 0 1rem; padding: 0.6rem 0.85rem;
+  font-size: 0.8rem; line-height: 1.5;
+  border-left: 3px solid #E8930C;
+  background: color-mix(in srgb, #E8930C 8%, transparent);
+  /* Igual que las tarjetas: si el bloque pinta fondo, pinta su texto. */
+  color: var(--brand-dark);
+  border-radius: 0 8px 8px 0;
+}
+.aviso-muestra strong { color: #8a5500; }
+
+/* --- Tabla de respaldo de cada gráfica (relevo de accesibilidad) --- */
+.tabla-datos { margin: 0.4rem 0 1.4rem; font-size: 0.88rem; }
+.tabla-datos summary {
+  cursor: pointer; color: var(--tablero-rojo);
+  font-size: 0.8rem; font-weight: 600; padding: 0.25rem 0;
+}
+.tabla-datos table { margin-top: 0.5rem; width: 100%; }
+.tabla-datos th { text-align: left; font-size: 0.78rem; }
+.tabla-datos td { font-variant-numeric: tabular-nums; }
+
+/* --- Animación de entrada de las gráficas --- */
+.grafica-anim { animation: tablero-entrada 320ms ease-out both; }
+/* OJO: el contorno de hover (Plot.pointer/pointerX/pointerY) también es un
+   g[aria-label="bar"], con fill="none" en el grupo. Ese contorno se re-crea
+   en cada movimiento del mouse; animarlo produce un parpadeo constante.
+   Hay que excluir el grupo completo, no solo el rect. */
+.grafica-anim svg g[aria-label="bar"]:not([fill="none"]) rect {
+  animation: tablero-barra 420ms cubic-bezier(0.2, 0.7, 0.3, 1) both;
+  transform-origin: center bottom;
+}
+.grafica-anim svg g[aria-label="bar"][fill="none"] rect { animation: none; }
+.grafica-anim svg g[aria-label="cell"][fill="none"] rect { animation: none; }
+@keyframes tablero-entrada {
+  from { opacity: 0; transform: translateY(6px); }
+  to   { opacity: 1; transform: none; }
+}
+@keyframes tablero-barra {
+  from { transform: scaleY(0); }
+  to   { transform: scaleY(1); }
+}
+
+/* --- Contorno al pasar el mouse sobre un mapa ------------------------------
+   Plot no expone un canal de hover para Plot.geo: se marca el SVG con una
+   clase (conHoverGeo en graficas.js) y el resaltado lo hace este CSS.
+   `pointer-events: all` es necesario porque Plot pone fill/stroke en el <g>
+   padre, no en cada <path>: sin esto, el navegador solo detecta el mouse
+   sobre el TRAZO del path, no su interior. */
+.mapa-hover g[aria-label="geo"] path {
+  pointer-events: all;
+  transition: stroke-width 120ms ease;
+  cursor: pointer;
+}
+.mapa-hover g[aria-label="geo"] path:hover {
+  stroke: #1D1D1B !important;
+  stroke-width: 2.5 !important;
+  paint-order: stroke fill;
+}
+
+/* Kicker numerado de sección ("01 · El panorama"). */
+.kicker {
+  display: block; margin: 2rem 0 0.3rem;
+  font-size: 0.72rem; letter-spacing: 0.12em; text-transform: uppercase;
+  font-weight: 700; color: var(--tablero-rojo);
+}
+
+/* Encabezado real solo para que el TOC nativo de Framework lo detecte en el
+   build estático: las páginas construidas a mano (apoyos.md) pintan su
+   propio kicker con JS al ejecutar, y el TOC se genera antes de eso,
+   escaneando el HTML del build. Se colapsa a cero: sirve de ancla, no de
+   título visible duplicado. */
+h2.toc-anchor {
+  position: absolute; width: 1px; height: 1px; margin: -1px;
+  padding: 0; overflow: hidden; clip: rect(0, 0, 0, 0); border: 0;
+}
+
+/* Las gráficas llenan el ancho de su tarjeta y se centran. */
+.grafica-anim figure, .grafica-anim svg { max-width: 100%; }
+
+/* Sin bloque de modo oscuro, a propósito.
+
+   El sitio importa observablehq:theme-air, que es un tema CLARO fijo: no
+   redefine sus tokens bajo prefers-color-scheme. Una primera versión de este
+   archivo sí traía superficies oscuras, y el resultado fue que en un sistema
+   configurado en oscuro las tarjetas tomaban fondo negro mientras
+   --theme-foreground seguía siendo el negro de marca del tema claro. Texto
+   negro sobre fondo negro: las cifras de "Mujeres" y "Hombres" desaparecían,
+   y solo sobrevivían las que llevan color propio (la brecha, en rojo).
+
+   Mientras el sitio use un tema de un solo modo, estas superficies tienen que
+   seguirlo. Si algún día se adopta un tema con soporte de ambos modos, el
+   modo oscuro se agrega redefiniendo AQUÍ tanto la superficie como el color
+   de texto, nunca solo la superficie. */
+
+@media (prefers-reduced-motion: reduce) {
+  .grafica-anim,
+  .grafica-anim svg g[aria-label="bar"]:not([fill="none"]) rect { animation: none; }
+}
+
+/* --- Tarjetas de gráfica del tablero -------------------------------------- */
+/* Framework ya trae .card y .grid-cols-2; aquí solo se fija el color de texto
+   por la misma razón que en las tarjetas de KPI: un bloque que pinta su fondo
+   tiene que pintar su texto y no heredarlo. */
+.card { color: var(--brand-dark); }
+
+/* Línea que dice de qué población habla la gráfica actual. Sustituye al
+   subtítulo que antes tomaba la fuente de la primera fila y podía rotular con
+   un año una gráfica que mostraba tres. */
+.universo-actual {
+  margin: 0.1rem 0 0.9rem;
+  font-size: 0.85rem; color: #5c5c5c;
+}
+.universo-actual::before {
+  content: ""; display: inline-block;
+  width: 6px; height: 6px; border-radius: 50%;
+  background: var(--tablero-rojo);
+  margin-right: 0.45rem; vertical-align: middle;
+}
+
+/* Nota que acompaña a un indicador secundario dentro de su tarjeta. */
+.nota-indicador {
+  margin: 0 0 0.6rem; font-size: 0.85rem; line-height: 1.5; color: #5c5c5c;
+}
+
+/* Entrada de la página, antes de los filtros. */
+.entrada-tema {
+  font-size: 0.95rem; line-height: 1.6; max-width: 62ch;
+  color: var(--brand-dark);
+}
+
+/* En rejilla, las gráficas no deben desbordar su columna. */
+.grid .grafica-anim svg { max-width: 100%; height: auto; }
+
+/* --- Densidad de tablero -------------------------------------------------- */
+/* El objetivo es que la página se lea de un vistazo, sin scroll largo. Se
+   comprimen los espacios verticales y se limita la altura de cada gráfica.
+   Las medidas se aplican solo dentro del tablero para no afectar al resto. */
+
+.tablero-tema .card {
+  padding: 0.7rem 0.8rem;
+  margin: 0.5rem 0;
+}
+.tablero-tema .grid { margin: 0.5rem 0; gap: 0.7rem; }
+
+/* Las gráficas no crecen más allá de lo que cabe cómodamente en pantalla. */
+/* Sin subtítulos, el alto disponible se va completo a la gráfica. */
+.tablero-tema .grafica-anim svg { max-height: 380px; }
+.tablero-tema .grid-cols-2 .grafica-anim svg { max-height: 300px; }
+
+/* KPIs más compactos: la cifra sigue siendo lo dominante, pero la tarjeta
+   deja de ocupar el alto de un párrafo. */
+.tablero-tema .kpi-fila,
+.kpi-fila {
+  gap: 0.6rem; margin: 0.6rem 0 0.8rem;
+  grid-template-columns: repeat(auto-fit, minmax(10rem, 1fr));
+}
+.kpi-tarjeta { padding: 0.6rem 0.75rem; gap: 0.15rem; }
+.kpi-cifra { font-size: 1.45rem; }
+.kpi-nota { font-size: 0.78rem; line-height: 1.3; }
+
+/* Entrada y kickers con menos aire. */
+.entrada-tema { font-size: 0.92rem; line-height: 1.55; margin: 0.4rem 0 0.6rem; }
+.kicker { margin: 1rem 0 0.2rem; }
+.universo-actual { margin: 0.05rem 0 0.5rem; }
+.panel-filtros { padding: 0.6rem 0.8rem; margin: 0.5rem 0; gap: 0.7rem 1.1rem; }
+
+/* La tabla de respaldo va cerrada y discreta: es un relevo de accesibilidad,
+   no un bloque que deba competir por el espacio de la gráfica. */
+.tabla-datos { margin: 0.25rem 0 0; }
+.tabla-datos summary { font-size: 0.78rem; }
+
+/* El aviso de muestra insuficiente, más compacto. */
+.aviso-muestra { margin: 0.4rem 0 0.2rem; padding: 0.45rem 0.7rem;
+                 font-size: 0.8rem; }
+
+/* En pantallas anchas, tres columnas para los indicadores relacionados: con
+   gráficas chicas caben tres sin apretarse y se ve todo junto. */
+@media (min-width: 1200px) {
+  /* Dos columnas, no tres: con tres, cada gráfica queda tan angosta que los
+     grupos de barras se encabalgan. La jerarquía la da el layout 1+2, no el
+     número de columnas. */
+  .tablero-tema .grid-cols-2 .grafica-anim svg { max-height: 290px; }
+}
+
+/* El bloque de territorio se queda en dos columnas (mapa y ranking) incluso en
+   pantallas anchas: son dos vistas del mismo dato y se leen en pareja. El
+   ranking necesita alto para sus 32 barras. */
+@media (min-width: 1200px) {
+  .tablero-tema .bloque-territorio { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+.tablero-tema .bloque-territorio .grafica-anim svg { max-height: 460px; }
+
+/* La nota de la tarjeta de KPI se mantiene en un solo renglón: con nombres de
+   serie largos ("Mujeres con discapacidad") el texto crecía a tres líneas y
+   descuadraba la altura de la fila de tarjetas. Si no cabe, se recorta con
+   puntos suspensivos y el texto completo queda en el title. */
+.kpi-nota {
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+
+/* --- Espacio entre el título de la gráfica y el borde de la tarjeta -------- */
+/* Dos reglas de Observable dejaban un hueco grande arriba de cada gráfica:
+     1. `.card > :first-child` resetea el margen superior del primer hijo, pero
+        el primer hijo aquí es .grafica-anim, no el <h2> que genera Plot, así
+        que el título conservaba su margen propio.
+     2. `.card h2 ~ svg` mete 1rem entre el título y el SVG.
+   Se corrigen las dos para que el bloque respire lo justo. */
+.tablero-tema .card .grafica-anim { margin-top: 0; }
+.tablero-tema .card .grafica-anim > figure { margin: 0; }
+.tablero-tema .card figure > h2,
+.tablero-tema .card figure > h3 {
+  margin-top: 0;
+  margin-bottom: 0.15rem;
+  font-size: 0.95rem;
+  font-weight: 600;
+  line-height: 1.25;
+}
+/* El SVG pega al título en vez de separarse 1rem. */
+.tablero-tema .card figure h2 ~ svg,
+.tablero-tema .card figure h3 ~ svg { margin-top: 0.1rem; }
+/* El pie de fuente, más cerca y discreto. */
+.tablero-tema .card figure figcaption {
+  margin-top: 0.15rem; font-size: 0.78rem;
+}
+
+/* --- Secciones con filtros propios ---------------------------------------- */
+/* Cada sección (principal, indicadores relacionados, territorio) trae su panel
+   y se repinta sola. Se separan con una línea sutil para que se lea dónde
+   termina el alcance de un panel y empieza el del siguiente. */
+.seccion-tablero { margin: 0 0 1.4rem; }
+.seccion-tablero + .seccion-tablero {
+  border-top: 1px solid var(--tablero-borde);
+  padding-top: 0.5rem;
+}
+.seccion-tablero .kicker { margin-top: 0.6rem; }
+.seccion-cuerpo { margin-top: 0.3rem; }
+
+/* --- Rejilla de mapas (small multiples geográficos) ----------------------- */
+.mapas-multiples { display: flex; flex-direction: column; gap: 0.3rem; }
+.mapas-titulo {
+  margin: 0; font-size: 0.95rem; font-weight: 600; line-height: 1.25;
+}
+/* Los rótulos de las gráficas comparten tamaño con los de Plot (13px = 0.81rem)
+   para que el tablero no se vea disparejo según qué componente toque. */
+.mapas-rejilla {
+  display: grid; gap: 0.5rem 0.7rem;
+  grid-template-columns: repeat(auto-fit, minmax(var(--mapa-min, 220px), 1fr));
+}
+.mapa-panel { margin: 0; }
+.mapa-panel-titulo {
+  font-size: 0.85rem; font-weight: 600; color: var(--brand-dark);
+  margin-bottom: 0.1rem; text-align: center;
+}
+.mapa-panel .grafica-anim svg { max-height: 260px; }
+.mapas-fuente { font-size: 0.78rem; color: #5c5c5c; margin-top: 0.1rem; }
+
+/* La matriz de entidades y el ranking necesitan alto propio: son 32 filas y
+   el tope general del tablero las aplastaría. */
+.tablero-tema .card .matriz-alta .grafica-anim svg,
+.tablero-tema .matriz-alta .grafica-anim svg { max-height: none; }
+/* Los heatmaps de entidades van en pareja dentro de una rejilla de dos
+   columnas; la regla general de .grid-cols-2 los aplastaría a 340px cuando
+   necesitan las 32 filas completas. */
+.tablero-tema .grid-cols-2 .matriz-alta .grafica-anim svg { max-height: none; }
+
+/* --- Filtros fijos al hacer scroll ---------------------------------------- */
+/* El problema que resuelve: con cinco o seis gráficas por sección, llegar a la
+   última obligaba a bajar tanto que el panel de filtros salía de la pantalla.
+   Comparar exigía subir, cambiar el filtro y volver a bajar, y en ese viaje se
+   pierde justo lo que se estaba comparando.
+
+   Con el panel pegado arriba, se cambia el filtro con las gráficas a la vista
+   y el resultado se ve al instante. Se fija sin header (se eliminó del sitio),
+   así que top: 0 no tapa nada.
+
+   OJO: Framework pone `container-type: inline-size` en #observablehq-main
+   (grid.css), y eso ANULA `position: sticky` en todos sus descendientes —
+   un contenedor de tamaño ("containment") corta el contexto de scroll que
+   sticky necesita. Sin esta corrección, el panel de abajo simplemente no se
+   pega, sin ningún error visible. */
+#observablehq-main { container-type: normal; }
+
+.seccion-tablero .panel-filtros {
+  position: sticky;
+  top: 0;
+  z-index: 5;
+  /* Fondo opaco: si fuera translúcido, las gráficas se verían por debajo al
+     pasar bajo el panel. */
+  background: var(--surface-1);
+  border-color: var(--tablero-borde);
+  /* Sombra suave solo cuando ya está pegado, para que se lea como una capa
+     por encima del contenido y no como parte de la página. */
+  box-shadow: 0 2px 8px rgb(0 0 0 / 0.06);
+}
+
+/* El kicker de la sección también acompaña, arriba del panel, para no perder
+   de vista de qué sección son los filtros que se están tocando. */
+.seccion-tablero .kicker {
+  position: sticky;
+  top: 0;
+  z-index: 6;
+  background: var(--surface-1);
+  padding-top: 0.5rem;
+  padding-bottom: 0.1rem;
+  margin-top: 0.6rem;
+}
+/* Cuando hay kicker, el panel se pega justo debajo de él. */
+.seccion-tablero .kicker + .panel-filtros { top: 1.9rem; }
+
+/* En pantallas bajas el panel pegajoso se come demasiado alto: ahí se libera. */
+@media (max-height: 620px) {
+  .seccion-tablero .panel-filtros,
+  .seccion-tablero .kicker { position: static; box-shadow: none; }
+}
+
+
+/* --- Desplegable "¿Qué quiere decir este análisis?" ------------------------ */
+/* Va cerrado y discreto, junto a la tabla de datos: no compite con la gráfica,
+   pero está a un clic para quien no viene de la encuesta. */
+.explica-analisis { margin: 0.3rem 0 0; }
+.explica-analisis summary {
+  cursor: pointer; font-size: 0.78rem; font-weight: 600;
+  color: var(--tablero-rojo); padding: 0.25rem 0;
+}
+.explica-analisis p {
+  margin: 0.3rem 0 0.2rem;
+  font-size: 0.85rem; line-height: 1.55; color: var(--brand-dark);
+  max-width: 68ch;
+  padding-left: 0.7rem;
+  border-left: 2px solid var(--tablero-borde);
+}
