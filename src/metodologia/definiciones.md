@@ -143,7 +143,15 @@ hombre sin discapacidad antes y después de deflactar. Lo que corrige el ajuste
 son los niveles y su comparación en el tiempo, no las distancias entre grupos de
 una misma edición.
 
-La serie del INPC vive en `src/data/inpc.csv` y se captura desde el
-[INPC del INEGI](https://www.inegi.org.mx/temas/inpc/), base segunda quincena de
-julio de 2018 igual a 100. Si falta el índice de alguna edición, los data
-loaders abortan en vez de publicar una serie con pesos mezclados.
+La serie vive en `src/data/inpc.csv` y se descarga del
+[Banco de Indicadores del INEGI](https://www.inegi.org.mx/app/indicadores/),
+base segunda quincena de julio de 2018 igual a 100. Se usa la inflación
+interanual del índice general y no el nivel del índice, porque para deflactar
+solo hace falta la razón de precios entre dos años, y encadenar las tasas del
+mismo mes la reconstruye exactamente. Si falta algún mes de la serie, los data
+loaders abortan en vez de publicar pesos mezclados.
+
+Los factores resultantes son **1.2600** para 2020 y **1.0935** para 2022: mil
+pesos de 2020 compran lo mismo que 1,260 de 2024. Con el ajuste, el ingreso
+laboral de las mujeres con discapacidad creció 28 por ciento real entre 2020 y
+2024, no el 56 por ciento que sugería la serie nominal.
