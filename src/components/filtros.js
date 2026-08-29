@@ -256,14 +256,20 @@ export function prepararSeries(datos, {comparacion, dim = null, formato = "pct"}
   if (!comp) return [];
   const dims = (Array.isArray(dim) ? dim : [dim]).filter(Boolean);
 
-  // Solo los grupos que participan en la comparación. Para "mujeres con vs
-  // sin discapacidad", los hombres no entran en ningún lado.
+  // Solo los grupos que participan en la comparación, decidido por
+  // pertenencia real a `comp.grupos` (no por un `if` a mano por cada
+  // clave): "sexo" colapsa discapacidad y usa los 4 grupos, las demás
+  // comparaciones son subconjuntos de 2. Antes esto era un `if` explícito
+  // por clave (sexo / disc-mujeres / disc-sexo); con una 4ª comparación
+  // (disc-extremo) y la posibilidad de más en el futuro, filtrar por la
+  // lista ya declarada en COMPARACIONES evita mantener dos fuentes de
+  // verdad sincronizadas a mano.
   const filas = datos
     .filter((d) => {
       if (comp.clave === "sexo") return true;
-      if (comp.clave === "disc-mujeres") return d.sexo === "Mujeres";
-      if (comp.clave === "disc-sexo") return d.disc === "Con discapacidad";
-      return true;
+      const sx = d.sexo === "Mujeres" ? "M" : "H";
+      const cd = d.disc === "Con discapacidad" ? "CD" : "SD";
+      return comp.grupos.includes(`${sx}-${cd}`);
     })
     .map((d) => ({...d, serie: serieDe(d, comparacion)}));
 
