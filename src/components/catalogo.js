@@ -12,6 +12,19 @@
 // Orden de prioridad editorial del proyecto.
 export const ENCUESTAS = [
   {
+    clave: "censo",
+    nombre: "Censo 2020",
+    titulo: "Censo de Población y Vivienda, cuestionario ampliado",
+    resumen: `Quince millones de registros de persona. Es la única fuente con
+      representatividad municipal y, por su tamaño, el mejor contraste para
+      verificar las cifras de las encuestas.`,
+    // numeralia-censo y educacion-censo se agregan en tasks posteriores de
+    // esta misma ronda (docs/superpowers/plans/2026-08-29-filtros-y-censo-plan.md):
+    // se declaran aquí antes de que sus páginas .md existan a propósito, para
+    // no tener que rehacer un placeholder vacío cuando lleguen.
+    subtemas: ["numeralia-censo", "trabajo-censo", "educacion-censo"],
+  },
+  {
     clave: "enigh",
     nombre: "ENIGH",
     titulo: "Encuesta Nacional de Ingresos y Gastos de los Hogares",
@@ -29,15 +42,6 @@ export const ENCUESTAS = [
       más, así que solo admite la comparación entre mujeres con y sin
       discapacidad.`,
     subtemas: ["autonomia"],
-  },
-  {
-    clave: "censo",
-    nombre: "Censo 2020",
-    titulo: "Censo de Población y Vivienda, cuestionario ampliado",
-    resumen: `Quince millones de registros de persona. Es la única fuente con
-      representatividad municipal y, por su tamaño, el mejor contraste para
-      verificar las cifras de las encuestas.`,
-    subtemas: ["trabajo-censo"],
   },
   {
     clave: "enadis",

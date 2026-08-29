@@ -36,6 +36,18 @@ export default {
   pages: [
     {name: "Distribución", path: "/"},
     {
+      name: "Censo 2020",
+      open: true,
+      // Numeralia y Educación se agregan en tasks posteriores de esta misma
+      // ronda (docs/superpowers/plans/2026-08-29-filtros-y-censo-plan.md):
+      // el nav se declara antes de que esas páginas existan a propósito.
+      pages: [
+        {name: "Numeralia", path: "/encuestas/censo/numeralia-censo"},
+        {name: "Trabajo", path: "/encuestas/censo/trabajo-censo"},
+        {name: "Educación", path: "/encuestas/censo/educacion-censo"},
+      ],
+    },
+    {
       name: "ENIGH",
       open: true,
       pages: [
@@ -51,13 +63,6 @@ export default {
       open: true,
       pages: [
         {name: "Violencia contra las mujeres", path: "/encuestas/endireh/autonomia"},
-      ],
-    },
-    {
-      name: "Censo 2020",
-      open: true,
-      pages: [
-        {name: "Trabajo", path: "/encuestas/censo/trabajo-censo"},
       ],
     },
     {
