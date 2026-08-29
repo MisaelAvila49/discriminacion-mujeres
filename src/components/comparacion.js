@@ -109,7 +109,7 @@ export const COMPARACION_POR_CLAVE = Object.fromEntries(
 // error más caro del tablero porque no se detecta contando casos.
 //
 // `nivel`: hasta dónde llega la representatividad del diseño muestral.
-// `comparaciones`: cuáles de los tres pares tienen sentido en esa fuente.
+// `comparaciones`: cuáles de los cuatro pares tienen sentido en esa fuente.
 export const FUENTES = {
   enadis: {
     nombre: "ENADIS",
@@ -117,14 +117,14 @@ export const FUENTES = {
     // Representatividad nacional. NO admite desagregación por entidad, aunque
     // el número de casos por estado parezca suficiente.
     nivel: "nacional",
-    comparaciones: ["sexo", "disc-mujeres", "disc-sexo"],
+    comparaciones: ["sexo", "disc-mujeres", "disc-sexo", "disc-extremo"],
     nota: "Diseño muestral nacional: no produce estimaciones por entidad.",
   },
   enigh: {
     nombre: "ENIGH",
     anios: [2020, 2022, 2024],
     nivel: "estatal",
-    comparaciones: ["sexo", "disc-mujeres", "disc-sexo"],
+    comparaciones: ["sexo", "disc-mujeres", "disc-sexo", "disc-extremo"],
     nota: "Las ediciones 2016 y 2018 no traen tabla de población y quedan fuera.",
   },
   censo: {
@@ -132,7 +132,7 @@ export const FUENTES = {
     anios: [2020],
     // Única fuente con desagregación municipal: de aquí salen mapa y ranking.
     nivel: "municipal",
-    comparaciones: ["sexo", "disc-mujeres", "disc-sexo"],
+    comparaciones: ["sexo", "disc-mujeres", "disc-sexo", "disc-extremo"],
     nota: "Muestra ampliada del Censo; única fuente con nivel municipal.",
   },
   endireh: {
