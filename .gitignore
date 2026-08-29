@@ -20,3 +20,6 @@ __pycache__/
 # Reportes: entregables generados con Quarto. Se reconstruyen con
 # `quarto render` desde los .qmd, que sí se versionan.
 reportes/
+
+# Worktrees de desarrollo aislado (superpowers:using-git-worktrees).
+.worktrees/
