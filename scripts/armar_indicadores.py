@@ -40,7 +40,6 @@ ENCUESTA = {
     "enigh_jornada": "enigh",
     "enigh_educacion": "enigh",
     "enigh_tecnologia": "enigh",
-    "enigh_distribucion": "enigh",
     "enadis_discriminacion": "enadis",
 }
 
