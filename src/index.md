@@ -18,7 +18,10 @@ const geoEntidades = await FileAttachment("./data/mx_entidades.json").json();
 ```js
 // Todo en esta página sale del tema "distribucion", que a diferencia del resto
 // del tablero emite conteos de población en vez de tasas.
-const anio = d3.max(indicadores.filter((d) => d.tema === "distribucion"), (d) => d.anio);
+// Censo 2020 es un solo corte: no hay edición que comparar, así que el año
+// se fija en vez de tomarlo de los datos (antes venía de ENIGH, que sí
+// tiene tres ediciones).
+const anio = 2020;
 const pobl = indicadores.filter(
   (d) => d.tema === "distribucion" && d.indicador === "Población" && d.anio === anio
 );
@@ -124,7 +127,7 @@ const datosPrev = ORDEN_EDAD.flatMap((edad) =>
 display(resize((width) => barrasComparadas(datosPrev, {
   dim: "rango_edad", dimLabel: "Rango de edad", comparacion: "sexo",
   titulo: `Prevalencia de discapacidad por edad · ${anio}`,
-  fuente: "ENIGH (INEGI)", formato: "pct", width,
+  fuente: "Censo de Población y Vivienda, cuestionario ampliado (INEGI)", formato: "pct", width,
 })));
 ```
 
@@ -144,7 +147,7 @@ const poblacionPorEnt = new Map(porEnt);
 
 display(resize((width) => mapaEntidades(geoEntidades, valores, {
   titulo: `Porcentaje de población adulta con discapacidad · ${anio}`,
-  fuente: "ENIGH (INEGI)",
+  fuente: "Censo de Población y Vivienda, cuestionario ampliado (INEGI)",
   formato: "pct", etiquetaValor: "Prevalencia",
   poblacion: poblacionPorEnt, width,
 })));
@@ -152,11 +155,12 @@ display(resize((width) => mapaEntidades(geoEntidades, valores, {
 
 <div class="nota-portada">
 
-**Sobre estas cifras.** Provienen de la ENIGH ${anio} y están expandidas con el
-factor de la encuesta. La condición de discapacidad se define como declarar que
-no se puede hacer o se tiene mucha dificultad para al menos una de ocho
-actividades básicas; la categoría intermedia de "poca dificultad" queda fuera,
-siguiendo el criterio del INEGI. Los detalles están en
+**Sobre estas cifras.** Provienen del Censo de Población y Vivienda 2020,
+cuestionario ampliado, y están expandidas con el factor de la muestra. La
+condición de discapacidad se define como declarar mucha dificultad o no
+poder hacer al menos una de siete actividades básicas; la categoría
+intermedia de "lo hace con dificultad" queda fuera, siguiendo el criterio
+del INEGI. Los detalles están en
 [Definiciones](/metodologia/definiciones).
 
 </div>
