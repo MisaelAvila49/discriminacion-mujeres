@@ -341,6 +341,31 @@ export const CATALOGO = {
          del censo, excluyente de la ocupación.`},
     ],
   },
+  "educacion-censo": {
+    encuesta: "censo",
+    titulo: "Educación según el Censo",
+    kicker: "Educación",
+    entrada: `El Censo mide escolaridad con una muestra mil veces más grande
+      que cualquier encuesta y con desagregación municipal, así que sirve de
+      verificación cruzada de los indicadores de ENIGH y ENADIS.`,
+    fuentePrincipal: "censo",
+    indicadorPrincipal: "Educación media superior o más (Censo)",
+    formato: "pct",
+    explica: `Porcentaje de personas cuyo nivel de escolaridad aprobado
+      corresponde a preparatoria o superior (código ESCOLARI 04 en adelante
+      de la escala del Censo, 00 a 08). Quienes no declararon su nivel
+      salen del denominador en vez de contarse como si no tuvieran
+      estudios.`,
+    secundarios: [
+      {encuesta: "censo", indicador: "No sabe leer ni escribir (Censo)", formato: "pct",
+       explica: `Porcentaje de personas que declararon no saber leer ni
+         escribir. Comparable con el mismo indicador de ENIGH y ENADIS,
+         aunque el instrumento no sea idéntico.`},
+      {encuesta: "censo", indicador: "Asiste a la escuela (18 a 29 años, Censo)", formato: "pct",
+       explica: `Porcentaje de personas de 18 a 29 años inscritas y
+         asistiendo a la escuela.`},
+    ],
+  },
 
   // --- ENADIS --------------------------------------------------------------
   discriminacion: {
