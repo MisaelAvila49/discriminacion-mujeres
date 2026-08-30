@@ -311,6 +311,61 @@ def explotar_tipo_discapacidad(df):
     return pd.concat([todos] + partes_dominio, ignore_index=True)
 
 
+def explotar_dimensiones(df):
+    """
+    Combina en una sola tabla las tres vistas que el tablero necesita por
+    indicador: el agregado real (tipo_discapacidad="Todos", decil="Todos",
+    UNA sola vez), el desglose por dominio de dificultad (decil fijo en
+    "Todos"), y el desglose por decil de ingreso (tipo_discapacidad fijo en
+    "Todos"). Reemplaza a explotar_tipo_discapacidad() en los tres loaders
+    que la llamaban, para que el agregado real no se duplique: si se
+    llamaran las dos explosiones por separado y se concatenaran, cada una
+    generaría su propia fila "Todos", inflando el agregado al doble en el
+    CSV combinado.
+
+    Las dos dimensiones NUNCA varían a la vez en la misma fila: filtrar por
+    dominio Y decil simultáneamente no es un caso que el tablero ofrezca
+    (confirmado en el spec), así que no hace falta la explosión cruzada
+    (dominio × decil), que multiplicaría las filas ~100 veces sin necesidad.
+    """
+    presentes = [c for c in COLS_TIPO_DISC if c in df.columns]
+    if not presentes:
+        raise KeyError(
+            "explotar_dimensiones: no hay columnas disc_tipo_* en el "
+            "dataframe. ¿Se llamó antes de cargar_poblacion()?"
+        )
+    if "decil" not in df.columns:
+        raise KeyError(
+            "explotar_dimensiones: no hay columna 'decil' en el dataframe. "
+            "¿Se llamó antes de cargar_poblacion()?"
+        )
+
+    base = df.copy()
+    base["tipo_discapacidad"] = "Todos"
+    base["decil"] = "Todos"
+
+    con_disc = df[df["disc"] == "Con discapacidad"]
+    partes = []
+    for c in presentes:
+        etiqueta = c.replace("disc_tipo_", "")
+        sub = con_disc[con_disc[c]].copy()
+        if sub.empty:
+            continue
+        sub["tipo_discapacidad"] = etiqueta
+        sub["decil"] = "Todos"
+        partes.append(sub)
+
+    for d in range(1, 11):
+        sub = df[df["decil"] == d].copy()
+        if sub.empty:
+            continue
+        sub["tipo_discapacidad"] = "Todos"
+        sub["decil"] = str(d)
+        partes.append(sub)
+
+    return pd.concat([base] + partes, ignore_index=True)
+
+
 def cargar_ingresos_laborales(year):
     """
     Ingreso mensual por trabajo a nivel persona.
@@ -349,8 +404,9 @@ def cargar_ingresos_laborales(year):
 def indicadores(pob, ing, year):
     # Sin el año: lo aporta el filtro de edición.
     fuente = "ENIGH (INEGI)"
-    llaves = ["anio", "sexo", "disc", "entidad", "rango_edad", "tipo_discapacidad"]
-    pob = explotar_tipo_discapacidad(pob)
+    llaves = ["anio", "sexo", "disc", "entidad", "rango_edad",
+              "tipo_discapacidad", "decil"]
+    pob = explotar_dimensiones(pob)
     filas = []
 
     # --- Participación en el trabajo remunerado ----------------------------

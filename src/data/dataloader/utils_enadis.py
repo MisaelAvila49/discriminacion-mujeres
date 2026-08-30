@@ -314,16 +314,20 @@ def escribir(dfs):
         sys.stdout.reconfigure(encoding="utf-8", newline="")
 
     todo = pd.concat(dfs, ignore_index=True)
-    # tipo_discapacidad es opcional: por ahora solo ENIGH lo produce (ver
-    # enigh.csv.py, explotar_tipo_discapacidad). Los loaders que todavía no
-    # lo tienen quedan en "Todos", que es exactamente su comportamiento de
-    # hoy sin desagregar por dominio — así este cambio no les rompe nada.
+    # tipo_discapacidad y decil son opcionales: por ahora solo ENIGH los
+    # produce (ver enigh.csv.py, explotar_dimensiones). Los loaders que
+    # todavía no los tienen quedan en "Todos", que es exactamente su
+    # comportamiento de hoy sin desagregar por dominio ni por decil — así
+    # este cambio no les rompe nada.
     if "tipo_discapacidad" not in todo.columns:
         todo["tipo_discapacidad"] = "Todos"
     todo["tipo_discapacidad"] = todo["tipo_discapacidad"].fillna("Todos")
+    if "decil" not in todo.columns:
+        todo["decil"] = "Todos"
+    todo["decil"] = todo["decil"].fillna("Todos")
     columnas = [
         "tema", "indicador", "anio", "sexo", "disc", "entidad", "rango_edad",
-        "tipo_discapacidad", "num", "den", "casos", "fuente", "universo",
+        "tipo_discapacidad", "decil", "num", "den", "casos", "fuente", "universo",
     ]
     todo = todo[columnas]
     todo.to_csv(sys.stdout, index=False)
