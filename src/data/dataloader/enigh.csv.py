@@ -9,7 +9,7 @@ Incluirlas produciría una serie que cambia de universo a la mitad.
 
 Emite la misma tabla larga que el resto de los data loaders: numerador y
 denominador ponderados más casos sin expandir, por año, sexo, discapacidad,
-entidad y rango de edad.
+entidad, rango de edad y decil de ingreso.
 
 Notas de los microdatos, verificadas contra las bases:
   - Discapacidad (`disc_*`): escala de severidad de cuatro puntos, igual que
@@ -19,6 +19,10 @@ Notas de los microdatos, verificadas contra las bases:
   - `factor` es el factor de expansión de persona.
   - La entidad NO viene como columna: son los dos primeros dígitos de
     `folioviv`, que hay que leer con ceros a la izquierda.
+  - `ing_cor` (en `concentradohogar`) es el ingreso corriente TRIMESTRAL del
+    hogar, no anual (mediana ~$46,074 por hogar en 2022, consistente con esa
+    unidad). `tot_integ` es el número de integrantes del hogar. Ambos se usan
+    para el decil de ingreso per cápita (ver `_calcular_decil`).
 """
 
 import sys
@@ -93,6 +97,32 @@ def _rango_edad(edad):
     return None
 
 
+def _calcular_decil(ing_cor_percapita, factor):
+    """
+    Decil ponderado de una serie de ingreso per cápita del hogar, usando el
+    factor de expansión. Devuelve una Serie de enteros 1-10 alineada con la
+    entrada (1 = 10% más pobre, 10 = 10% más rico), calculado por corte de
+    percentiles ponderados de la distribución NACIONAL de ESE año — nunca se
+    deflacta entre ediciones porque el decil es un ranking dentro del propio
+    año, no una comparación de montos (ver docstring del módulo).
+
+    Se ordena por ingreso, se acumula el factor, y se corta en los diez
+    percentiles de masa ponderada equivalente (10%, 20%... 90%). Con
+    ~90 mil hogares por edición los empates en el corte son marginales; no
+    hace falta un método más sofisticado que ordenar y acumular.
+    """
+    orden = ing_cor_percapita.sort_values().index
+    factor_ordenado = factor.loc[orden]
+    acumulado = factor_ordenado.cumsum()
+    total = factor_ordenado.sum()
+    # corte[i] es la masa acumulada al final del decil i (i=1..10).
+    cortes = [total * i / 10 for i in range(1, 11)]
+    decil_ordenado = pd.Series(1, index=orden)
+    for i, corte in enumerate(cortes[:-1], start=1):
+        decil_ordenado[acumulado > corte] = i + 1
+    return decil_ordenado.reindex(ing_cor_percapita.index)
+
+
 def cargar_poblacion(year):
     ruta = os.path.join(BASE_ENIGH, f"Bases{year}", f"poblacion{year}.csv")
     df = pd.read_csv(ruta, low_memory=False, dtype={"folioviv": str})
@@ -151,36 +181,81 @@ def cargar_poblacion(year):
 
     df["edad"] = pd.to_numeric(df["edad"], errors="coerce")
 
-    # El factor de expansión no está en la tabla de población de 2020: en esa
-    # edición vive solo en `concentradohogar` y se hereda por hogar. En 2022 y
-    # 2024 sí viene a nivel persona. Se toma el de persona cuando existe y se
-    # recurre al del hogar cuando no; el factor es el mismo para todos los
-    # integrantes del hogar, así que la herencia no distorsiona.
-    if "factor" not in df.columns:
-        ruta_hog = os.path.join(
-            BASE_ENIGH, f"Bases{year}", f"concentradohogar{year}.csv")
-        hog = pd.read_csv(ruta_hog, low_memory=False, dtype={"folioviv": str})
-        hog.columns = (hog.columns.str.replace("﻿", "", regex=False)
-                       .str.lower().str.strip())
-        if "factor" not in hog.columns:
+    # concentradohogar aporta dos cosas: el `factor` de persona cuando falta
+    # (solo 2020, que lo hereda a nivel hogar) y SIEMPRE `ing_cor`/`tot_integ`
+    # para calcular el decil de ingreso (ver _calcular_decil más abajo). Antes
+    # este merge era condicional a que faltara `factor`; ahora es incondicional
+    # porque el decil se necesita en las 3 ediciones.
+    ruta_hog = os.path.join(
+        BASE_ENIGH, f"Bases{year}", f"concentradohogar{year}.csv")
+    hog = pd.read_csv(ruta_hog, low_memory=False, dtype={"folioviv": str})
+    hog.columns = (hog.columns.str.replace("﻿", "", regex=False)
+                   .str.lower().str.strip())
+    for c in ("factor", "ing_cor", "tot_integ"):
+        if c not in hog.columns:
             raise KeyError(
-                f"ENIGH {year}: no hay factor de expansión ni en población ni "
-                "en concentradohogar."
+                f"ENIGH {year}: falta la columna '{c}' en concentradohogar."
             )
-        for k in ("folioviv", "foliohog"):
-            df[k] = df[k].astype(str).str.strip()
-            hog[k] = hog[k].astype(str).str.strip()
-        antes = len(df)
-        df = df.merge(hog[["folioviv", "foliohog", "factor"]],
-                      on=["folioviv", "foliohog"], how="left")
-        sin_factor = df["factor"].isna().sum()
-        if sin_factor:
-            raise ValueError(
-                f"ENIGH {year}: {sin_factor} de {antes} personas quedaron sin "
-                "factor de expansión tras unir con concentradohogar."
-            )
+    for k in ("folioviv", "foliohog"):
+        df[k] = df[k].astype(str).str.strip()
+        hog[k] = hog[k].astype(str).str.strip()
+    antes = len(df)
+
+    tiene_factor_persona = "factor" in df.columns
+    cols_hog = ["folioviv", "foliohog", "ing_cor", "tot_integ"]
+    if not tiene_factor_persona:
+        cols_hog.append("factor")
+    df = df.merge(hog[cols_hog], on=["folioviv", "foliohog"], how="left")
+
+    sin_datos_hog = df["ing_cor"].isna().sum()
+    if sin_datos_hog:
+        raise ValueError(
+            f"ENIGH {year}: {sin_datos_hog} de {antes} personas quedaron sin "
+            "datos de concentradohogar (ing_cor) tras la unión."
+        )
 
     df["factor"] = pd.to_numeric(df["factor"], errors="coerce").fillna(0)
+
+    # --- Decil de ingreso ---------------------------------------------------
+    # Per cápita del hogar: ing_cor (ya trimestral, ver docstring) entre
+    # tot_integ. Es el criterio oficial del INEGI para deciles de ingreso —
+    # ajusta por tamaño de hogar, a diferencia de usar ing_cor sin dividir.
+    df["ing_cor"] = pd.to_numeric(df["ing_cor"], errors="coerce")
+    df["tot_integ"] = pd.to_numeric(df["tot_integ"], errors="coerce")
+    df["_ing_percapita"] = df["ing_cor"] / df["tot_integ"]
+
+    # Guardia de completitud, aparte de la de ing_cor de arriba: si tot_integ
+    # viniera nulo o en cero en una futura edición (ing_cor por sí solo ya se
+    # verificó y no lo detectaría), _ing_percapita sale NaN/inf, y
+    # sort_values() manda esos casos al final — _calcular_decil los
+    # clasificaría en silencio como decil 10 (el más rico), un sesgo real que
+    # la guardia de participación de abajo NO garantiza atrapar (una
+    # contaminación de hasta ~5% del decil 10 todavía cabe dentro de su
+    # tolerancia 5%-15%). Se verifica aquí, antes de calcular el decil, en vez
+    # de confiar en que la guardia de participación lo detecte después.
+    sin_percapita = (~df["_ing_percapita"].notna() | (df["tot_integ"] <= 0)).sum()
+    if sin_percapita:
+        raise ValueError(
+            f"ENIGH {year}: {sin_percapita} personas quedaron sin ingreso per "
+            "cápita calculable (tot_integ nulo, cero, o ing_cor no numérico). "
+            "Revisa las columnas de concentradohogar antes de continuar."
+        )
+
+    df["decil"] = _calcular_decil(df["_ing_percapita"], df["factor"])
+
+    # Guardia de sanidad: cada decil debe concentrar ~10% de la población
+    # ponderada. Un decil muy chico o muy grande indicaría un error en el
+    # cálculo (por ejemplo, ing_cor sin convertir a numérico, o un corte mal
+    # indexado). Tolerancia amplia (5%-15%) porque los deciles no son
+    # exactamente iguales por los empates en el corte.
+    participacion = (df.groupby("decil")["factor"].sum() / df["factor"].sum() * 100)
+    fuera_de_rango = participacion[(participacion < 5) | (participacion > 15)]
+    if len(fuera_de_rango):
+        raise ValueError(
+            f"ENIGH {year}: decil(es) {fuera_de_rango.index.tolist()} concentran "
+            f"{fuera_de_rango.round(1).to_dict()}% de la población, fuera del "
+            "rango 5%-15% esperado. Revisa el cálculo de _calcular_decil."
+        )
 
     df = df[df["edad"] >= 18].copy()
     df["rango_edad"] = df["edad"].apply(_rango_edad)
