@@ -304,6 +304,21 @@ export const CATALOGO = {
   },
 
   // --- Censo ---------------------------------------------------------------
+  "numeralia-censo": {
+    encuesta: "censo",
+    titulo: "Numeralia",
+    kicker: "Numeralia",
+    entrada: `La misma cifra de la portada, pero con filtros: cuántas personas
+      hay en cada grupo, y cómo cambia la prevalencia de discapacidad por
+      edad, entidad y dominio de dificultad.`,
+    fuentePrincipal: "censo",
+    indicadorPrincipal: "Población",
+    formato: "conteo",
+    explica: `Personas expandidas de cada grupo (sexo, discapacidad, edad,
+      entidad). No es un porcentaje: es el conteo absoluto de población,
+      la misma cifra que ya usa la portada.`,
+    secundarios: [],
+  },
   "trabajo-censo": {
     encuesta: "censo",
     titulo: "Trabajo según el Censo",

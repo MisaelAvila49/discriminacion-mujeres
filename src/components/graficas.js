@@ -56,6 +56,7 @@ export function formatear(valor, formato = "pct") {
     return "$" + Math.round(valor).toLocaleString("es-MX");
   }
   if (formato === "horas") return `${valor.toFixed(1)} h`;
+  if (formato === "conteo") return Math.round(valor).toLocaleString("es-MX");
   return `${valor.toFixed(1)}%`;
 }
 
@@ -80,6 +81,7 @@ const ESTILO_EJES = {fontSize: `${TIPO.ejes}px`};
 function etiquetaMedida(formato) {
   if (formato === "pesos") return "Ingreso";
   if (formato === "horas") return "Horas";
+  if (formato === "conteo") return "Personas";
   return "Porcentaje";
 }
 
@@ -92,6 +94,10 @@ function ejeValor(formato) {
   if (formato === "horas") {
     return {label: "horas a la semana", grid: true,
             tickFormat: (d) => `${d} h`};
+  }
+  if (formato === "conteo") {
+    return {label: "personas", grid: true,
+            tickFormat: (d) => d.toLocaleString("es-MX")};
   }
   return {label: "%", grid: true, tickFormat: (d) => `${d}%`};
 }
@@ -683,7 +689,9 @@ export function barrasPorEntidad(datos, {comparacion, titulo = "",
     .map((d) => d.entidad);
 
   const maxV = Math.max(...datos.map((d) => d.pct ?? 0), 0);
-  const techo = formato === "pesos" ? maxV * 1.1 : Math.min(maxV * 1.1, 100);
+  // "pesos" y "conteo" no tienen techo natural en 100 (un ingreso o un
+  // conteo de personas pueden ser cualquier magnitud); solo "pct" sí.
+  const techo = formato === "pct" ? Math.min(maxV * 1.1, 100) : maxV * 1.1;
 
   return animar(Plot.plot({
     style: ESTILO_EJES,

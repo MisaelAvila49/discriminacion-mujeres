@@ -314,6 +314,18 @@ export function brechaDe(series, comparacion, {formato = "pct"} = {}) {
         : "",
     };
   }
+  if (formato === "conteo") {
+    // Diferencia de personas, no de puntos porcentuales: "125 mil personas
+    // más alto en mujeres con discapacidad", no "12.5 pp". Mismo tono que el
+    // detalle genérico de abajo (sin comillas, grupo en minúsculas a media
+    // frase), para que la voz de la tarjeta de KPI sea uniforme entre
+    // formatos.
+    return {
+      dif,
+      texto: Math.round(Math.abs(dif)).toLocaleString("es-MX"),
+      detalle: `Más alto en ${(dif >= 0 ? a : b).toLowerCase()}`,
+    };
+  }
   // El detalle cabe en un renglón: nombra al grupo que queda más alto y ya.
   // Decir "X por encima de Y" repite el nombre completo de las dos series y
   // en esta comparación llega a "Hombres con discapacidad por encima de

@@ -271,7 +271,8 @@ export function dashboardTema(clave, datos, {geoEntidades = null, datosTipoDisc 
         conEntidad: false,
         construir: ({v, anios}) => {
           const comp = COMPARACION_POR_CLAVE[v.comparacion];
-          const etiquetaValor = tema.formato === "pesos" ? "Ingreso" : "Porcentaje";
+          const etiquetaValor = tema.formato === "pesos" ? "Ingreso"
+            : tema.formato === "conteo" ? "Personas" : "Porcentaje";
 
           // Qué dimensiones están abiertas en esta vista. El territorio ya usa
           // una dimensión completa (las 32 entidades), así que cada dimensión
