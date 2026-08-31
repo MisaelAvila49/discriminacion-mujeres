@@ -96,11 +96,12 @@ function bloqueGrafica(filas, {comparacion, geo, formato, titulo,
 // válido para una sección producía geometrías imposibles en otra. Con paneles
 // independientes cada bloque solo ofrece lo que sus datos sostienen.
 function seccion({titulo, datos, fuente, construir, edadInicial = AGREGADO,
-    conEntidad = null}) {
+    conEntidad = null, conDecil = true}) {
   if (!datos.length) return null;
 
   const panel = panelFiltros(datos, {fuente, edadInicial,
-                                     mostrarEntidad: conEntidad});
+                                     mostrarEntidad: conEntidad,
+                                     mostrarDecil: conDecil});
   const cuerpo = html`<div class="seccion-cuerpo"></div>`;
   const anios = [...new Set(datos.map((d) => String(d.anio)))].sort();
 
@@ -267,13 +268,18 @@ export function dashboardTema(clave, datos, {geoEntidades = null,
   // --- Sección 3: territorio, con su propio panel ------------------------
   // Solo existe si la fuente tiene representatividad estatal. Su panel oculta
   // el selector de entidad: la vista ES la desagregación por entidad, y
-  // filtrar a una sola la dejaría sin sentido.
+  // filtrar a una sola la dejaría sin sentido. También oculta decil
+  // (conDecil: false): seriesDeCombo de abajo agrega por entidad nada más
+  // (dim: "entidad", sin "decil"), así que "Comparar deciles" aquí mezclaría
+  // la fila agregada "Todos" con las 10 filas por decil dentro del mismo
+  // grupo entidad+serie — doble conteo silencioso en vez de una vista real.
   const seccionTerritorio = admiteNivel(fuente, "estatal")
     ? seccion({
         titulo: "Territorio",
         datos: principales,
         fuente,
         conEntidad: false,
+        conDecil: false,
         construir: ({v, anios}) => {
           const comp = COMPARACION_POR_CLAVE[v.comparacion];
           const etiquetaValor = tema.formato === "pesos" ? "Ingreso"

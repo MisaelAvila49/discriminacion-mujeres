@@ -76,7 +76,7 @@ export {ORDEN_EDAD};
 // hallazgo (paradoja de Simpson), así que ahí el desglose es el estado inicial
 // y no algo que el lector tenga que descubrir.
 export function panelFiltros(datos, {fuente, mostrarEntidad = null,
-    mostrarEdad = true, comparacionInicial = null,
+    mostrarEdad = true, mostrarDecil = true, comparacionInicial = null,
     edadInicial = AGREGADO} = {}) {
   const meta = FUENTES[fuente] ?? {};
   const compsValidas = comparacionesDe(fuente);
@@ -177,8 +177,17 @@ export function panelFiltros(datos, {fuente, mostrarEntidad = null,
   // está activo, decil vuelve a "Todos" — mismo patrón defensivo que ya
   // usa tipoDiscapacidad para no dejar un filtro fantasma detrás de una
   // gráfica que ya no lo muestra.
+  //
+  // `mostrarDecil = false` (usado por la sección Territorio en tablero.js)
+  // apaga el selector aunque haya deciles reales en los datos: Territorio
+  // ya agrega por entidad (dim: "entidad" nada más, sin "decil") en su
+  // propio panel independiente, así que "Comparar deciles" ahí mezclaría
+  // la fila agregada "Todos" con las 10 filas por decil dentro del mismo
+  // grupo entidad+serie — un doble conteo silencioso, no una gráfica de
+  // deciles por entidad (que ni siquiera existe como vista). Mismo motivo
+  // por el que Territorio ya oculta el selector de entidad.
   let decilInput = null;
-  if (deciles.length > 1) {
+  if (mostrarDecil && deciles.length > 1) {
     decilInput = Inputs.select([TODOS_DECIL, ETIQUETA_DECIL_COMPARAR], {
       label: "Decil de ingreso", value: TODOS_DECIL,
       format: (k) => k === TODOS_DECIL ? ETIQUETA_DECIL_TODOS : k,
