@@ -63,7 +63,8 @@ export default {
       name: "ENDIREH",
       open: true,
       pages: [
-        {name: "Violencia contra las mujeres", path: "/encuestas/endireh/autonomia"},
+        {name: "Tipos de violencia", path: "/encuestas/endireh/autonomia"},
+        {name: "Quién ejerce la violencia", path: "/encuestas/endireh/agresor"},
       ],
     },
     {

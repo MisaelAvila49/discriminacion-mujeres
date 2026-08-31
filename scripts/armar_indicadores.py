@@ -55,6 +55,7 @@ ENCUESTA = {
     "enigh_transporte": "enigh",
     "enadis_discriminacion": "enadis",
     "endireh_ambito": "endireh",
+    "endireh_agresor": "endireh",
 }
 
 COLS = ["tema", "indicador", "anio", "sexo", "disc", "entidad", "rango_edad",

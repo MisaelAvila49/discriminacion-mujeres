@@ -41,7 +41,7 @@ export const ENCUESTAS = [
       representatividad estatal. Entrevista únicamente a mujeres de 15 años o
       más, así que solo admite la comparación entre mujeres con y sin
       discapacidad.`,
-    subtemas: ["autonomia"],
+    subtemas: ["autonomia", "agresor"],
   },
   {
     clave: "enadis",
@@ -320,8 +320,8 @@ export const CATALOGO = {
   // --- ENDIREH -------------------------------------------------------------
   autonomia: {
     encuesta: "endireh",
-    titulo: "Violencia contra las mujeres",
-    kicker: "Violencia",
+    titulo: "Tipos de violencia",
+    kicker: "Tipos de violencia",
     entrada: `ENDIREH entrevista únicamente a mujeres de 15 años o más, así que
       esta sección compara mujeres con y sin discapacidad; no hay hombres como
       término de comparación. El desglose por edad no es opcional aquí: sin él,
@@ -352,14 +352,29 @@ export const CATALOGO = {
       {encuesta: "endireh", indicador: "Violencia física en los últimos 12 meses", formato: "pct",
        explica: `Incluye empujones, jalones, golpes y agresiones con objetos o
          armas.`},
-      {encuesta: "endireh", indicador: "Violencia de la pareja en los últimos 12 meses", formato: "pct",
-       nota: `Los cuatro indicadores que siguen responden dónde ocurre la
-         violencia, y con eso, quién la ejerce. Cada uno tiene su propio
-         denominador: solo entran las mujeres expuestas a ese ámbito.`,
-       explica: `Porcentaje de mujeres con pareja actual o pasada que
-         declararon violencia de su pareja en los últimos doce meses. El
-         denominador son las mujeres que han tenido pareja, no todas: quien
-         nunca ha tenido no puede haber vivido este tipo de violencia.`},
+    ],
+  },
+
+
+  agresor: {
+    encuesta: "endireh",
+    titulo: "Quién ejerce la violencia",
+    kicker: "Quién violenta",
+    entrada: `La misma violencia se lee distinto según quién la ejerce. Para una
+      mujer con discapacidad que depende de alguien para bañarse, comer o salir,
+      que ese alguien sea el agresor cambia por completo lo que significa
+      denunciar o irse. Cada barra tiene su propio denominador: solo entran las
+      mujeres expuestas a ese ámbito.`,
+    fuentePrincipal: "endireh",
+    indicadorPrincipal: "Violencia de la pareja en los últimos 12 meses",
+    formato: "pct",
+    abrePorEdad: true,
+    explica: `Porcentaje de mujeres con pareja actual o pasada que declararon
+      violencia de su pareja en los últimos doce meses. El denominador son las
+      mujeres que han tenido pareja, no todas: quien nunca ha tenido no puede
+      haber vivido este tipo de violencia. En el ámbito de pareja no se
+      desglosa quién agrede porque el agresor es, por definición, la pareja.`,
+    secundarios: [
       {encuesta: "endireh", indicador: "Violencia comunitaria (calle, transporte) en los últimos 12 meses", formato: "pct",
        nota: `Sin controlar por edad esta cifra se invierte, igual que la
          violencia sexual: en el agregado parece menor entre mujeres con
@@ -381,6 +396,67 @@ export const CATALOGO = {
          denominador son solo las mujeres que asistieron a la escuela en los
          últimos doce meses, un grupo pequeño entre las mujeres adultas, así
          que el desglose por entidad puede quedar con pocos casos.`},
+      {encuesta: "endireh", indicador: "Violencia familiar de su padre en los últimos 12 meses", formato: "pct",
+       nota: `De aquí en adelante, quién ejerce la violencia dentro de cada ámbito. La cifra más alta no es siempre la más grave: mide qué tan frecuente es ese agresor, no qué tan severa fue la agresión.`,
+       explica: `Porcentaje de mujeres que declararon violencia de su padre en los últimos doce meses. Los porcentajes de esta lista no suman la violencia familiar total: una misma mujer puede haber sido agredida por varias personas y aparece en cada barra que le corresponde.`},
+      {encuesta: "endireh", indicador: "Violencia familiar de su madre en los últimos 12 meses", formato: "pct",
+       explica: `Porcentaje de mujeres que declararon violencia de su madre en los últimos doce meses, sobre el total de mujeres de 15 años o más.`},
+      {encuesta: "endireh", indicador: "Violencia familiar de su padrastro o madrastra en los últimos 12 meses", formato: "pct",
+       explica: `Porcentaje de mujeres que declararon violencia de su padrastro o madrastra en los últimos doce meses, sobre el total de mujeres de 15 años o más.`},
+      {encuesta: "endireh", indicador: "Violencia familiar de un abuelo o abuela en los últimos 12 meses", formato: "pct",
+       explica: `Porcentaje de mujeres que declararon violencia de un abuelo o abuela en los últimos doce meses, sobre el total de mujeres de 15 años o más.`},
+      {encuesta: "endireh", indicador: "Violencia familiar de un hijo o hija en los últimos 12 meses", formato: "pct",
+       explica: `Porcentaje de mujeres que declararon violencia de un hijo o hija en los últimos doce meses, sobre el total de mujeres de 15 años o más.`},
+      {encuesta: "endireh", indicador: "Violencia familiar de un hermano o hermana en los últimos 12 meses", formato: "pct",
+       explica: `Porcentaje de mujeres que declararon violencia de un hermano o hermana en los últimos doce meses, sobre el total de mujeres de 15 años o más.`},
+      {encuesta: "endireh", indicador: "Violencia familiar de un tío o tía en los últimos 12 meses", formato: "pct",
+       explica: `Porcentaje de mujeres que declararon violencia de un tío o tía en los últimos doce meses, sobre el total de mujeres de 15 años o más.`},
+      {encuesta: "endireh", indicador: "Violencia familiar de un primo o prima en los últimos 12 meses", formato: "pct",
+       explica: `Porcentaje de mujeres que declararon violencia de un primo o prima en los últimos doce meses, sobre el total de mujeres de 15 años o más.`},
+      {encuesta: "endireh", indicador: "Violencia familiar de un suegro o suegra en los últimos 12 meses", formato: "pct",
+       explica: `Porcentaje de mujeres que declararon violencia de un suegro o suegra en los últimos doce meses, sobre el total de mujeres de 15 años o más.`},
+      {encuesta: "endireh", indicador: "Violencia familiar de un cuñado o cuñada en los últimos 12 meses", formato: "pct",
+       explica: `Porcentaje de mujeres que declararon violencia de un cuñado o cuñada en los últimos doce meses, sobre el total de mujeres de 15 años o más.`},
+      {encuesta: "endireh", indicador: "Violencia familiar de un sobrino o sobrina en los últimos 12 meses", formato: "pct",
+       explica: `Porcentaje de mujeres que declararon violencia de un sobrino o sobrina en los últimos doce meses, sobre el total de mujeres de 15 años o más.`},
+      {encuesta: "endireh", indicador: "Violencia familiar de un yerno en los últimos 12 meses", formato: "pct",
+       explica: `Porcentaje de mujeres que declararon violencia de un yerno en los últimos doce meses, sobre el total de mujeres de 15 años o más.`},
+      {encuesta: "endireh", indicador: "Violencia familiar de otro familiar en los últimos 12 meses", formato: "pct",
+       explica: `Porcentaje de mujeres que declararon violencia de otro familiar en los últimos doce meses, sobre el total de mujeres de 15 años o más.`},
+      {encuesta: "endireh", indicador: "Violencia en el trabajo de su patrón o jefe en los últimos 12 meses", formato: "pct",
+       explica: `Porcentaje de mujeres que declararon violencia de su patrón o jefe en los últimos doce meses. El denominador son solo las mujeres que trabajaron en ese periodo.`},
+      {encuesta: "endireh", indicador: "Violencia en el trabajo de un supervisor o capataz en los últimos 12 meses", formato: "pct",
+       explica: `Porcentaje de mujeres que declararon violencia de un supervisor o capataz en los últimos doce meses. El denominador son solo las mujeres que trabajaron en ese periodo.`},
+      {encuesta: "endireh", indicador: "Violencia en el trabajo de un gerente o directivo en los últimos 12 meses", formato: "pct",
+       explica: `Porcentaje de mujeres que declararon violencia de un gerente o directivo en los últimos doce meses. El denominador son solo las mujeres que trabajaron en ese periodo.`},
+      {encuesta: "endireh", indicador: "Violencia en el trabajo de un compañero de trabajo en los últimos 12 meses", formato: "pct",
+       explica: `Porcentaje de mujeres que declararon violencia de un compañero de trabajo en los últimos doce meses. El denominador son solo las mujeres que trabajaron en ese periodo.`},
+      {encuesta: "endireh", indicador: "Violencia en el trabajo de un cliente en los últimos 12 meses", formato: "pct",
+       explica: `Porcentaje de mujeres que declararon violencia de un cliente en los últimos doce meses. El denominador son solo las mujeres que trabajaron en ese periodo.`},
+      {encuesta: "endireh", indicador: "Violencia en el trabajo de una persona desconocida del trabajo en los últimos 12 meses", formato: "pct",
+       explica: `Porcentaje de mujeres que declararon violencia de una persona desconocida del trabajo en los últimos doce meses. El denominador son solo las mujeres que trabajaron en ese periodo.`},
+      {encuesta: "endireh", indicador: "Violencia en el trabajo de un familiar del patrón en los últimos 12 meses", formato: "pct",
+       explica: `Porcentaje de mujeres que declararon violencia de un familiar del patrón en los últimos doce meses. El denominador son solo las mujeres que trabajaron en ese periodo.`},
+      {encuesta: "endireh", indicador: "Violencia en el trabajo de otra persona del trabajo en los últimos 12 meses", formato: "pct",
+       explica: `Porcentaje de mujeres que declararon violencia de otra persona del trabajo en los últimos doce meses. El denominador son solo las mujeres que trabajaron en ese periodo.`},
+      {encuesta: "endireh", indicador: "Violencia en la escuela de un maestro en los últimos 12 meses", formato: "pct",
+       explica: `Porcentaje de mujeres que declararon violencia de un maestro en los últimos doce meses. El denominador son solo las mujeres que asistieron a la escuela en ese periodo.`},
+      {encuesta: "endireh", indicador: "Violencia en la escuela de una maestra en los últimos 12 meses", formato: "pct",
+       explica: `Porcentaje de mujeres que declararon violencia de una maestra en los últimos doce meses. El denominador son solo las mujeres que asistieron a la escuela en ese periodo.`},
+      {encuesta: "endireh", indicador: "Violencia en la escuela de un compañero en los últimos 12 meses", formato: "pct",
+       explica: `Porcentaje de mujeres que declararon violencia de un compañero en los últimos doce meses. El denominador son solo las mujeres que asistieron a la escuela en ese periodo.`},
+      {encuesta: "endireh", indicador: "Violencia en la escuela de una compañera en los últimos 12 meses", formato: "pct",
+       explica: `Porcentaje de mujeres que declararon violencia de una compañera en los últimos doce meses. El denominador son solo las mujeres que asistieron a la escuela en ese periodo.`},
+      {encuesta: "endireh", indicador: "Violencia en la escuela de el director o directora en los últimos 12 meses", formato: "pct",
+       explica: `Porcentaje de mujeres que declararon violencia de el director o directora en los últimos doce meses. El denominador son solo las mujeres que asistieron a la escuela en ese periodo.`},
+      {encuesta: "endireh", indicador: "Violencia en la escuela de un trabajador de la escuela en los últimos 12 meses", formato: "pct",
+       explica: `Porcentaje de mujeres que declararon violencia de un trabajador de la escuela en los últimos doce meses. El denominador son solo las mujeres que asistieron a la escuela en ese periodo.`},
+      {encuesta: "endireh", indicador: "Violencia en la escuela de una trabajadora de la escuela en los últimos 12 meses", formato: "pct",
+       explica: `Porcentaje de mujeres que declararon violencia de una trabajadora de la escuela en los últimos doce meses. El denominador son solo las mujeres que asistieron a la escuela en ese periodo.`},
+      {encuesta: "endireh", indicador: "Violencia en la escuela de una persona desconocida de la escuela en los últimos 12 meses", formato: "pct",
+       explica: `Porcentaje de mujeres que declararon violencia de una persona desconocida de la escuela en los últimos doce meses. El denominador son solo las mujeres que asistieron a la escuela en ese periodo.`},
+      {encuesta: "endireh", indicador: "Violencia en la escuela de otra persona de la escuela en los últimos 12 meses", formato: "pct",
+       explica: `Porcentaje de mujeres que declararon violencia de otra persona de la escuela en los últimos doce meses. El denominador son solo las mujeres que asistieron a la escuela en ese periodo.`},
     ],
   },
 

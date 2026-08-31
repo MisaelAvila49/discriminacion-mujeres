@@ -1,4 +1,4 @@
-# Violencia contra las mujeres
+# Tipos de violencia
 
 ```js
 import {dashboardTema} from "../../components/tablero.js";
