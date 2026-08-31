@@ -865,8 +865,14 @@ export function heatmapBrecha(celdas, {titulo = "", subtitulo = "",
   const filas = [...peor.entries()].sort((a, b) => b[1] - a[1]).map(([f]) => f);
   const columnas = [...new Set(celdas.map((d) => d.col))];
 
-  const maxRazon = Math.max(
-    ...celdas.map((d) => (isFinite(d.razon) ? d.razon : 1)), 2);
+  // Escala FIJA de 1 a 5, no ajustada al máximo de cada matriz: con un
+  // dominio que se recalcula por gráfica, el mismo tono significa 2.1 veces
+  // en un ámbito y 4.0 en otro, y las tres matrices de la página dejan de
+  // ser comparables entre sí — que es justo lo que se quiere leer. El tope
+  // de 5 cubre la combinación más desigual observada (4.02) con holgura, y
+  // `clamp` deja que un valor mayor se pinte al tope en vez de romper la
+  // escala.
+  const MAX_RAZON = 5;
 
   return animar(Plot.plot({
     style: ESTILO_EJES,
@@ -882,11 +888,11 @@ export function heatmapBrecha(celdas, {titulo = "", subtitulo = "",
     y: {domain: filas, label: null, tickSize: 0},
     color: {
       type: "linear",
-      domain: [1, maxRazon],
+      domain: [1, MAX_RAZON],
       range: ["#f1f5f9", ROJO],
       clamp: true,
       legend: true,
-      label: "veces más frecuente con discapacidad",
+      label: "veces más frecuente con discapacidad (escala fija 1 a 5)",
     },
     marks: [
       Plot.cell(celdas, {
@@ -909,7 +915,7 @@ export function heatmapBrecha(celdas, {titulo = "", subtitulo = "",
         text: (d) => isFinite(d.razon) ? `${d.razon.toFixed(1)}x` : "",
         fontSize: TIPO.valor,
         // Texto claro sobre celdas oscuras.
-        fill: (d) => (isFinite(d.razon) && d.razon > 1 + (maxRazon - 1) * 0.55)
+        fill: (d) => (isFinite(d.razon) && d.razon > 1 + (MAX_RAZON - 1) * 0.55)
           ? "#fff" : "var(--theme-foreground)",
       }),
       Plot.cell(celdas.filter((d) => d.fragil), {
