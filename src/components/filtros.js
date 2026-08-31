@@ -57,6 +57,13 @@ export const ETIQUETA_ANIO_FACETAS = "Comparar años (por separado)";
 // "Todos" que no existe pero podría confundirse.
 export const TODOS_TIPO_DISC = "Todos";
 
+// Mismo patrón que TODOS_TIPO_DISC: centinela de "todos los deciles
+// juntos" (comportamiento agregado de hoy), distinto del TODAS/TODOS
+// genérico de filtrar().
+export const TODOS_DECIL = "Todos";
+export const ETIQUETA_DECIL_TODOS = "Todos los deciles";
+export const ETIQUETA_DECIL_COMPARAR = "Comparar deciles";
+
 // El orden ordinal de los rangos de edad vive en comparacion.js (módulo base).
 // Se importa arriba y se reexporta para no romper a quien ya lo tomaba de este
 // módulo; el reexport por sí solo no crearía el binding que usa este archivo.
@@ -80,6 +87,9 @@ export function panelFiltros(datos, {fuente, mostrarEntidad = null,
   const rangos = ORDEN_EDAD.filter((r) => datos.some((d) => d.rango_edad === r));
   const tiposDisc = [...new Set(datos.map((d) => d.tipo_discapacidad))]
     .filter((t) => t && t !== TODOS_TIPO_DISC).sort((a, b) => a.localeCompare(b, "es"));
+  const deciles = [...new Set(datos.map((d) => d.decil))]
+    .filter((dc) => dc && dc !== TODOS_DECIL)
+    .sort((a, b) => Number(a) - Number(b));
 
   // La entidad se ofrece solo si la fuente es representativa a ese nivel. Es
   // la salvaguarda de ENADIS: aunque hay casos suficientes por estado, su
@@ -156,7 +166,26 @@ export function panelFiltros(datos, {fuente, mostrarEntidad = null,
     tipoDiscWrap = html`<div class="filtro-tipo-disc">${tipoDisc}</div>`;
   }
 
-  const controles = [comparacion, anio, entidad, edad].filter(Boolean);
+  // Decil de ingreso: a diferencia de dominio de dificultad, aplica a las
+  // 4 comparaciones por igual (no solo a "disc-sexo"), así que siempre se
+  // muestra si hay más de un decil real en los datos filtrados — sin
+  // gatillo de comparación. Activarlo excluye año-por-facetas y
+  // edad-por-facetas: el decil sustituye el eje X (ver geometria() en
+  // este mismo archivo), y desplegar además año o edad como facetas
+  // produciría 30-40 grupos de barras en un solo panel, ilegible. Si el
+  // usuario reactiva "comparar años" o "por rango de edad" mientras decil
+  // está activo, decil vuelve a "Todos" — mismo patrón defensivo que ya
+  // usa tipoDiscapacidad para no dejar un filtro fantasma detrás de una
+  // gráfica que ya no lo muestra.
+  let decilInput = null;
+  if (deciles.length > 1) {
+    decilInput = Inputs.select([TODOS_DECIL, ETIQUETA_DECIL_COMPARAR], {
+      label: "Decil de ingreso", value: TODOS_DECIL,
+      format: (k) => k === TODOS_DECIL ? ETIQUETA_DECIL_TODOS : k,
+    });
+  }
+
+  const controles = [comparacion, anio, entidad, edad, decilInput].filter(Boolean);
   const cont = html`<div class="panel-filtros">
     ${controles}
     ${tipoDiscWrap ?? ""}
@@ -174,13 +203,36 @@ export function panelFiltros(datos, {fuente, mostrarEntidad = null,
     // de una gráfica que ya no lo muestra.
     tipoDiscapacidad: (tipoDisc && comparacion.value === "disc-sexo")
       ? tipoDisc.value : TODOS_TIPO_DISC,
+    decil: decilInput ? decilInput.value : TODOS_DECIL,
   });
+
+  // Exclusión mutua: activar decil fuerza año a un valor concreto y edad a
+  // agregado; reactivar año-por-facetas o edad-por-facetas fuerza decil a
+  // "Todos". Se resuelve en los propios listeners de cada control, no en
+  // valor(), para que el estado interno de los Inputs (lo que se ve en
+  // pantalla) quede sincronizado con lo que valor() reporta — si solo se
+  // pisara el valor reportado sin tocar el control, el selector seguiría
+  // mostrando la opción vieja aunque el filtro real ya hubiera cambiado.
+  function comparandoDeciles() {
+    return decilInput && decilInput.value === ETIQUETA_DECIL_COMPARAR;
+  }
 
   cont.value = valor();
   actualizarVisibilidadTipo();
   for (const c of controles) {
     c.addEventListener("input", () => {
       actualizarVisibilidadTipo();
+      if (c === decilInput && comparandoDeciles()) {
+        // Solo se pisa el año si estaba en "comparar años" (facetas): ahí
+        // sí hay que fijarlo a alguno concreto porque decil ocupa el eje X.
+        // Si el usuario ya tenía un año concreto elegido, se respeta — no
+        // hay motivo para saltar al más reciente y cambiarle los datos que
+        // está viendo sin que lo haya pedido.
+        if (anio && anio.value === POR_SEPARADO) anio.value = anios.at(-1);
+        if (edad) edad.value = AGREGADO;
+      } else if ((c === anio || c === edad) && comparandoDeciles()) {
+        decilInput.value = TODOS_DECIL;
+      }
       cont.value = valor();
       cont.dispatchEvent(new Event("input", {bubbles: true}));
     });
@@ -203,15 +255,22 @@ export function panelFiltros(datos, {fuente, mostrarEntidad = null,
 // entran todas las filas y lo que cambia es cómo se dibujan después. Solo un
 // valor concreto recorta el universo.
 export function filtrar(datos, {indicador = null, anio = POR_SEPARADO,
-    entidad = TODAS, rangoEdad = AGREGADO, tipoDiscapacidad = TODOS_TIPO_DISC} = {}) {
+    entidad = TODAS, rangoEdad = AGREGADO, tipoDiscapacidad = TODOS_TIPO_DISC,
+    decil = TODOS_DECIL} = {}) {
   const abierto = (v) => v === TODOS || v === TODAS ||
                          v === POR_SEPARADO || v === AGREGADO;
+  // `decil` en `filtrar()` es "Todos" (sin recortar) o "Comparar deciles"
+  // (tampoco recorta: entran todas las filas reales, el desglose lo hace
+  // geometria()/dimX, no este filtro) — nunca un decil concreto, porque el
+  // panel no ofrece elegir un solo decil, solo agregado o comparar todos.
   return datos.filter((d) =>
     (indicador == null || d.indicador === indicador) &&
     (abierto(anio) || String(d.anio) === String(anio)) &&
     (abierto(entidad) || d.entidad === entidad) &&
     (abierto(rangoEdad) || d.rango_edad === rangoEdad) &&
-    (d.tipo_discapacidad == null || d.tipo_discapacidad === (tipoDiscapacidad ?? TODOS_TIPO_DISC))
+    (d.tipo_discapacidad == null || d.tipo_discapacidad === (tipoDiscapacidad ?? TODOS_TIPO_DISC)) &&
+    (d.decil == null ||
+      (decil === TODOS_DECIL ? d.decil === TODOS_DECIL : true))
   );
 }
 
@@ -221,6 +280,17 @@ export function filtrar(datos, {indicador = null, anio = POR_SEPARADO,
 // Devuelve {dimX, facetaCol, facetaFila}. `dimX` es lo que separa las barras
 // dentro de cada panel; las facetas multiplican paneles.
 export function geometria(v, {aniosDisponibles = []} = {}) {
+  const comparaDeciles = v.decil === ETIQUETA_DECIL_COMPARAR;
+
+  // Comparar deciles sustituye el eje X y excluye año/edad como facetas —
+  // la exclusión mutua ya se resuelve en panelFiltros() forzando los
+  // controles, pero geometria() la respeta aquí también por si acaso llega
+  // un estado inconsistente (por ejemplo, un valor de panel guardado de
+  // antes de este cambio): comparar deciles SIEMPRE gana sobre año/edad.
+  if (comparaDeciles) {
+    return {facetaCol: null, facetaFila: null, dimX: "decil"};
+  }
+
   const comparaAnios = v.anio === POR_SEPARADO && aniosDisponibles.length > 1;
   const separaEdad = v.rangoEdad === POR_SEPARADO;
 
@@ -255,6 +325,7 @@ export function prepararSeries(datos, {comparacion, dim = null, formato = "pct"}
   const comp = COMPARACIONES.find((c) => c.clave === comparacion);
   if (!comp) return [];
   const dims = (Array.isArray(dim) ? dim : [dim]).filter(Boolean);
+  const separaDecil = dims.includes("decil");
 
   // Solo los grupos que participan en la comparación, decidido por
   // pertenencia real a `comp.grupos` (no por un `if` a mano por cada
@@ -271,18 +342,28 @@ export function prepararSeries(datos, {comparacion, dim = null, formato = "pct"}
       const cd = d.disc === "Con discapacidad" ? "CD" : "SD";
       return comp.grupos.includes(`${sx}-${cd}`);
     })
+    // Cuando se está separando por decil (dim incluye "decil"), la fila
+    // agregada decil="Todos" no tiene un valor numérico que graficar en
+    // el eje X — se excluye aquí, antes de agregar, para que no aparezca
+    // como una undécima barra sin sentido junto a los deciles 1-10.
+    .filter((d) => !separaDecil || d.decil !== TODOS_DECIL)
     .map((d) => ({...d, serie: serieDe(d, comparacion)}));
 
   const agregadas = tasaPorGrupo(filas, ["serie", ...dims], formato);
 
-  // Orden estable: primero por las dimensiones (edad en su orden ordinal, no
-  // alfabético), luego por el orden de las series declaradas en la
-  // comparación, para que la leyenda y las barras coincidan siempre.
+  // Orden estable: primero por las dimensiones (edad y decil en su orden
+  // ordinal/numérico, no alfabético — "10" antes que "2" alfabéticamente
+  // sería un orden sin sentido para una escala de pobre a rico), luego por
+  // el orden de las series declaradas en la comparación, para que la
+  // leyenda y las barras coincidan siempre.
   const posSerie = new Map(comp.series.map((s, i) => [s, i]));
   return agregadas.sort((a, b) => {
     for (const k of dims) {
       if (k === "rango_edad") {
         const d = ORDEN_EDAD.indexOf(a.rango_edad) - ORDEN_EDAD.indexOf(b.rango_edad);
+        if (d !== 0) return d;
+      } else if (k === "decil") {
+        const d = Number(a.decil) - Number(b.decil);
         if (d !== 0) return d;
       } else {
         const d = String(a[k] ?? "").localeCompare(String(b[k] ?? ""), "es");
