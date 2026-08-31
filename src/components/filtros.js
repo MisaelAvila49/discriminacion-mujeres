@@ -256,14 +256,20 @@ export function prepararSeries(datos, {comparacion, dim = null, formato = "pct"}
   if (!comp) return [];
   const dims = (Array.isArray(dim) ? dim : [dim]).filter(Boolean);
 
-  // Solo los grupos que participan en la comparación. Para "mujeres con vs
-  // sin discapacidad", los hombres no entran en ningún lado.
+  // Solo los grupos que participan en la comparación, decidido por
+  // pertenencia real a `comp.grupos` (no por un `if` a mano por cada
+  // clave): "sexo" colapsa discapacidad y usa los 4 grupos, las demás
+  // comparaciones son subconjuntos de 2. Antes esto era un `if` explícito
+  // por clave (sexo / disc-mujeres / disc-sexo); con una 4ª comparación
+  // (disc-extremo) y la posibilidad de más en el futuro, filtrar por la
+  // lista ya declarada en COMPARACIONES evita mantener dos fuentes de
+  // verdad sincronizadas a mano.
   const filas = datos
     .filter((d) => {
       if (comp.clave === "sexo") return true;
-      if (comp.clave === "disc-mujeres") return d.sexo === "Mujeres";
-      if (comp.clave === "disc-sexo") return d.disc === "Con discapacidad";
-      return true;
+      const sx = d.sexo === "Mujeres" ? "M" : "H";
+      const cd = d.disc === "Con discapacidad" ? "CD" : "SD";
+      return comp.grupos.includes(`${sx}-${cd}`);
     })
     .map((d) => ({...d, serie: serieDe(d, comparacion)}));
 
@@ -306,6 +312,18 @@ export function brechaDe(series, comparacion, {formato = "pct"} = {}) {
       detalle: razon
         ? `${a} ganan ${(razon * 100).toFixed(0)} pesos por cada 100 que ganan ${b.toLowerCase()}`
         : "",
+    };
+  }
+  if (formato === "conteo") {
+    // Diferencia de personas, no de puntos porcentuales: "125 mil personas
+    // más alto en mujeres con discapacidad", no "12.5 pp". Mismo tono que el
+    // detalle genérico de abajo (sin comillas, grupo en minúsculas a media
+    // frase), para que la voz de la tarjeta de KPI sea uniforme entre
+    // formatos.
+    return {
+      dif,
+      texto: Math.round(Math.abs(dif)).toLocaleString("es-MX"),
+      detalle: `Más alto en ${(dif >= 0 ? a : b).toLowerCase()}`,
     };
   }
   // El detalle cabe en un renglón: nombra al grupo que queda más alto y ya.

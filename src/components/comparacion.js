@@ -1,5 +1,5 @@
 // src/components/comparacion.js
-// El modelo de comparación del tablero. Todo el sitio gira alrededor de tres
+// El modelo de comparación del tablero. Todo el sitio gira alrededor de cuatro
 // pares fijos; esta es la única definición de cuáles son, qué grupos los
 // componen y cómo se colorean. Cambiar aquí cambia todas las páginas.
 //
@@ -52,20 +52,19 @@ export const GRUPOS = [
 
 export const GRUPO_POR_CLAVE = Object.fromEntries(GRUPOS.map((g) => [g.clave, g]));
 
-// --- Las tres comparaciones -------------------------------------------------
+// --- Las cuatro comparaciones ------------------------------------------------
 // `filtra` decide qué grupos entran; `pregunta` es el texto que encabeza la
 // página cuando esa comparación está activa.
 export const COMPARACIONES = [
   {
-    clave: "sexo",
-    etiqueta: "Mujeres vs Hombres",
-    corto: "M vs H",
-    grupos: ["M-CD", "M-SD", "H-CD", "H-SD"],
-    // Colapsa la discapacidad: agrega ambos niveles dentro de cada sexo.
-    colapsa: "disc",
-    series: ["Mujeres", "Hombres"],
-    llaveSerie: "sexo",
-    pregunta: "¿Qué tan distinta es la situación de las mujeres frente a la de los hombres?",
+    clave: "disc-sexo",
+    etiqueta: "Mujeres vs Hombres con discapacidad",
+    corto: "M CD vs H CD",
+    grupos: ["M-CD", "H-CD"],
+    colapsa: null,
+    series: ["Mujeres con discapacidad", "Hombres con discapacidad"],
+    llaveSerie: "grupo",
+    pregunta: "Entre personas con discapacidad, ¿cuánto pesa ser mujer?",
   },
   {
     clave: "disc-mujeres",
@@ -78,14 +77,25 @@ export const COMPARACIONES = [
     pregunta: "Entre mujeres, ¿cuánto pesa la discapacidad?",
   },
   {
-    clave: "disc-sexo",
-    etiqueta: "Mujeres vs Hombres con discapacidad",
-    corto: "M CD vs H CD",
-    grupos: ["M-CD", "H-CD"],
+    clave: "disc-extremo",
+    etiqueta: "Mujer con discapacidad vs Hombre sin discapacidad",
+    corto: "M CD vs H SD",
+    grupos: ["M-CD", "H-SD"],
     colapsa: null,
-    series: ["Mujeres con discapacidad", "Hombres con discapacidad"],
+    series: ["Mujeres con discapacidad", "Hombres sin discapacidad"],
     llaveSerie: "grupo",
-    pregunta: "Entre personas con discapacidad, ¿cuánto pesa ser mujer?",
+    pregunta: "¿Qué tan grande es la brecha cuando se suman las dos desventajas?",
+  },
+  {
+    clave: "sexo",
+    etiqueta: "Mujeres vs Hombres",
+    corto: "M vs H",
+    grupos: ["M-CD", "M-SD", "H-CD", "H-SD"],
+    // Colapsa la discapacidad: agrega ambos niveles dentro de cada sexo.
+    colapsa: "disc",
+    series: ["Mujeres", "Hombres"],
+    llaveSerie: "sexo",
+    pregunta: "¿Qué tan distinta es la situación de las mujeres frente a la de los hombres?",
   },
 ];
 
@@ -99,7 +109,7 @@ export const COMPARACION_POR_CLAVE = Object.fromEntries(
 // error más caro del tablero porque no se detecta contando casos.
 //
 // `nivel`: hasta dónde llega la representatividad del diseño muestral.
-// `comparaciones`: cuáles de los tres pares tienen sentido en esa fuente.
+// `comparaciones`: cuáles de los cuatro pares tienen sentido en esa fuente.
 export const FUENTES = {
   enadis: {
     nombre: "ENADIS",
@@ -107,14 +117,14 @@ export const FUENTES = {
     // Representatividad nacional. NO admite desagregación por entidad, aunque
     // el número de casos por estado parezca suficiente.
     nivel: "nacional",
-    comparaciones: ["sexo", "disc-mujeres", "disc-sexo"],
+    comparaciones: ["sexo", "disc-mujeres", "disc-sexo", "disc-extremo"],
     nota: "Diseño muestral nacional: no produce estimaciones por entidad.",
   },
   enigh: {
     nombre: "ENIGH",
     anios: [2020, 2022, 2024],
     nivel: "estatal",
-    comparaciones: ["sexo", "disc-mujeres", "disc-sexo"],
+    comparaciones: ["sexo", "disc-mujeres", "disc-sexo", "disc-extremo"],
     nota: "Las ediciones 2016 y 2018 no traen tabla de población y quedan fuera.",
   },
   censo: {
@@ -122,7 +132,7 @@ export const FUENTES = {
     anios: [2020],
     // Única fuente con desagregación municipal: de aquí salen mapa y ranking.
     nivel: "municipal",
-    comparaciones: ["sexo", "disc-mujeres", "disc-sexo"],
+    comparaciones: ["sexo", "disc-mujeres", "disc-sexo", "disc-extremo"],
     nota: "Muestra ampliada del Censo; única fuente con nivel municipal.",
   },
   endireh: {

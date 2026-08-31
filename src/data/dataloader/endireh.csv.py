@@ -68,7 +68,7 @@ import pandas as pd
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
-from utils_enadis import RANGOS_EDAD, ENTIDADES  # noqa: E402
+from utils_enadis import RANGOS_EDAD, ENTIDADES, escribir  # noqa: E402
 
 
 def _normalizar_entidad(nombre):
@@ -236,12 +236,16 @@ def main():
         raise SystemExit("ENDIREH: no se generó ningún indicador.")
 
     todo = pd.concat(salida, ignore_index=True)
-    if hasattr(sys.stdout, "reconfigure"):
-        sys.stdout.reconfigure(encoding="utf-8", newline="")
-    todo[[
-        "tema", "indicador", "anio", "sexo", "disc", "entidad", "rango_edad",
-        "num", "den", "casos", "fuente", "universo",
-    ]].to_csv(sys.stdout, index=False)
+    # escribir() (utils_enadis.py) agrega la columna tipo_discapacidad con
+    # default "Todos" cuando el loader no la trae (este loader no desagrega
+    # por dominio de dificultad). Antes este archivo escribía su propio CSV
+    # a mano sin esa columna: en el splice de indicadores.csv/
+    # indicadores_tipo_disc.csv, un NaN real (no el string "Todos") hacía
+    # que TODAS las filas de ENDIREH cayeran al archivo de dominio en vez
+    # del principal, y el tema "autonomia" desaparecía por completo del
+    # tablero. escribir() es la misma función que ya usan los demás ocho
+    # loaders, así que este cambio solo empareja el patrón, no lo inventa.
+    escribir([todo])
 
 
 if __name__ == "__main__":

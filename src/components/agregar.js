@@ -43,11 +43,20 @@ export function agrupar(datos, llaves) {
 // El ×100 solo aplica cuando el indicador es un porcentaje: en pesos u horas,
 // num/den YA es la cifra final (pesos, horas), y multiplicarla por 100 la
 // infla cien veces — $13,444 de ingreso mensual se convertía en $1,344,400.
+//
+// "conteo" es distinto de los demás: no es una RAZÓN de nada (num/den), es
+// un CONTEO absoluto de personas (num), y `den` en ese indicador solo existe
+// para que la fila conserve la forma común num/den/casos del resto del
+// tablero — ahí `den` es la población nacional total, una constante que no
+// varía por grupo, así que dividir por ella daría "qué fracción del país es
+// este grupo" (~0.2%), no el conteo real de millones de personas que se
+// quiere mostrar. Por eso "conteo" usa `num` directo, sin dividir.
 export function conPorcentaje(filas, formato = "pct") {
   const escala = formato === "pct" ? 100 : 1;
   return filas.map((f) => ({
     ...f,
-    pct: f.den > 0 ? (f.num / f.den) * escala : null,
+    pct: formato === "conteo" ? f.num
+       : f.den > 0 ? (f.num / f.den) * escala : null,
     fragil: f.casos < MIN_CASOS,
   }));
 }

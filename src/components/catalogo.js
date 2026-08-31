@@ -12,6 +12,19 @@
 // Orden de prioridad editorial del proyecto.
 export const ENCUESTAS = [
   {
+    clave: "censo",
+    nombre: "Censo 2020",
+    titulo: "Censo de Población y Vivienda, cuestionario ampliado",
+    resumen: `Quince millones de registros de persona. Es la única fuente con
+      representatividad municipal y, por su tamaño, el mejor contraste para
+      verificar las cifras de las encuestas.`,
+    // numeralia-censo y educacion-censo se agregan en tasks posteriores de
+    // esta misma ronda (docs/superpowers/plans/2026-08-29-filtros-y-censo-plan.md):
+    // se declaran aquí antes de que sus páginas .md existan a propósito, para
+    // no tener que rehacer un placeholder vacío cuando lleguen.
+    subtemas: ["numeralia-censo", "trabajo-censo", "educacion-censo"],
+  },
+  {
     clave: "enigh",
     nombre: "ENIGH",
     titulo: "Encuesta Nacional de Ingresos y Gastos de los Hogares",
@@ -29,15 +42,6 @@ export const ENCUESTAS = [
       más, así que solo admite la comparación entre mujeres con y sin
       discapacidad.`,
     subtemas: ["autonomia"],
-  },
-  {
-    clave: "censo",
-    nombre: "Censo 2020",
-    titulo: "Censo de Población y Vivienda, cuestionario ampliado",
-    resumen: `Quince millones de registros de persona. Es la única fuente con
-      representatividad municipal y, por su tamaño, el mejor contraste para
-      verificar las cifras de las encuestas.`,
-    subtemas: ["trabajo-censo"],
   },
   {
     clave: "enadis",
@@ -300,6 +304,21 @@ export const CATALOGO = {
   },
 
   // --- Censo ---------------------------------------------------------------
+  "numeralia-censo": {
+    encuesta: "censo",
+    titulo: "Numeralia",
+    kicker: "Numeralia",
+    entrada: `La misma cifra de la portada, pero con filtros: cuántas personas
+      hay en cada grupo, y cómo cambia la prevalencia de discapacidad por
+      edad, entidad y dominio de dificultad.`,
+    fuentePrincipal: "censo",
+    indicadorPrincipal: "Población",
+    formato: "conteo",
+    explica: `Personas expandidas de cada grupo (sexo, discapacidad, edad,
+      entidad). No es un porcentaje: es el conteo absoluto de población,
+      la misma cifra que ya usa la portada.`,
+    secundarios: [],
+  },
   "trabajo-censo": {
     encuesta: "censo",
     titulo: "Trabajo según el Censo",
@@ -320,6 +339,31 @@ export const CATALOGO = {
        explica: `Porcentaje de personas cuya actividad principal declarada son
          los quehaceres del hogar. Es trabajo no remunerado y, por definición
          del censo, excluyente de la ocupación.`},
+    ],
+  },
+  "educacion-censo": {
+    encuesta: "censo",
+    titulo: "Educación según el Censo",
+    kicker: "Educación",
+    entrada: `El Censo mide escolaridad con una muestra mil veces más grande
+      que cualquier encuesta y con desagregación municipal, así que sirve de
+      verificación cruzada de los indicadores de ENIGH y ENADIS.`,
+    fuentePrincipal: "censo",
+    indicadorPrincipal: "Educación media superior o más (Censo)",
+    formato: "pct",
+    explica: `Porcentaje de personas cuyo nivel de escolaridad aprobado
+      corresponde a preparatoria o superior (código ESCOLARI 04 en adelante
+      de la escala del Censo, 00 a 08). Quienes no declararon su nivel
+      salen del denominador en vez de contarse como si no tuvieran
+      estudios.`,
+    secundarios: [
+      {encuesta: "censo", indicador: "No sabe leer ni escribir (Censo)", formato: "pct",
+       explica: `Porcentaje de personas que declararon no saber leer ni
+         escribir. Comparable con el mismo indicador de ENIGH y ENADIS,
+         aunque el instrumento no sea idéntico.`},
+      {encuesta: "censo", indicador: "Asiste a la escuela (18 a 29 años, Censo)", formato: "pct",
+       explica: `Porcentaje de personas de 18 a 29 años inscritas y
+         asistiendo a la escuela.`},
     ],
   },
 
