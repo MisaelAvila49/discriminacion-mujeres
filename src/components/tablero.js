@@ -5,7 +5,8 @@
 // viva en un catálogo en vez de repartido por los archivos .md.
 
 import {html} from "npm:htl";
-import {resize, Inputs} from "observablehq:stdlib";
+import {resize} from "observablehq:stdlib";
+import * as Inputs from "npm:@observablehq/inputs";
 import {
   panelFiltros, filtrar, prepararSeries, brechaDe, geometria,
   TODAS, POR_SEPARADO, AGREGADO,
