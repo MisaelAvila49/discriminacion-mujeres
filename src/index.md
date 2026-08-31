@@ -9,6 +9,29 @@
       <a class="book-cta" href="./metodologia/fuentes">Ver las fuentes →</a>
     </div>
   </div>
+
+<div class="book-cover">
+  <div class="book-cover-inner">
+  <div class="book-cover-accent"><span class="book-cover-accent-shimmer"></span></div>
+<div class="book-cover-brillo" aria-hidden="true"></div>
+  <svg class="book-cover-flow" viewBox="0 0 260 347" preserveAspectRatio="none" aria-hidden="true" xmlns="http://www.w3.org/2000/svg">
+  <g class="gap-grupo">
+  <path class="gap-area" d="M 6 214 C 78 202, 152 176, 254 112 L 254 244 C 152 240, 78 234, 6 230 Z"/>
+  <path class="gap-line gap-line-alta" d="M 6 214 C 78 202, 152 176, 254 112"/>
+  <path class="gap-line gap-line-baja" d="M 6 230 C 78 234, 152 240, 254 244"/>
+  <circle class="gap-punto gap-punto-alta" cx="250" cy="113" r="3" fill="#A7A3A2"/>
+  <circle class="gap-punto gap-punto-baja" cx="250" cy="244" r="3.6" fill="#E30A18"/>
+  </g>
+  </svg>
+  <div class="book-cover-text">
+  <img class="book-cover-logo" src="./images/social_data_blanco.svg" alt="Social Data Ibero">
+  <span class="book-cover-eyebrow">Social Data Ibero</span>
+  <span class="book-cover-title">Mujeres con discapacidad en México</span>
+  <span class="book-cover-subtitle">La desigualdad de género y la de discapacidad no se suman: se multiplican</span>
+</div>
+  <span class="book-cover-year">MMXXVI · 2026</span>
+</div>
+</div>
 </div>
 
 <section class="book-meta-grid" aria-label="Información editorial">
