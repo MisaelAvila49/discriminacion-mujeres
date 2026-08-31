@@ -196,11 +196,12 @@ export const CATALOGO = {
   },
   apoyos: {
     encuesta: "enigh",
-    titulo: "Apoyos y gasto por discapacidad",
-    kicker: "Apoyos y gasto",
-    entrada: `Dos caras del mismo problema: qué tanto llega el apoyo público a
-      los hogares con discapacidad, y cuánto gastan esos hogares de su propio
-      bolsillo en aparatos y cuidados.`,
+    titulo: "Apoyos y transferencias",
+    kicker: "Apoyos",
+    entrada: `Qué tanto llega el apoyo público a los hogares con discapacidad.
+      Aquí solo entra el dinero que ENTRA al hogar; lo que sale de su bolsillo
+      —aparatos, cuidados, educación especial, transporte— vive en la sección
+      de Gastos.`,
     fuentePrincipal: "enigh",
     indicadorPrincipal: "Recibe la beca de discapacidad",
     formato: "pct",
@@ -216,13 +217,25 @@ export const CATALOGO = {
          beca de discapacidad.`,
        explica: `Porcentaje de personas que viven en un hogar donde alguien
          recibe la pensión para adultos mayores.`},
-      {encuesta: "enigh", indicador: "Su hogar gasta en aparatos o cuidados por discapacidad", formato: "pct",
-       nota: `Los hogares con discapacidad gastan en esto dos veces y media más
-         que los demás. Es un costo que ningún indicador de ingreso captura.`,
-       explica: `Porcentaje de personas que viven en un hogar que registró
-         gasto en aparatos ortopédicos, sillas de ruedas, andaderas, prótesis,
-         su reparación, cuidado de enfermos o educación especial. Solo hay
-         tabla de gastos para 2022 y 2024.`},
+    ],
+  },
+
+  gastos: {
+    encuesta: "enigh",
+    titulo: "Gastos por discapacidad",
+    kicker: "Gastos",
+    entrada: `El sobrecosto de vivir con discapacidad: aparatos, cuidados,
+      educación especial y transporte que otros hogares simplemente no pagan.
+      Ningún indicador de ingreso captura este gasto, y por eso dos hogares
+      con el mismo ingreso no tienen el mismo margen real.`,
+    fuentePrincipal: "enigh",
+    indicadorPrincipal: "Su hogar gasta en aparatos o cuidados por discapacidad",
+    formato: "pct",
+    explica: `Porcentaje de personas que viven en un hogar que registró gasto
+      en aparatos ortopédicos, sillas de ruedas, andaderas, prótesis, su
+      reparación, cuidado de enfermos o educación especial. Es un dato de
+      HOGAR heredado a la persona. Solo hay tabla de gastos para 2022 y 2024.`,
+    secundarios: [
       {encuesta: "enigh", indicador: "Gasto trimestral en aparatos o cuidados por discapacidad", formato: "pesos",
        nota: `El promedio se calcula solo entre quienes gastan algo: "cuánto
          gasta el que gasta", no diluido con los hogares en cero.`,
@@ -262,6 +275,45 @@ export const CATALOGO = {
        explica: `Porcentaje de personas que viven en un hogar que gastó en
          residencias no médicas u otros servicios de protección social para
          personas con discapacidad. Desglose exclusivo de 2024.`},
+
+      {encuesta: "enigh", indicador: "Su hogar gasta en taxi o aplicación de viaje", formato: "pct",
+       nota: `Cuando el transporte público no es accesible, el taxi deja de
+         ser una alternativa cara y se vuelve el único medio utilizable: los
+         hogares con discapacidad gastan en él 1.7 veces más que los demás.`,
+       explica: `Porcentaje de personas que viven en un hogar que registró
+         gasto en taxi de sitio o en aplicaciones de viaje (Uber, DiDi). Es un
+         dato de HOGAR heredado a la persona. La ENIGH capta la mayor parte de
+         este gasto como NO monetario: buena parte de esos viajes los paga
+         otra persona, el trabajo o un programa, y aquí se cuentan igual
+         porque son parte del costo de moverse.`},
+      {encuesta: "enigh", indicador: "Su hogar gasta en transporte público", formato: "pct",
+       nota: `Es el contraste que da sentido al gasto en taxi: si un grupo
+         gasta más en taxi y no menos en transporte público, no está
+         sustituyendo un medio por otro sino pagando ambos.`,
+       explica: `Porcentaje de personas cuyo hogar gastó en metro, tren
+         ligero, autobús urbano, trolebús, metrobús, colectivo, combi o
+         microbús. No incluye autobús foráneo ni transporte entre ciudades:
+         la comparación es sobre el traslado cotidiano.`},
+      {encuesta: "enigh", indicador: "Gasto trimestral en taxi o aplicación de viaje", formato: "pesos",
+       nota: `El promedio se calcula solo entre quienes gastan algo: "cuánto
+         gasta el que gasta", no diluido con los hogares en cero.`,
+       explica: `Promedio de pesos gastados en el trimestre en taxi o
+         aplicaciones, entre las personas cuyo hogar registró ese gasto. En
+         pesos constantes: la ENIGH estandariza el gasto a precios de agosto
+         de su propia edición, así que sin deflactar los años no serían
+         comparables.`},
+      {encuesta: "enigh", indicador: "Gasto trimestral en transporte público", formato: "pesos",
+       explica: `Promedio de pesos gastados en el trimestre en transporte
+         público, entre las personas cuyo hogar registró ese gasto. En pesos
+         constantes, igual que el anterior.`},
+      {encuesta: "enigh", indicador: "Su hogar gasta en aplicación de viaje (Uber, DiDi)", formato: "pct",
+       nota: `Solo 2024: el INEGI separó las aplicaciones del taxi de sitio
+         apenas ese año. No hay serie hacia atrás porque la encuesta no lo
+         preguntaba por separado, no porque nadie las usara.`,
+       explica: `Porcentaje de personas cuyo hogar gastó en renta de vehículo
+         con chofer (Uber, DiDi y similares). Antes de 2024 este gasto se
+         capturaba dentro de "taxi", así que el indicador que une ambos es el
+         que sí se puede seguir en el tiempo.`},
     ],
   },
 
@@ -300,6 +352,35 @@ export const CATALOGO = {
       {encuesta: "endireh", indicador: "Violencia física en los últimos 12 meses", formato: "pct",
        explica: `Incluye empujones, jalones, golpes y agresiones con objetos o
          armas.`},
+      {encuesta: "endireh", indicador: "Violencia de la pareja en los últimos 12 meses", formato: "pct",
+       nota: `Los cuatro indicadores que siguen responden dónde ocurre la
+         violencia, y con eso, quién la ejerce. Cada uno tiene su propio
+         denominador: solo entran las mujeres expuestas a ese ámbito.`,
+       explica: `Porcentaje de mujeres con pareja actual o pasada que
+         declararon violencia de su pareja en los últimos doce meses. El
+         denominador son las mujeres que han tenido pareja, no todas: quien
+         nunca ha tenido no puede haber vivido este tipo de violencia.`},
+      {encuesta: "endireh", indicador: "Violencia comunitaria (calle, transporte) en los últimos 12 meses", formato: "pct",
+       nota: `Sin controlar por edad esta cifra se invierte, igual que la
+         violencia sexual: en el agregado parece menor entre mujeres con
+         discapacidad, pero dentro de cada rango de edad menor de 60 es
+         mayor, hasta 21 puntos más entre las de 18 a 29 años.`,
+       explica: `Violencia ejercida por personas desconocidas o conocidas sin
+         vínculo cercano, en la calle, el transporte público, parques y otros
+         espacios públicos. El denominador son todas las mujeres: el espacio
+         público no requiere haber "participado" en él. El agregado sin edad
+         refleja que la discapacidad se concentra en mayores de 60, que salen
+         menos y por eso reportan menos violencia en la calle.`},
+      {encuesta: "endireh", indicador: "Violencia en el trabajo en los últimos 12 meses", formato: "pct",
+       explica: `Violencia ejercida por jefes, compañeros o clientes. El
+         denominador son solo las mujeres que trabajaron en los últimos doce
+         meses; quien no trabajó no está expuesta a este ámbito y queda fuera
+         del cálculo, no contada como "sin violencia".`},
+      {encuesta: "endireh", indicador: "Violencia en la escuela en los últimos 12 meses", formato: "pct",
+       explica: `Violencia ejercida por docentes, personal o compañeros. El
+         denominador son solo las mujeres que asistieron a la escuela en los
+         últimos doce meses, un grupo pequeño entre las mujeres adultas, así
+         que el desglose por entidad puede quedar con pocos casos.`},
     ],
   },
 

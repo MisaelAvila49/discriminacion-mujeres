@@ -52,7 +52,9 @@ ENCUESTA = {
     "enigh_jornada": "enigh",
     "enigh_educacion": "enigh",
     "enigh_tecnologia": "enigh",
+    "enigh_transporte": "enigh",
     "enadis_discriminacion": "enadis",
+    "endireh_ambito": "endireh",
 }
 
 COLS = ["tema", "indicador", "anio", "sexo", "disc", "entidad", "rango_edad",

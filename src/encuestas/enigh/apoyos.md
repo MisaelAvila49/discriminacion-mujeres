@@ -1,12 +1,13 @@
-# Apoyos y gasto por discapacidad
+# Apoyos y transferencias
 
 <p class="seccion-intro">
-La beca, la pensión y el gasto se registran en la ENIGH a nivel HOGAR, no
-persona: la encuesta anota que el hogar recibe el ingreso o hizo el gasto,
-no qué integrante específico. Cada cifra de esta página hereda esa marca de
-hogar a cada persona que vive ahí, y se lee como "personas que viven en un
-hogar que recibe/gasta en X", agrupadas por su propio sexo y discapacidad
-— no como "personas con discapacidad que reciben SU beca".
+La beca y la pensión se registran en la ENIGH a nivel HOGAR, no persona: la
+encuesta anota que el hogar recibe el ingreso, no qué integrante específico.
+Cada cifra de esta página hereda esa marca de hogar a cada persona que vive
+ahí, y se lee como "personas que viven en un hogar que recibe X", agrupadas
+por su propio sexo y discapacidad — no como "personas con discapacidad que
+reciben SU beca". Lo que sale del bolsillo del hogar (aparatos, cuidados,
+educación especial, transporte) está en la sección de Gastos.
 </p>
 
 ```js
