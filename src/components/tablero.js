@@ -27,6 +27,7 @@ const ETIQUETA_DIM = {
   rango_edad: "Rango de edad",
   anio: "Edición",
   entidad: "Entidad",
+  decil: "Decil de ingreso",
 };
 
 // Arma una gráfica completa: barras + aviso de muestra + tabla de respaldo,
@@ -119,22 +120,24 @@ function seccion({titulo, datos, fuente, construir, edadInicial = AGREGADO,
   </section>`;
 }
 
-// `datosTipoDisc` es opcional y viene de un archivo APARTE
-// (indicadores_tipo_disc.csv): las filas por dominio de discapacidad
-// multiplican el tamaño de los datos casi por 3, y la mayoría de las páginas
-// nunca activan ese filtro. Separarlo evita que las 9 páginas que no lo usan
-// paguen su peso de descarga. Solo lo pasan las páginas de ENIGH (ver
-// filtros.js: el selector de tipo de discapacidad solo aparece si hay más de
+// `datosTipoDisc`/`datosDecil` son opcionales y vienen de archivos APARTE
+// (indicadores_tipo_disc.csv, indicadores_decil.csv): ambos multiplican el
+// tamaño de los datos, y la mayoría de las páginas no activan ninguno de
+// los dos filtros. Separarlos evita que las páginas que no los usan paguen
+// su peso de descarga. Solo Trabajo/Apoyos/Educación (ENIGH) pasan
+// `datosDecil` por ahora; el selector de decil solo aparece si hay más de
 // un valor real en los datos, así que si esto no se pasa el filtro
-// simplemente no se ofrece).
-export function dashboardTema(clave, datos, {geoEntidades = null, datosTipoDisc = null} = {}) {
+// simplemente no se ofrece (mismo criterio que ya usa datosTipoDisc).
+export function dashboardTema(clave, datos, {geoEntidades = null,
+    datosTipoDisc = null, datosDecil = null} = {}) {
   const tema = CATALOGO[clave];
   if (!tema) return html`<p>Tema desconocido: ${clave}</p>`;
 
   const fuente = tema.fuentePrincipal;
   const base = datos.filter((d) => d.encuesta === fuente);
-  const extra = (datosTipoDisc ?? []).filter((d) => d.encuesta === fuente);
-  const datosFuente = extra.length ? base.concat(extra) : base;
+  const extraTipo = (datosTipoDisc ?? []).filter((d) => d.encuesta === fuente);
+  const extraDecil = (datosDecil ?? []).filter((d) => d.encuesta === fuente);
+  const datosFuente = base.concat(extraTipo, extraDecil);
   const principales = datosFuente.filter((d) => d.indicador === tema.indicadorPrincipal);
 
   // --- Sección 1: el indicador principal, con sus KPIs -------------------
@@ -148,6 +151,7 @@ export function dashboardTema(clave, datos, {geoEntidades = null, datosTipoDisc 
         indicador: tema.indicadorPrincipal,
         anio: v.anio, entidad: v.entidad, rangoEdad: v.rangoEdad,
         tipoDiscapacidad: v.tipoDiscapacidad,
+        decil: v.decil,
       });
 
       // Las tarjetas resumen SIEMPRE una sola edición. Mezclar años contaría
@@ -220,6 +224,7 @@ export function dashboardTema(clave, datos, {geoEntidades = null, datosTipoDisc 
         const ffil = filtrar(fsec, {
           anio: v.anio, entidad: v.entidad, rangoEdad: v.rangoEdad,
           tipoDiscapacidad: v.tipoDiscapacidad,
+          decil: v.decil,
         });
         if (!ffil.length) continue;
 
@@ -303,6 +308,7 @@ export function dashboardTema(clave, datos, {geoEntidades = null, datosTipoDisc 
             const filas = filtrar(datosFuente, {
               indicador: tema.indicadorPrincipal, anio: c.anio, rangoEdad: c.edad,
               tipoDiscapacidad: v.tipoDiscapacidad,
+              decil: v.decil,
             });
             return {
               filas,
