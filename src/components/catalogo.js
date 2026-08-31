@@ -236,7 +236,7 @@ export const CATALOGO = {
       {
         titulo: "Quién sostiene económicamente el hogar",
         indicadores: [
-      {encuesta: "enigh", indicador: "Aporta la mitad o más del ingreso de su hogar", formato: "pct",
+      {encuesta: "enigh", indicador: "La jefatura aporta la mitad o más del ingreso", formato: "pct",
        nota: `Encabezar el hogar y sostenerlo económicamente no son lo mismo.
          Una jefa con discapacidad aporta la mitad o más del ingreso en la
          mitad de los casos; un jefe sin discapacidad, en siete de cada diez.`,

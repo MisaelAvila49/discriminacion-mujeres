@@ -204,7 +204,13 @@ def indicadores(pob, year):
                 }), include_groups=False).reset_index()
             g = _em.agrega_error(g, base, llaves, "_num")
             g["tema"] = "hogar"
-            g["indicador"] = "Aporta la mitad o más del ingreso de su hogar"
+            # Nombre distinto al del mismo cálculo en enigh_ingreso.csv.py:
+            # aquel corre sobre TODA la población y este solo sobre quienes
+            # encabezan un hogar, así que dan cifras distintas (26.7 % contra
+            # 49.5 %). Con el mismo nombre, cualquier consulta que no filtre
+            # por tema los promedia y produce una tercera cifra que no
+            # significa nada.
+            g["indicador"] = "La jefatura aporta la mitad o más del ingreso"
             g["fuente"] = fuente
             g["universo"] = UNIVERSO + ", en hogar con ingreso"
             filas.append(g)
