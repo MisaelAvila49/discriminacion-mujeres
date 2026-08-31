@@ -28,12 +28,37 @@ export function agrupar(datos, llaves) {
       base.num = 0;
       base.den = 0;
       base.casos = 0;
+      base._varAcum = 0;
+      base._filasSinEE = 0;
+      base._filas = 0;
       mapa.set(clave, base);
     }
     const acc = mapa.get(clave);
     acc.num += Number(fila.num) || 0;
     acc.den += Number(fila.den) || 0;
     acc.casos += Number(fila.casos) || 0;
+
+    // Propagación del error al SUMAR filas (por ejemplo, las 32 entidades
+    // para llegar al nacional). El error de una suma no es la suma de los
+    // errores: se acumulan varianzas, es decir errores al cuadrado pesados
+    // por el denominador de cada parte, y al final se vuelve a sacar raíz
+    // en `conPorcentaje`.
+    //
+    // Esto trata las partes como independientes, lo cual NO es exacto: dos
+    // entidades comparten estratos de diseño y la covarianza entre ellas se
+    // pierde. El resultado subestima levemente el error del agregado. Es
+    // preferible a las dos alternativas: no mostrar nada al agregar, o
+    // sumar errores, que lo sobreestimaría mucho más. El error exacto del
+    // nacional solo sale de recalcularlo sobre los microdatos, que es lo
+    // que hacen los loaders para las combinaciones que sí emiten.
+    acc._filas += 1;
+    const ee = Number(fila.ee);
+    const den = Number(fila.den) || 0;
+    if (fila.ee == null || fila.ee === "" || !isFinite(ee)) {
+      acc._filasSinEE += 1;
+    } else {
+      acc._varAcum += (ee * den) ** 2;
+    }
   }
   return [...mapa.values()];
 }
@@ -53,12 +78,35 @@ export function agrupar(datos, llaves) {
 // quiere mostrar. Por eso "conteo" usa `num` directo, sin dividir.
 export function conPorcentaje(filas, formato = "pct") {
   const escala = formato === "pct" ? 100 : 1;
-  return filas.map((f) => ({
-    ...f,
-    pct: formato === "conteo" ? f.num
-       : f.den > 0 ? (f.num / f.den) * escala : null,
-    fragil: f.casos < MIN_CASOS,
-  }));
+  return filas.map((f) => {
+    const pct = formato === "conteo" ? f.num
+      : f.den > 0 ? (f.num / f.den) * escala : null;
+
+    // Error estándar del grupo ya agregado, en la misma unidad que `pct`.
+    // Solo se publica si TODAS las partes traían error: con una sola parte
+    // sin estimar, el intervalo saldría más angosto de lo real y sería peor
+    // que no mostrarlo. En "conteo" no se ofrece intervalo porque `pct` ahí
+    // es una población expandida, no una razón.
+    let ee = null;
+    if (formato !== "conteo" && f.den > 0 && f._filasSinEE === 0 &&
+        f._varAcum > 0) {
+      ee = (Math.sqrt(f._varAcum) / f.den) * escala;
+    }
+
+    return {
+      ...f,
+      pct,
+      ee,
+      // Intervalo de confianza al 95 %, el convencional para estadística
+      // oficial. Se recorta en cero porque una proporción negativa no
+      // existe, y el límite superior de un porcentaje se recorta en cien.
+      ic: (ee == null || pct == null) ? null : {
+        lo: Math.max(formato === "pct" ? 0 : -Infinity, pct - 1.96 * ee),
+        hi: formato === "pct" ? Math.min(100, pct + 1.96 * ee) : pct + 1.96 * ee,
+      },
+      fragil: f.casos < MIN_CASOS,
+    };
+  });
 }
 
 // Atajo: agrupar + porcentaje en un paso.

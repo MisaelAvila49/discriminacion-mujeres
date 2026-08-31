@@ -50,6 +50,7 @@ import importlib.util
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
+import error_muestral as _em  # noqa: E402
 from utils_enadis import escribir  # noqa: E402
 
 _ruta = os.path.join(os.path.dirname(os.path.abspath(__file__)), "enigh.csv.py")
@@ -129,6 +130,7 @@ def main():
                     "den": float(x["factor"].sum()),
                     "casos": int(len(x)),
                 }), include_groups=False).reset_index()
+            g = _em.agrega_error(g, base, llaves, "_num")
             g["tema"] = "tecnologia"
             g["indicador"] = nombre
             g["fuente"] = "ENIGH (INEGI)"
@@ -146,6 +148,7 @@ def main():
                     "den": float(x["factor"].sum()),
                     "casos": int(len(x)),
                 }), include_groups=False).reset_index()
+            g = _em.agrega_error(g, base, llaves, "_num")
             g["tema"] = "tecnologia"
             g["indicador"] = nombre
             g["fuente"] = "ENIGH (INEGI)"

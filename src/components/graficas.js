@@ -126,6 +126,19 @@ function fmtPoblacionCorta(v) {
   if (abs >= 1e3) return (v / 1e3).toFixed(2) + " mil";
   return Math.round(v).toLocaleString("es-MX");
 }
+// El intervalo de confianza va en el tooltip y no escrito en la gráfica:
+// con dos series por grupo, cuatro cifras encimadas vuelven la barra
+// ilegible. Las celdas sin error estimable muestran el guion, para que la
+// ausencia se vea como tal y no se confunda con un intervalo de cero.
+function canalIntervalo(formato) {
+  if (formato === "conteo") return {};
+  return {
+    "Intervalo 95%": (d) => d.ic
+      ? `${formatear(d.ic.lo, formato)} a ${formatear(d.ic.hi, formato)}`
+      : "sin estimar",
+  };
+}
+
 function canalesPoblacion(formato) {
   return formato === "pct" ? {"Población": (d) => fmtPoblacionCorta(d.num)} : {};
 }
@@ -138,6 +151,7 @@ function canales(formato, dimLabel) {
     [dimLabel]: (d) => d[dimLabel === "Entidad" ? "entidad" : "rango_edad"],
     "Grupo": (d) => d.serie,
     [etiquetaMedida(formato)]: (d) => formatear(d.pct, formato),
+    ...canalIntervalo(formato),
     ...canalesPoblacion(formato),
   };
 }
@@ -206,6 +220,15 @@ export function barrasComparadas(datos, {dim = null, dimLabel = "", comparacion,
     Plot.barY(datos.filter((d) => d.fragil), {
       ...posicion, y: "pct", fill: `url(#${ID_TRAMA})`,
       insetLeft: 1, insetRight: 1,
+    }),
+    // Intervalo de confianza al 95 %. Se dibuja solo donde se pudo estimar,
+    // así que una barra sin bigote significa "sin intervalo calculable", no
+    // "estimación exacta". En las celdas de pocos casos el bigote es tan
+    // largo que la propia gráfica muestra por qué la cifra no distingue
+    // nada, que es más honesto que la trama sola.
+    Plot.ruleY(datos.filter((d) => d.ic), {
+      ...posicion, y1: (d) => d.ic.lo, y2: (d) => d.ic.hi,
+      stroke: "#1D1D1B", strokeWidth: 1.4, strokeOpacity: 0.75,
     }),
     // Contorno bajo el puntero: Plot.pointerX porque `x` (la serie) es SIEMPRE
     // la dimensión categórica que separa una barra de otra, sin importar si
@@ -499,6 +522,7 @@ export function tablaDatos(filas, {dimLabel = "Grupo", dim = "serie",
       <thead><tr>
         <th>${dimLabel}</th><th>Grupo</th>
         <th>${etiquetaMedida(formato)}</th>
+        ${formato === "conteo" ? "" : html`<th>Intervalo 95%</th>`}
         ${formato === "pct" ? html`<th>Pob. cumple</th>` : ""}
         <th>Pob. total</th>
         <th>Casos en muestra</th>
@@ -508,6 +532,9 @@ export function tablaDatos(filas, {dimLabel = "Grupo", dim = "serie",
           <td>${f[dim] ?? ""}</td>
           <td>${f.serie ?? ""}</td>
           <td>${formatear(f.pct, formato)}${f.fragil ? " *" : ""}</td>
+          ${formato === "conteo" ? "" : html`<td>${f.ic
+            ? `${formatear(f.ic.lo, formato)} a ${formatear(f.ic.hi, formato)}`
+            : "sin estimar"}</td>`}
           ${formato === "pct" ? html`<td>${fmtPoblacion(f.num)}</td>` : ""}
           <td>${fmtPoblacion(f.den)}</td>
           <td>${f.casos?.toLocaleString("es-MX") ?? "s/d"}</td>

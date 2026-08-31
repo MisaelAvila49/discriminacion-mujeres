@@ -35,6 +35,7 @@ import pandas as pd
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
+import error_muestral as _em  # noqa: E402
 from utils_enadis import escribir  # noqa: E402
 import deflactor  # noqa: E402
 
@@ -80,6 +81,7 @@ def indicadores(pob, ing, year):
                 "den": float(x["factor"].sum()),
                 "casos": int(len(x)),
             }), include_groups=False).reset_index()
+        g = _em.agrega_error(g, conHoras, llaves, "horas")
         g["tema"] = "trabajo"
         g["indicador"] = "Horas de trabajo remunerado a la semana"
         g["fuente"] = fuente
@@ -114,6 +116,7 @@ def indicadores(pob, ing, year):
                     "den": float(x["factor"].sum()),
                     "casos": int(len(x)),
                 }), include_groups=False).reset_index()
+            g = _em.agrega_error(g, m, llaves, "_pph")
             g["tema"] = "trabajo"
             g["indicador"] = "Ingreso por hora trabajada"
             g["fuente"] = fuente

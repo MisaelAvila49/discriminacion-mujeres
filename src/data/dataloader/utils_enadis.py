@@ -325,9 +325,16 @@ def escribir(dfs):
     if "decil" not in todo.columns:
         todo["decil"] = "Todos"
     todo["decil"] = todo["decil"].fillna("Todos")
+    # `ee` es el error estándar de la razón bajo el diseño muestral (ver
+    # error_muestral.py). Es opcional: las encuestas que no publican UPM no
+    # lo pueden calcular, y esos indicadores viajan con la columna vacía,
+    # que el front lee como "sin intervalo" y no como error cero.
+    if "ee" not in todo.columns:
+        todo["ee"] = pd.NA
     columnas = [
         "tema", "indicador", "anio", "sexo", "disc", "entidad", "rango_edad",
-        "tipo_discapacidad", "decil", "num", "den", "casos", "fuente", "universo",
+        "tipo_discapacidad", "decil", "num", "den", "casos", "ee", "fuente",
+        "universo",
     ]
     todo = todo[columnas]
     todo.to_csv(sys.stdout, index=False)

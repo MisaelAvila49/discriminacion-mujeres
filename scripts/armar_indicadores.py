@@ -57,6 +57,8 @@ ENCUESTA = {
     "enigh_educacion": "enigh",
     "enigh_tecnologia": "enigh",
     "enigh_transporte": "enigh",
+    "enigh_ingreso": "enigh",
+    "enigh_jefatura": "enigh",
     "enadis_discriminacion": "enadis",
     "endireh_ambito": "endireh",
     "endireh_agresor": "endireh",
@@ -64,7 +66,7 @@ ENCUESTA = {
 }
 
 COLS = ["tema", "indicador", "anio", "sexo", "disc", "entidad", "rango_edad",
-        "tipo_discapacidad", "decil", "num", "den", "casos", "fuente",
+        "tipo_discapacidad", "decil", "num", "den", "casos", "ee", "fuente",
         "universo", "encuesta"]
 
 
@@ -88,6 +90,11 @@ def main():
         for col in ("tipo_discapacidad", "decil"):
             if col not in df.columns:
                 df[col] = "Todos"
+        # `ee` falta en las encuestas sin diseño muestral publicado y en
+        # cualquier loader que todavía no lo calcule. Se rellena vacío, no
+        # en cero: un cero se leería como estimación sin incertidumbre.
+        if "ee" not in df.columns:
+            df["ee"] = pd.NA
         df["encuesta"] = ENCUESTA.get(nombre, nombre)
         partes.append(df)
         print(f"  {nombre:24} {len(df):>7,} filas -> {df['encuesta'].iloc[0]}")

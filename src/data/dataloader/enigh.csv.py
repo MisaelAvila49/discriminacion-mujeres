@@ -31,6 +31,7 @@ import pandas as pd
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
+import error_muestral as _em  # noqa: E402
 from utils_enadis import ENTIDADES, RANGOS_EDAD, TIPOS_DISC, escribir  # noqa: E402
 import deflactor  # noqa: E402
 
@@ -205,6 +206,15 @@ def cargar_poblacion(year):
     cols_hog = ["folioviv", "foliohog", "ing_cor", "tot_integ"]
     if not tiene_factor_persona:
         cols_hog.append("factor")
+    # `upm` y `est_dis` son las columnas del diseño muestral, necesarias para
+    # el error estándar (ver error_muestral.py). En 2022 y 2024 vienen en la
+    # tabla de población; en 2020 esa tabla no las trae y hay que heredarlas
+    # del hogar, igual que ya se hace con el factor. Sin ellas esa edición
+    # salía con la columna de error vacía en el 100 % de sus filas, sin que
+    # nada fallara.
+    for c in ("upm", "est_dis"):
+        if c not in df.columns and c in hog.columns:
+            cols_hog.append(c)
     df = df.merge(hog[cols_hog], on=["folioviv", "foliohog"], how="left")
 
     sin_datos_hog = df["ing_cor"].isna().sum()
@@ -422,6 +432,7 @@ def indicadores(pob, ing, year):
                 "den": float(x["factor"].sum()),
                 "casos": int(len(x)),
             }), include_groups=False).reset_index()
+        g = _em.agrega_error(g, base, llaves, "_num")
         g["tema"] = "trabajo"
         g["indicador"] = "Participación en el trabajo remunerado"
         g["fuente"] = fuente
@@ -459,6 +470,10 @@ def indicadores(pob, ing, year):
                 "den": float(x["factor"].sum()),
                 "casos": int(len(x)),
             }), include_groups=False).reset_index()
+        # El ingreso promedio también es una razón (masa de ingreso sobre
+        # población), así que usa el mismo estimador: lo que cambia es la
+        # variable de interés, aquí el monto y no un indicador 0/1.
+        g = _em.agrega_error(g, con_ing, llaves, "ing_mensual")
         g["tema"] = "trabajo"
         g["indicador"] = "Ingreso laboral mensual promedio"
         g["fuente"] = fuente

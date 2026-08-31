@@ -100,6 +100,7 @@ import pandas as pd
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
+import error_muestral as _em  # noqa: E402
 from utils_enadis import escribir  # noqa: E402
 import deflactor  # noqa: E402
 
@@ -167,6 +168,7 @@ def indicadores(pob, year):
                 "den": float(x["factor"].sum()),
                 "casos": int(len(x)),
             }), include_groups=False).reset_index()
+        g = _em.agrega_error(g, base, llaves, "_num")
         g["tema"] = "gastos"
         g["indicador"] = indicador
         g["fuente"] = fuente
@@ -192,12 +194,18 @@ def indicadores(pob, year):
         # ninguna persona. El síntoma es silencioso: no lanza error, solo
         # colapsa el indicador a un puñado de filas con montos absurdos.
         base["_masa"] = monto[monto > 0].values * base["factor"].values
+        # El monto POR PERSONA (sin multiplicar por el factor) es la variable
+        # que necesita el estimador de error: la razón que se publica es
+        # masa/población, y su varianza se calcula sobre el valor individual,
+        # no sobre el producto ya ponderado.
+        base["_masa_unit"] = monto[monto > 0].values
         g = base.groupby(llaves, dropna=True, observed=True).apply(
             lambda x: pd.Series({
                 "num": float(x["_masa"].sum()),
                 "den": float(x["factor"].sum()),
                 "casos": int(len(x)),
             }), include_groups=False).reset_index()
+        g = _em.agrega_error(g, base, llaves, "_masa_unit")
         g["tema"] = "gastos"
         g["indicador"] = indicador
         g["fuente"] = fuente
