@@ -203,79 +203,93 @@ export function dashboardTema(clave, datos, {geoEntidades = null,
   });
 
   // --- Sección 2: indicadores relacionados, con su propio panel ----------
-  // Todos los secundarios de un tema comparten panel, pero ese panel se
-  // construye con los datos de los secundarios, no con los del principal:
-  // así el selector de año ofrece las ediciones que ellos sí tienen.
-  const datosSec = (tema.secundarios ?? []).flatMap((sec) =>
-    todo.filter((d) => d.encuesta === sec.encuesta && d.indicador === sec.indicador)
-  );
+  // Una sección por BLOQUE de indicadores. Antes todos los secundarios caían
+  // en una sola llamada "Indicadores relacionados", y en las páginas con diez
+  // o catorce quedaban revueltos: las cinco fuentes de ingreso mezcladas con
+  // sus montos y con las becas, los siete niveles educativos entre el
+  // alfabetismo y la asistencia escolar.
+  //
+  // `tema.bloques` agrupa por familia y le da a cada una su encabezado y su
+  // propio panel de filtros, igual que ya hacía Territorio. Un tema que no
+  // declare bloques sigue con la sección única de siempre.
+  const construirSeccion = (titulo, lista) => {
+    const datosB = lista.flatMap((sec) =>
+      todo.filter((d) => d.encuesta === sec.encuesta &&
+                         d.indicador === sec.indicador));
+    if (!datosB.length) return null;
 
-  const seccionSecundarios = seccion({
-    titulo: "Indicadores relacionados",
-    datos: datosSec,
-    // El panel se rige por la fuente menos permisiva de las involucradas, para
-    // no ofrecer un filtro que alguna de las gráficas no pueda cumplir.
-    fuente: tema.secundarios?.[0]?.encuesta ?? fuente,
-    construir: ({v}) => {
-      const tarjetas = [];
-      for (const sec of tema.secundarios ?? []) {
-        const fsec = todo.filter(
-          (d) => d.encuesta === sec.encuesta && d.indicador === sec.indicador
-        );
-        const compsOk = FUENTES[sec.encuesta]?.comparaciones ?? [];
-        // Si la comparación activa no aplica a la fuente del secundario (el
-        // caso de ENDIREH con los pares que incluyen hombres), se omite en
-        // vez de dibujar una gráfica vacía.
-        if (!compsOk.includes(v.comparacion)) continue;
+    return seccion({
+      titulo,
+      datos: datosB,
+      // El panel se rige por la fuente menos permisiva de las involucradas,
+      // para no ofrecer un filtro que alguna de las gráficas no pueda
+      // cumplir.
+      fuente: lista[0]?.encuesta ?? fuente,
+      construir: ({v}) => {
+        const tarjetas = [];
+        for (const sec of lista) {
+          const fsec = todo.filter(
+            (d) => d.encuesta === sec.encuesta && d.indicador === sec.indicador
+          );
+          const compsOk = FUENTES[sec.encuesta]?.comparaciones ?? [];
+          // Si la comparación activa no aplica a la fuente del secundario (el
+          // caso de ENDIREH con los pares que incluyen hombres), se omite en
+          // vez de dibujar una gráfica vacía.
+          if (!compsOk.includes(v.comparacion)) continue;
 
-        // Cada indicador resuelve su propia geometría con SUS años: es lo que
-        // evita que un indicador de un solo año (Censo) quede partido en una
-        // columna vacía por comparar ediciones que no tiene.
-        const aniosSec = [...new Set(fsec.map((d) => String(d.anio)))].sort();
-        const geoSec = geometria(v, {aniosDisponibles: aniosSec});
+          // Cada indicador resuelve su propia geometría con SUS años: es lo
+          // que evita que un indicador de un solo año (Censo) quede partido
+          // en una columna vacía por comparar ediciones que no tiene.
+          const aniosSec = [...new Set(fsec.map((d) => String(d.anio)))].sort();
+          const geoSec = geometria(v, {aniosDisponibles: aniosSec});
 
-        const ffil = filtrar(fsec, {
-          anio: v.anio, entidad: v.entidad, rangoEdad: v.rangoEdad,
-          tipoDiscapacidad: v.tipoDiscapacidad,
-          decil: v.decil,
-        });
-        if (!ffil.length) continue;
+          const ffil = filtrar(fsec, {
+            anio: v.anio, entidad: v.entidad, rangoEdad: v.rangoEdad,
+            tipoDiscapacidad: v.tipoDiscapacidad,
+            decil: v.decil,
+          });
+          if (!ffil.length) continue;
 
-        tarjetas.push(bloqueGrafica(ffil, {
-          comparacion: v.comparacion, geo: geoSec,
-          formato: sec.formato ?? "pct",
-          titulo: sec.indicador,
-          fuente: ffil[0]?.fuente ?? "",
-          explica: sec.explica,
-        }));
-      }
-      if (!tarjetas.length) {
-        return [html`<p class="nota-indicador">Ningún indicador relacionado
-          admite esta combinación de filtros.</p>`];
-      }
-      // Rejilla de dos columnas, con la primera gráfica a ancho completo
-      // cuando el total es impar. Así nunca queda una tarjeta suelta ocupando
-      // media fila:
-      //
-      //   1 -> 1              4 -> 2 + 2
-      //   2 -> 2              5 -> 1 + 2 + 2
-      //   3 -> 1 + 2
-      //
-      // El impar se resuelve promoviendo la primera, que es la más importante
-      // de la sección, en vez de dejar un hueco al final.
-      if (tarjetas.length === 1) {
-        return [html`<div class="grid">${tarjetas}</div>`];
-      }
-      if (tarjetas.length % 2 === 1) {
-        const [principal, ...resto] = tarjetas;
-        return [
-          html`<div class="grid">${principal}</div>`,
-          html`<div class="grid grid-cols-2">${resto}</div>`,
-        ];
-      }
-      return [html`<div class="grid grid-cols-2">${tarjetas}</div>`];
-    },
-  });
+          tarjetas.push(bloqueGrafica(ffil, {
+            comparacion: v.comparacion, geo: geoSec,
+            formato: sec.formato ?? "pct",
+            titulo: sec.indicador,
+            fuente: ffil[0]?.fuente ?? "",
+            explica: sec.explica,
+          }));
+        }
+        if (!tarjetas.length) {
+          return [html`<p class="nota-indicador">Ningún indicador de esta
+            sección admite esta combinación de filtros.</p>`];
+        }
+        // Rejilla de dos columnas, con la primera gráfica a ancho completo
+        // cuando el total es impar. Así nunca queda una tarjeta suelta
+        // ocupando media fila:
+        //
+        //   1 -> 1              4 -> 2 + 2
+        //   2 -> 2              5 -> 1 + 2 + 2
+        //   3 -> 1 + 2
+        //
+        // El impar se resuelve promoviendo la primera, que es la más
+        // importante de la sección, en vez de dejar un hueco al final.
+        if (tarjetas.length === 1) {
+          return [html`<div class="grid">${tarjetas}</div>`];
+        }
+        if (tarjetas.length % 2 === 1) {
+          const [primera, ...resto] = tarjetas;
+          return [
+            html`<div class="grid">${primera}</div>`,
+            html`<div class="grid grid-cols-2">${resto}</div>`,
+          ];
+        }
+        return [html`<div class="grid grid-cols-2">${tarjetas}</div>`];
+      },
+    });
+  };
+
+  const seccionesSecundarias = tema.bloques
+    ? tema.bloques.map((b) => construirSeccion(b.titulo, b.indicadores))
+    : [construirSeccion("Indicadores relacionados", tema.secundarios ?? [])];
 
   // --- Sección de ranking, con su propio panel ---------------------------
   // Para temas con MUCHAS categorías de pocos datos cada una (los treinta
@@ -633,7 +647,7 @@ export function dashboardTema(clave, datos, {geoEntidades = null,
 
   return html`<div class="tablero-tema">
     <p class="entrada-tema">${tema.entrada}</p>
-    ${[seccionPrincipal, seccionSecundarios, seccionRanking, seccionCruce,
-       seccionTerritorio].filter(Boolean)}
+    ${[seccionPrincipal, ...seccionesSecundarias, seccionRanking,
+       seccionCruce, seccionTerritorio].filter(Boolean)}
   </div>`;
 }

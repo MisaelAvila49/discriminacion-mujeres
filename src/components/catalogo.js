@@ -124,7 +124,10 @@ export const CATALOGO = {
       internet. Mide el acceso en la vivienda, no el uso personal: alguien con
       conexión en casa puede no usarla, y alguien sin conexión puede usar
       internet en otro lado.`,
-    secundarios: [
+    bloques: [
+      {
+        titulo: "Otras tecnologías del hogar",
+        indicadores: [
       {encuesta: "enigh", indicador: "Hogar con teléfono celular", formato: "pct",
        nota: `El celular está mucho más extendido que la conexión fija, así que
          la brecha se estrecha: es la tecnología que primero llega.`,
@@ -142,8 +145,11 @@ export const CATALOGO = {
       {encuesta: "enigh", indicador: "Hogar con televisión de paga", formato: "pct",
        explica: `Porcentaje de personas que viven en un hogar con servicio de
          televisión de paga contratado.`},
+        ],
+      },
     ],
   },
+
 
   "educacion-enigh": {
     encuesta: "enigh",
@@ -160,16 +166,10 @@ export const CATALOGO = {
       o superior (incluye normal, carrera técnica, profesional, maestría y
       doctorado). Quienes no declararon su nivel salen del denominador en vez
       de contarse como si no tuvieran estudios.`,
-    secundarios: [
-      {encuesta: "enigh", indicador: "Sin ningún grado de escolaridad", formato: "pct",
-       nota: `El extremo opuesto del indicador principal, y donde la brecha por
-         discapacidad es más brutal: 16.2% contra 3.8% entre mujeres.`,
-       explica: `Porcentaje de personas que declararon no haber aprobado ningún
-         grado escolar.`},
-      {encuesta: "enigh", indicador: "No sabe leer ni escribir (ENIGH)", formato: "pct",
-       explica: `Porcentaje de personas que declararon no saber leer ni
-         escribir. Es la misma pregunta que hace la ENADIS, así que las dos
-         cifras se pueden contrastar.`},
+    bloques: [
+      {
+        titulo: "Hasta dónde llegó la escolaridad",
+        indicadores: [
       {encuesta: "enigh", indicador: "Nivel más alto: Sin escolaridad", formato: "pct",
        nota: `Los siete niveles suman 100 % dentro de cada grupo: dicen dónde
          se detuvo la escolaridad, no cuántas pasaron un umbral. La brecha se
@@ -188,11 +188,33 @@ export const CATALOGO = {
        explica: `Estudios profesionales como nivel más alto. Porcentaje de personas de 18 años o más de cada grupo.`},
       {encuesta: "enigh", indicador: "Nivel más alto: Posgrado", formato: "pct",
        explica: `Maestría o doctorado. Agrupa los tres códigos de posgrado porque la escala cambió en 2024 y separarlos produciría una serie falsa. Porcentaje de personas de 18 años o más de cada grupo.`},
+        ],
+      },
+      {
+        titulo: "Rezago educativo",
+        indicadores: [
+      {encuesta: "enigh", indicador: "Sin ningún grado de escolaridad", formato: "pct",
+       nota: `El extremo opuesto del indicador principal, y donde la brecha por
+         discapacidad es más brutal: 16.2% contra 3.8% entre mujeres.`,
+       explica: `Porcentaje de personas que declararon no haber aprobado ningún
+         grado escolar.`},
+      {encuesta: "enigh", indicador: "No sabe leer ni escribir (ENIGH)", formato: "pct",
+       explica: `Porcentaje de personas que declararon no saber leer ni
+         escribir. Es la misma pregunta que hace la ENADIS, así que las dos
+         cifras se pueden contrastar.`},
+        ],
+      },
+      {
+        titulo: "Escolaridad en curso",
+        indicadores: [
       {encuesta: "enigh", indicador: "Asiste a la escuela (18 a 29 años, ENIGH)", formato: "pct",
        explica: `Porcentaje de personas de 18 a 29 años inscritas y asistiendo
          a la escuela.`},
+        ],
+      },
     ],
   },
+
   hogar: {
     encuesta: "enigh",
     titulo: "Jefatura del hogar",
@@ -210,7 +232,10 @@ export const CATALOGO = {
       qué proporción de cada grupo encabeza un hogar. A diferencia del resto
       del tablero, este indicador no mide una desventaja; en México una
       jefatura femenina suele reflejar hogares sin cónyuge varón.`,
-    secundarios: [
+    bloques: [
+      {
+        titulo: "Quién sostiene económicamente el hogar",
+        indicadores: [
       {encuesta: "enigh", indicador: "Aporta la mitad o más del ingreso de su hogar", formato: "pct",
        nota: `Encabezar el hogar y sostenerlo económicamente no son lo mismo.
          Una jefa con discapacidad aporta la mitad o más del ingreso en la
@@ -221,13 +246,11 @@ export const CATALOGO = {
       {encuesta: "enigh", indicador: "Ingreso mensual de quien encabeza el hogar", formato: "pesos",
        explica: `Promedio mensual del ingreso propio de quien encabeza el
          hogar, en pesos constantes. Solo entre hogares con ingreso.`},
-      {encuesta: "enigh", indicador: "Jefatura de 60+ años", formato: "pct",
-       nota: `Es la cifra que reencuadra toda la sección: 68 % de las jefas con
-         discapacidad tiene 60 años o más, contra 32 % de las jefas sin ella.
-         La jefatura femenina en este grupo refleja sobre todo viudez, no
-         autonomía económica.`,
-       explica: `Porcentaje de quienes encabezan un hogar que tienen 60 años o
-         más. El denominador son las jefaturas, no toda la población.`},
+        ],
+      },
+      {
+        titulo: "Edad de quien encabeza",
+        indicadores: [
       {encuesta: "enigh", indicador: "Jefatura de 18-29 años", formato: "pct",
        explica: `Porcentaje de quienes encabezan un hogar en ese rango de edad.
          Los cuatro rangos suman 100 % dentro de cada grupo.`},
@@ -237,6 +260,18 @@ export const CATALOGO = {
       {encuesta: "enigh", indicador: "Jefatura de 45-59 años", formato: "pct",
        explica: `Porcentaje de quienes encabezan un hogar en ese rango de edad.
          Los cuatro rangos suman 100 % dentro de cada grupo.`},
+      {encuesta: "enigh", indicador: "Jefatura de 60+ años", formato: "pct",
+       nota: `Es la cifra que reencuadra toda la sección: 68 % de las jefas con
+         discapacidad tiene 60 años o más, contra 32 % de las jefas sin ella.
+         La jefatura femenina en este grupo refleja sobre todo viudez, no
+         autonomía económica.`,
+       explica: `Porcentaje de quienes encabezan un hogar que tienen 60 años o
+         más. El denominador son las jefaturas, no toda la población.`},
+        ],
+      },
+      {
+        titulo: "Escolaridad de quien encabeza",
+        indicadores: [
       {encuesta: "enigh", indicador: "Jefatura con escolaridad: Sin escolaridad", formato: "pct",
        nota: `La escolaridad de quien encabeza el hogar, con la misma escala
          de la página de Educación para que las dos se lean igual.`,
@@ -257,8 +292,11 @@ export const CATALOGO = {
       {encuesta: "enigh", indicador: "Jefatura con escolaridad: Posgrado", formato: "pct",
        explica: `Porcentaje de quienes encabezan un hogar cuyo nivel más alto
          es posgrado. Los seis niveles suman 100 % dentro de cada grupo.`},
+        ],
+      },
     ],
   },
+
   ingreso: {
     encuesta: "enigh",
     titulo: "Ingreso y apoyos",
@@ -269,13 +307,25 @@ export const CATALOGO = {
       existiendo, y el del trabajo no. Lo que SALE del bolsillo del hogar
       —aparatos, cuidados, transporte— vive en la sección de Gastos.`,
     fuentePrincipal: "enigh",
-    indicadorPrincipal: "Su hogar recibe ingreso de trabajo",
-    formato: "pct",
-    explica: `Porcentaje de personas que viven en un hogar con al menos un
-      ingreso por trabajo: sueldos, salarios, horas extra o aguinaldo. Es un
-      dato de HOGAR heredado a la persona, así que no dice que ella trabaje
-      sino que alguien en su hogar percibe ingreso laboral.`,
-    secundarios: [
+    indicadorPrincipal: "Ingreso mensual propio",
+    formato: "pesos",
+    explica: `Promedio mensual del ingreso de la propia persona, sumando
+      todas sus fuentes. A diferencia del resto de la página, este SÍ es
+      individual: la ENIGH registra el ingreso por renglón de persona, no
+      solo por hogar. Solo entre quienes viven en un hogar con ingreso
+      registrado, y en pesos constantes.`,
+    bloques: [
+      {
+        titulo: "De dónde viene el ingreso del hogar",
+        indicadores: [
+      {encuesta: "enigh", indicador: "Su hogar recibe ingreso de trabajo", formato: "pct",
+       nota: `Las cinco fuentes van juntas porque la comparación entre ellas
+         ES el análisis: un hogar que vive de su trabajo y otro que vive de
+         programas sociales tienen el mismo ingreso con distinta fragilidad.`,
+       explica: `Porcentaje de personas que viven en un hogar con al menos un
+         ingreso por trabajo: sueldos, salarios, horas extra o aguinaldo. Es
+         un dato de HOGAR heredado a la persona, así que no dice que ella
+         trabaje sino que alguien en su hogar percibe ingreso laboral.`},
       {encuesta: "enigh", indicador: "Su hogar recibe ingreso de programas sociales", formato: "pct",
        nota: `Es el contraste que da sentido a la página: 61.8 % de las mujeres
          con discapacidad vive en un hogar que recibe programas sociales,
@@ -295,6 +345,11 @@ export const CATALOGO = {
       {encuesta: "enigh", indicador: "Su hogar recibe ingreso de rentas y alquileres", formato: "pct",
        explica: `Alquiler de inmuebles y tierras, intereses y rendimientos.
          Es la fuente menos frecuente en los cuatro grupos.`},
+        ],
+      },
+      {
+        titulo: "Cuánto aporta cada fuente",
+        indicadores: [
       {encuesta: "enigh", indicador: "Ingreso mensual del hogar por trabajo", formato: "pesos",
        nota: `Entre los hogares que sí tienen esa fuente. Las mujeres con
          discapacidad viven en hogares que reciben tres cuartas partes de lo
@@ -311,22 +366,11 @@ export const CATALOGO = {
       {encuesta: "enigh", indicador: "Ingreso mensual del hogar por transferencias (pensiones, remesas)", formato: "pesos",
        explica: `Promedio mensual por transferencias, entre hogares que las
          reciben. En pesos constantes.`},
-      {encuesta: "enigh", indicador: "Ingreso mensual propio", formato: "pesos",
-       nota: `A diferencia de los anteriores, este SÍ es individual: la
-         encuesta registra el ingreso por renglón de persona, no solo por
-         hogar.`,
-       explica: `Promedio mensual del ingreso de la propia persona, sumando
-         todas sus fuentes. Solo entre quienes viven en un hogar con ingreso
-         registrado. En pesos constantes.`},
-      {encuesta: "enigh", indicador: "Aporta la mitad o más del ingreso de su hogar", formato: "pct",
-       nota: `Responde quién sostiene económicamente al hogar. Un hombre sin
-         discapacidad lo hace en la mitad de los casos; una mujer con
-         discapacidad, en poco más de una cuarta parte.`,
-       explica: `Porcentaje de personas cuyo ingreso propio representa la
-         mitad o más del ingreso total de su hogar. Solo entre hogares con
-         ingreso mayor que cero: sin denominador la proporción no existe, y
-         contar esos casos como "no aporta" mezclaría no tener ingreso propio
-         con vivir en un hogar sin ingreso alguno.`},
+        ],
+      },
+      {
+        titulo: "Apoyos y becas",
+        indicadores: [
       {encuesta: "enigh", indicador: "Recibe la beca de discapacidad", formato: "pct",
        nota: `La pensión federal para personas con discapacidad, que dentro de
          la composición de arriba forma parte de los programas sociales.`,
@@ -341,6 +385,22 @@ export const CATALOGO = {
          beca de discapacidad.`,
        explica: `Porcentaje de personas que viven en un hogar donde alguien
          recibe la pensión para adultos mayores.`},
+        ],
+      },
+      {
+        titulo: "Quién sostiene el hogar",
+        indicadores: [
+      {encuesta: "enigh", indicador: "Aporta la mitad o más del ingreso de su hogar", formato: "pct",
+       nota: `Responde quién sostiene económicamente al hogar. Un hombre sin
+         discapacidad lo hace en la mitad de los casos; una mujer con
+         discapacidad, en poco más de una cuarta parte.`,
+       explica: `Porcentaje de personas cuyo ingreso propio representa la
+         mitad o más del ingreso total de su hogar. Solo entre hogares con
+         ingreso mayor que cero: sin denominador la proporción no existe, y
+         contar esos casos como "no aporta" mezclaría no tener ingreso propio
+         con vivir en un hogar sin ingreso alguno.`},
+        ],
+      },
     ],
   },
 
@@ -359,7 +419,10 @@ export const CATALOGO = {
       en aparatos ortopédicos, sillas de ruedas, andaderas, prótesis, su
       reparación, cuidado de enfermos o educación especial. Es un dato de
       HOGAR heredado a la persona. Solo hay tabla de gastos para 2022 y 2024.`,
-    secundarios: [
+    bloques: [
+      {
+        titulo: "Cuánto se gasta en aparatos y cuidados",
+        indicadores: [
       {encuesta: "enigh", indicador: "Gasto trimestral en aparatos o cuidados por discapacidad", formato: "pesos",
        nota: `El promedio se calcula solo entre quienes gastan algo: "cuánto
          gasta el que gasta", no diluido con los hogares en cero.`,
@@ -369,6 +432,11 @@ export const CATALOGO = {
          constantes de 2024: la ENIGH estandariza el gasto a precios de
          agosto de su propia edición, lo que lo deja comparable dentro de un
          año pero no entre años.`},
+        ],
+      },
+      {
+        titulo: "En qué se gasta, por concepto",
+        indicadores: [
       {encuesta: "enigh", indicador: "Gasto en: Lentes y apoyos visuales", formato: "pct",
        explica: `Porcentaje de personas que viven en un hogar que gastó en
          anteojos, lentes de contacto o intraoculares u otros apoyos
@@ -399,7 +467,11 @@ export const CATALOGO = {
        explica: `Porcentaje de personas que viven en un hogar que gastó en
          residencias no médicas u otros servicios de protección social para
          personas con discapacidad. Desglose exclusivo de 2024.`},
-
+        ],
+      },
+      {
+        titulo: "Transporte: quiénes gastan",
+        indicadores: [
       {encuesta: "enigh", indicador: "Su hogar gasta en taxi o aplicación de viaje", formato: "pct",
        nota: `Cuando el transporte público no es accesible, el taxi deja de
          ser una alternativa cara y se vuelve el único medio utilizable: los
@@ -418,6 +490,19 @@ export const CATALOGO = {
          ligero, autobús urbano, trolebús, metrobús, colectivo, combi o
          microbús. No incluye autobús foráneo ni transporte entre ciudades:
          la comparación es sobre el traslado cotidiano.`},
+      {encuesta: "enigh", indicador: "Su hogar gasta en aplicación de viaje (Uber, DiDi)", formato: "pct",
+       nota: `Solo 2024: el INEGI separó las aplicaciones del taxi de sitio
+         apenas ese año. No hay serie hacia atrás porque la encuesta no lo
+         preguntaba por separado, no porque nadie las usara.`,
+       explica: `Porcentaje de personas cuyo hogar gastó en renta de vehículo
+         con chofer (Uber, DiDi y similares). Antes de 2024 este gasto se
+         capturaba dentro de "taxi", así que el indicador que une ambos es el
+         que sí se puede seguir en el tiempo.`},
+        ],
+      },
+      {
+        titulo: "Transporte: cuánto gastan",
+        indicadores: [
       {encuesta: "enigh", indicador: "Gasto trimestral en taxi o aplicación de viaje", formato: "pesos",
        nota: `El promedio se calcula solo entre quienes gastan algo: "cuánto
          gasta el que gasta", no diluido con los hogares en cero.`,
@@ -430,14 +515,8 @@ export const CATALOGO = {
        explica: `Promedio de pesos gastados en el trimestre en transporte
          público, entre las personas cuyo hogar registró ese gasto. En pesos
          constantes, igual que el anterior.`},
-      {encuesta: "enigh", indicador: "Su hogar gasta en aplicación de viaje (Uber, DiDi)", formato: "pct",
-       nota: `Solo 2024: el INEGI separó las aplicaciones del taxi de sitio
-         apenas ese año. No hay serie hacia atrás porque la encuesta no lo
-         preguntaba por separado, no porque nadie las usara.`,
-       explica: `Porcentaje de personas cuyo hogar gastó en renta de vehículo
-         con chofer (Uber, DiDi y similares). Antes de 2024 este gasto se
-         capturaba dentro de "taxi", así que el indicador que une ambos es el
-         que sí se puede seguir en el tiempo.`},
+        ],
+      },
     ],
   },
 
@@ -498,7 +577,10 @@ export const CATALOGO = {
       mujeres que han tenido pareja, no todas: quien nunca ha tenido no puede
       haber vivido este tipo de violencia. En el ámbito de pareja no se
       desglosa quién agrede porque el agresor es, por definición, la pareja.`,
-    secundarios: [
+    bloques: [
+      {
+        titulo: "Los otros ámbitos donde ocurre",
+        indicadores: [
       {encuesta: "endireh", indicador: "Violencia comunitaria (calle, transporte) en los últimos 12 meses", formato: "pct",
        nota: `Sin controlar por edad esta cifra se invierte, igual que la
          violencia sexual: en el agregado parece menor entre mujeres con
@@ -520,244 +602,9 @@ export const CATALOGO = {
          denominador son solo las mujeres que asistieron a la escuela en los
          últimos doce meses, un grupo pequeño entre las mujeres adultas, así
          que el desglose por entidad puede quedar con pocos casos.`},
+        ],
+      },
     ],
-    ranking: {
-      titulo: "Quién agrede, dentro de cada ámbito",
-      limite: 20,
-      explica: `Cada barra es el porcentaje de mujeres que declararon violencia
-        de esa persona en los últimos doce meses. Están ordenadas por BRECHA:
-        arriba queda el agresor cuya violencia es más desproporcionada contra
-        las mujeres con discapacidad, que no siempre es el más frecuente. Los
-        porcentajes no suman el total del ámbito: una misma mujer agredida por
-        su padre y por su hermano aparece en las dos filas.`,
-      grupos: [
-        {
-          clave: "familiar",
-          nombre: "Ámbito familiar",
-          dimLabel: "Familiar que agrede",
-          recorta: "Violencia familiar de ",
-          indicadores: [
-          "Violencia familiar de su padre en los últimos 12 meses",
-          "Violencia familiar de su madre en los últimos 12 meses",
-          "Violencia familiar de su padrastro o madrastra en los últimos 12 meses",
-          "Violencia familiar de un abuelo o abuela en los últimos 12 meses",
-          "Violencia familiar de un hijo o hija en los últimos 12 meses",
-          "Violencia familiar de un hermano o hermana en los últimos 12 meses",
-          "Violencia familiar de un tío o tía en los últimos 12 meses",
-          "Violencia familiar de un primo o prima en los últimos 12 meses",
-          "Violencia familiar de un suegro o suegra en los últimos 12 meses",
-          "Violencia familiar de un cuñado o cuñada en los últimos 12 meses",
-          "Violencia familiar de un sobrino o sobrina en los últimos 12 meses",
-          "Violencia familiar de un yerno en los últimos 12 meses",
-          "Violencia familiar de otro familiar en los últimos 12 meses",
-          ],
-        },
-        {
-          clave: "laboral",
-          nombre: "Ámbito laboral",
-          dimLabel: "Persona que agrede en el trabajo",
-          recorta: "Violencia en el trabajo de ",
-          indicadores: [
-          "Violencia en el trabajo de su patrón o jefe en los últimos 12 meses",
-          "Violencia en el trabajo de un supervisor o capataz en los últimos 12 meses",
-          "Violencia en el trabajo de un gerente o directivo en los últimos 12 meses",
-          "Violencia en el trabajo de un compañero de trabajo en los últimos 12 meses",
-          "Violencia en el trabajo de un cliente en los últimos 12 meses",
-          "Violencia en el trabajo de una persona desconocida del trabajo en los últimos 12 meses",
-          "Violencia en el trabajo de un familiar del patrón en los últimos 12 meses",
-          "Violencia en el trabajo de otra persona del trabajo en los últimos 12 meses",
-          ],
-        },
-        {
-          clave: "escolar",
-          nombre: "Ámbito escolar",
-          dimLabel: "Persona que agrede en la escuela",
-          recorta: "Violencia en la escuela de ",
-          indicadores: [
-          "Violencia en la escuela de un maestro en los últimos 12 meses",
-          "Violencia en la escuela de una maestra en los últimos 12 meses",
-          "Violencia en la escuela de un compañero en los últimos 12 meses",
-          "Violencia en la escuela de una compañera en los últimos 12 meses",
-          "Violencia en la escuela de el director o directora en los últimos 12 meses",
-          "Violencia en la escuela de un trabajador de la escuela en los últimos 12 meses",
-          "Violencia en la escuela de una trabajadora de la escuela en los últimos 12 meses",
-          "Violencia en la escuela de una persona desconocida de la escuela en los últimos 12 meses",
-          "Violencia en la escuela de otra persona de la escuela en los últimos 12 meses",
-          ],
-        },
-      ],
-    },
-    cruce: {
-      titulo: "Qué tipo de violencia ejerce cada quien",
-      explica: `Cada celda es cuántas VECES más frecuente es esa combinación
-        entre mujeres con discapacidad que entre mujeres sin ella. Un 3.0
-        significa el triple de frecuente. El color mide la brecha, no el
-        nivel: una celda intensa señala dónde la desigualdad es mayor, no
-        dónde hay más casos. Las celdas en blanco se quedaron sin suficientes
-        casos de muestra para publicar una cifra. Solo se cuentan los últimos
-        doce meses.`,
-      grupos: [
-        {
-          clave: "familiar",
-          nombre: "Ámbito familiar",
-          subtitulo: "Quién agrede en la familia, y con qué tipo de violencia",
-          filaLabel: "Familiar que agrede",
-          fila: (i) => i.replace(/^Violencia \S+ de /, "").replace(/ \(familiar\)$/, ""),
-          col: (i) => {
-            const m = i.match(/^Violencia (\S+) de /);
-            return m ? m[1][0].toUpperCase() + m[1].slice(1) : null;
-          },
-          indicadores: [
-            "Violencia psicológica de su padre (familiar)",
-            "Violencia psicológica de su madre (familiar)",
-            "Violencia psicológica de su padrastro o madrastra (familiar)",
-            "Violencia psicológica de un abuelo o abuela (familiar)",
-            "Violencia psicológica de un hijo o hija (familiar)",
-            "Violencia psicológica de un hermano o hermana (familiar)",
-            "Violencia psicológica de un tío o tía (familiar)",
-            "Violencia psicológica de un primo o prima (familiar)",
-            "Violencia psicológica de un suegro o suegra (familiar)",
-            "Violencia psicológica de un cuñado o cuñada (familiar)",
-            "Violencia psicológica de un sobrino o sobrina (familiar)",
-            "Violencia psicológica de un yerno (familiar)",
-            "Violencia psicológica de otro familiar (familiar)",
-            "Violencia sexual de su padre (familiar)",
-            "Violencia sexual de su madre (familiar)",
-            "Violencia sexual de su padrastro o madrastra (familiar)",
-            "Violencia sexual de un abuelo o abuela (familiar)",
-            "Violencia sexual de un hijo o hija (familiar)",
-            "Violencia sexual de un hermano o hermana (familiar)",
-            "Violencia sexual de un tío o tía (familiar)",
-            "Violencia sexual de un primo o prima (familiar)",
-            "Violencia sexual de un suegro o suegra (familiar)",
-            "Violencia sexual de un cuñado o cuñada (familiar)",
-            "Violencia sexual de un sobrino o sobrina (familiar)",
-            "Violencia sexual de un yerno (familiar)",
-            "Violencia sexual de otro familiar (familiar)",
-            "Violencia física de su padre (familiar)",
-            "Violencia física de su madre (familiar)",
-            "Violencia física de su padrastro o madrastra (familiar)",
-            "Violencia física de un abuelo o abuela (familiar)",
-            "Violencia física de un hijo o hija (familiar)",
-            "Violencia física de un hermano o hermana (familiar)",
-            "Violencia física de un tío o tía (familiar)",
-            "Violencia física de un primo o prima (familiar)",
-            "Violencia física de un suegro o suegra (familiar)",
-            "Violencia física de un cuñado o cuñada (familiar)",
-            "Violencia física de un sobrino o sobrina (familiar)",
-            "Violencia física de un yerno (familiar)",
-            "Violencia física de otro familiar (familiar)",
-            "Violencia económica de su padre (familiar)",
-            "Violencia económica de su madre (familiar)",
-            "Violencia económica de su padrastro o madrastra (familiar)",
-            "Violencia económica de un abuelo o abuela (familiar)",
-            "Violencia económica de un hijo o hija (familiar)",
-            "Violencia económica de un hermano o hermana (familiar)",
-            "Violencia económica de un tío o tía (familiar)",
-            "Violencia económica de un primo o prima (familiar)",
-            "Violencia económica de un suegro o suegra (familiar)",
-            "Violencia económica de un cuñado o cuñada (familiar)",
-            "Violencia económica de un sobrino o sobrina (familiar)",
-            "Violencia económica de un yerno (familiar)",
-            "Violencia económica de otro familiar (familiar)",
-          ],
-        },
-        {
-          clave: "laboral",
-          nombre: "Ámbito laboral",
-          subtitulo: "Quién agrede en el trabajo, y con qué tipo de violencia",
-          filaLabel: "Persona que agrede en el trabajo",
-          fila: (i) => i.replace(/^Violencia \S+ de /, "").replace(/ \(trabajo\)$/, ""),
-          col: (i) => {
-            const m = i.match(/^Violencia (\S+) de /);
-            return m ? m[1][0].toUpperCase() + m[1].slice(1) : null;
-          },
-          indicadores: [
-            "Violencia psicológica de su patrón o jefe (trabajo)",
-            "Violencia psicológica de un supervisor o capataz (trabajo)",
-            "Violencia psicológica de un gerente o directivo (trabajo)",
-            "Violencia psicológica de un compañero de trabajo (trabajo)",
-            "Violencia psicológica de un cliente (trabajo)",
-            "Violencia psicológica de una persona desconocida del trabajo (trabajo)",
-            "Violencia psicológica de un familiar del patrón (trabajo)",
-            "Violencia psicológica de otra persona del trabajo (trabajo)",
-            "Violencia sexual de su patrón o jefe (trabajo)",
-            "Violencia sexual de un supervisor o capataz (trabajo)",
-            "Violencia sexual de un gerente o directivo (trabajo)",
-            "Violencia sexual de un compañero de trabajo (trabajo)",
-            "Violencia sexual de un cliente (trabajo)",
-            "Violencia sexual de una persona desconocida del trabajo (trabajo)",
-            "Violencia sexual de un familiar del patrón (trabajo)",
-            "Violencia sexual de otra persona del trabajo (trabajo)",
-            "Violencia física de su patrón o jefe (trabajo)",
-            "Violencia física de un supervisor o capataz (trabajo)",
-            "Violencia física de un gerente o directivo (trabajo)",
-            "Violencia física de un compañero de trabajo (trabajo)",
-            "Violencia física de un cliente (trabajo)",
-            "Violencia física de una persona desconocida del trabajo (trabajo)",
-            "Violencia física de un familiar del patrón (trabajo)",
-            "Violencia física de otra persona del trabajo (trabajo)",
-            "Violencia económica de su patrón o jefe (trabajo)",
-            "Violencia económica de un supervisor o capataz (trabajo)",
-            "Violencia económica de un gerente o directivo (trabajo)",
-            "Violencia económica de un compañero de trabajo (trabajo)",
-            "Violencia económica de un cliente (trabajo)",
-            "Violencia económica de una persona desconocida del trabajo (trabajo)",
-            "Violencia económica de un familiar del patrón (trabajo)",
-            "Violencia económica de otra persona del trabajo (trabajo)",
-          ],
-        },
-        {
-          clave: "escolar",
-          nombre: "Ámbito escolar",
-          subtitulo: "Quién agrede en la escuela, y con qué tipo de violencia",
-          filaLabel: "Persona que agrede en la escuela",
-          fila: (i) => i.replace(/^Violencia \S+ de /, "").replace(/ \(escuela\)$/, ""),
-          col: (i) => {
-            const m = i.match(/^Violencia (\S+) de /);
-            return m ? m[1][0].toUpperCase() + m[1].slice(1) : null;
-          },
-          indicadores: [
-            "Violencia psicológica de un maestro (escuela)",
-            "Violencia psicológica de una maestra (escuela)",
-            "Violencia psicológica de un compañero (escuela)",
-            "Violencia psicológica de una compañera (escuela)",
-            "Violencia psicológica de el director o directora (escuela)",
-            "Violencia psicológica de un trabajador de la escuela (escuela)",
-            "Violencia psicológica de una trabajadora de la escuela (escuela)",
-            "Violencia psicológica de una persona desconocida de la escuela (escuela)",
-            "Violencia psicológica de otra persona de la escuela (escuela)",
-            "Violencia sexual de un maestro (escuela)",
-            "Violencia sexual de una maestra (escuela)",
-            "Violencia sexual de un compañero (escuela)",
-            "Violencia sexual de una compañera (escuela)",
-            "Violencia sexual de el director o directora (escuela)",
-            "Violencia sexual de un trabajador de la escuela (escuela)",
-            "Violencia sexual de una trabajadora de la escuela (escuela)",
-            "Violencia sexual de una persona desconocida de la escuela (escuela)",
-            "Violencia sexual de otra persona de la escuela (escuela)",
-            "Violencia física de un maestro (escuela)",
-            "Violencia física de una maestra (escuela)",
-            "Violencia física de un compañero (escuela)",
-            "Violencia física de una compañera (escuela)",
-            "Violencia física de el director o directora (escuela)",
-            "Violencia física de un trabajador de la escuela (escuela)",
-            "Violencia física de una trabajadora de la escuela (escuela)",
-            "Violencia física de una persona desconocida de la escuela (escuela)",
-            "Violencia física de otra persona de la escuela (escuela)",
-            "Violencia económica de un maestro (escuela)",
-            "Violencia económica de una maestra (escuela)",
-            "Violencia económica de un compañero (escuela)",
-            "Violencia económica de una compañera (escuela)",
-            "Violencia económica de el director o directora (escuela)",
-            "Violencia económica de un trabajador de la escuela (escuela)",
-            "Violencia económica de una trabajadora de la escuela (escuela)",
-            "Violencia económica de una persona desconocida de la escuela (escuela)",
-            "Violencia económica de otra persona de la escuela (escuela)",
-          ],
-        },
-      ],
-    },
   },
 
   // --- Censo ---------------------------------------------------------------
