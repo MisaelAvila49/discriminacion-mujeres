@@ -5,7 +5,7 @@
 // viva en un catálogo en vez de repartido por los archivos .md.
 
 import {html} from "npm:htl";
-import {resize} from "observablehq:stdlib";
+import {resize, Inputs} from "observablehq:stdlib";
 import {
   panelFiltros, filtrar, prepararSeries, brechaDe, geometria,
   TODAS, POR_SEPARADO, AGREGADO,
@@ -14,6 +14,7 @@ import {
   barrasComparadas, avisoMuestra, kpis,
   tablaDatos, formatear, heatmapEdadAnio,
   mapasMultiples, barrasPorEntidad, heatmapEntidades, explicacion,
+  rankingComparado,
 } from "./graficas.js";
 import {
   COMPARACION_POR_CLAVE, FUENTES, admiteNivel, ORDEN_EDAD,
@@ -96,12 +97,17 @@ function bloqueGrafica(filas, {comparacion, geo, formato, titulo,
 // válido para una sección producía geometrías imposibles en otra. Con paneles
 // independientes cada bloque solo ofrece lo que sus datos sostienen.
 function seccion({titulo, datos, fuente, construir, edadInicial = AGREGADO,
-    conEntidad = null, conDecil = true}) {
+    conEntidad = null, conDecil = true, extras = []}) {
   if (!datos.length) return null;
 
   const panel = panelFiltros(datos, {fuente, edadInicial,
                                      mostrarEntidad: conEntidad,
                                      mostrarDecil: conDecil});
+  // Controles propios de la sección (por ejemplo, el selector de ámbito del
+  // ranking). Viven junto al panel y repintan igual que sus filtros.
+  for (const ex of extras) {
+    ex.addEventListener("input", () => pintar());
+  }
   const cuerpo = html`<div class="seccion-cuerpo"></div>`;
   const anios = [...new Set(datos.map((d) => String(d.anio)))].sort();
 
@@ -117,6 +123,7 @@ function seccion({titulo, datos, fuente, construir, edadInicial = AGREGADO,
   return html`<section class="seccion-tablero">
     ${titulo ? html`<span class="kicker">${titulo}</span>` : ""}
     ${panel}
+    ${extras.length ? html`<div class="panel-filtros">${extras}</div>` : ""}
     ${cuerpo}
   </section>`;
 }
@@ -269,6 +276,73 @@ export function dashboardTema(clave, datos, {geoEntidades = null,
       return [html`<div class="grid grid-cols-2">${tarjetas}</div>`];
     },
   });
+
+  // --- Sección de ranking, con su propio panel ---------------------------
+  // Para temas con MUCHAS categorías de pocos datos cada una (los treinta
+  // agresores de la ENDIREH): en vez de treinta gráficas de dos barras, una
+  // sola de barras horizontales ordenada por brecha, con un selector para
+  // elegir el grupo de indicadores. Un tema la activa declarando
+  // `tema.ranking`; los demás no pagan nada.
+  const seccionRanking = tema.ranking ? (() => {
+    const grupos = tema.ranking.grupos ?? [];
+    const indicadoresRanking = grupos.flatMap((g) => g.indicadores);
+    const datosRank = todo.filter(
+      (d) => d.encuesta === (tema.ranking.encuesta ?? fuente) &&
+             indicadoresRanking.includes(d.indicador));
+    if (!datosRank.length) return null;
+
+    const selector = Inputs.select(grupos.map((g) => g.clave), {
+      label: tema.ranking.etiqueta ?? "Ámbito",
+      value: grupos[0]?.clave,
+      format: (k) => grupos.find((g) => g.clave === k)?.nombre ?? k,
+    });
+
+    return seccion({
+      titulo: tema.ranking.titulo ?? "Ranking",
+      datos: datosRank,
+      fuente: tema.ranking.encuesta ?? fuente,
+      // El ranking ya usa el eje vertical para las categorías: desplegar
+      // además año o edad como facetas lo partiría en rejillas ilegibles.
+      conDecil: false,
+      extras: [selector],
+      construir: ({v}) => {
+        const grupo = grupos.find((g) => g.clave === selector.value)
+          ?? grupos[0];
+        const fdat = filtrar(
+          datosRank.filter((d) => grupo.indicadores.includes(d.indicador)), {
+            anio: v.anio, entidad: v.entidad, rangoEdad: v.rangoEdad,
+            tipoDiscapacidad: v.tipoDiscapacidad,
+          });
+        if (!fdat.length) {
+          return [html`<p class="nota-indicador">Sin datos para esta
+            combinación de filtros.</p>`];
+        }
+        // `dim: "indicador"` en vez de una columna de dimensión propia: cada
+        // agresor es un indicador distinto en el CSV, y la etiqueta legible
+        // se recorta del nombre completo del indicador.
+        const series = prepararSeries(fdat, {
+          comparacion: v.comparacion, dim: "indicador",
+          formato: tema.formato ?? "pct",
+        }).map((d) => ({...d, indicador: grupo.recorta
+          ? d.indicador.replace(grupo.recorta, "").replace(/ en los últimos 12 meses$/, "")
+          : d.indicador}));
+
+        return [html`<div class="grid">${html`<div class="card">
+          ${resize((width) => rankingComparado(series, {
+            dim: "indicador", dimLabel: grupo.dimLabel ?? "Agresor",
+            comparacion: v.comparacion, formato: tema.formato ?? "pct",
+            titulo: grupo.nombre, fuente: fdat[0]?.fuente ?? "",
+            limite: tema.ranking.limite ?? 20, width,
+          }))}
+          ${avisoMuestra(series)}
+          ${explicacion(grupo.explica ?? tema.ranking.explica)}
+          ${tablaDatos(series, {dim: "indicador",
+                                dimLabel: grupo.dimLabel ?? "Agresor",
+                                formato: tema.formato ?? "pct"})}
+        </div>`}</div>`];
+      },
+    });
+  })() : null;
 
   // --- Sección 3: territorio, con su propio panel ------------------------
   // Solo existe si la fuente tiene representatividad estatal. Su panel oculta
@@ -468,6 +542,7 @@ export function dashboardTema(clave, datos, {geoEntidades = null,
 
   return html`<div class="tablero-tema">
     <p class="entrada-tema">${tema.entrada}</p>
-    ${[seccionPrincipal, seccionSecundarios, seccionTerritorio].filter(Boolean)}
+    ${[seccionPrincipal, seccionSecundarios, seccionRanking,
+       seccionTerritorio].filter(Boolean)}
   </div>`;
 }

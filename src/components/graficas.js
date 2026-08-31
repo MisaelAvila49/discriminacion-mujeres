@@ -307,6 +307,97 @@ export function serieTemporal(datos, {comparacion, titulo = "", subtitulo = "",
   }));
 }
 
+// --- Ranking comparado ------------------------------------------------------
+// Barras horizontales con las DOS series de la comparación por fila, ordenadas
+// por la brecha entre ellas.
+//
+// Resuelve el caso de muchas categorías con pocos datos cada una: los treinta
+// agresores de la ENDIREH como treinta gráficas de dos barras son ilegibles y
+// no dejan comparar entre sí. Aquí caben en una sola vista, y el orden por
+// brecha pone arriba lo que el tablero busca — qué agresor es más específico
+// de la discapacidad, no cuál es más frecuente en general (un hijo violenta a
+// menos mujeres que un padre, pero es 3.5 veces más frecuente cuando hay
+// discapacidad).
+//
+// El eje va horizontal porque las etiquetas son frases ("una persona
+// desconocida del trabajo"): en vertical se cortan o se giran.
+export function rankingComparado(datos, {dim, dimLabel = "", comparacion,
+    titulo = "", subtitulo = "", fuente = "", formato = "pct",
+    limite = 20, width = undefined} = {}) {
+  asegurarTrama();
+  const color = escalaColor(comparacion);
+  const series = color.domain ?? [];
+
+  // Brecha por categoría: la razón entre la primera y la segunda serie de la
+  // comparación. Se usa razón y no diferencia de puntos porque estas tasas son
+  // pequeñas y muy distintas entre sí — dos puntos de diferencia no significan
+  // lo mismo sobre una base de 0.5% que sobre una de 20%.
+  const porDim = new Map();
+  for (const d of datos) {
+    if (!porDim.has(d[dim])) porDim.set(d[dim], {});
+    porDim.get(d[dim])[d.serie] = d.pct;
+  }
+  const brechaDe = (k) => {
+    const v = porDim.get(k) ?? {};
+    const a = v[series[0]], b = v[series[1]];
+    if (!(a > 0) || !(b > 0)) return -Infinity;
+    return a / b;
+  };
+
+  const categorias = [...porDim.keys()]
+    .sort((a, b) => brechaDe(b) - brechaDe(a))
+    .slice(0, limite);
+  const orden = datos.filter((d) => categorias.includes(d[dim]));
+
+  return animar(Plot.plot({
+    style: ESTILO_EJES,
+    ...(width ? {width} : {}),
+    title: titulo,
+    subtitle: subtitulo,
+    caption: fuente,
+    marginLeft: 210,
+    marginRight: 56,
+    // Dos barras por categoría más el aire entre grupos.
+    height: Math.max(260, categorias.length * 38 + 70),
+    x: {...ejeValor(formato), label: null},
+    y: {label: null, axis: null, domain: series},
+    fy: {label: null, domain: categorias},
+    color,
+    marks: [
+      Plot.ruleX([0], {stroke: "#e2e8f0"}),
+      Plot.barX(orden, {
+        x: "pct", y: "serie", fy: dim, fill: "serie",
+        insetTop: 1, insetBottom: 1,
+        channels: {
+          [dimLabel || "Categoría"]: (d) => d[dim],
+          "Grupo": (d) => d.serie,
+          [etiquetaMedida(formato)]: (d) => formatear(d.pct, formato),
+          ...canalesPoblacion(formato),
+        },
+        tip: {format: {x: false, y: false, fy: false, fill: false}},
+      }),
+      Plot.barX(orden.filter((d) => d.fragil), {
+        x: "pct", y: "serie", fy: dim, fill: `url(#${ID_TRAMA})`,
+        insetTop: 1, insetBottom: 1,
+      }),
+      Plot.text(orden, {
+        x: "pct", y: "serie", fy: dim, text: textoBarra(formato),
+        textAnchor: "start", dx: 4, fontSize: TIPO.valor,
+        fill: "var(--theme-foreground)",
+      }),
+      // pointerY y no pointer a secas: la categoría es el eje discreto, y
+      // emparejar por distancia a la punta resaltaría la fila equivocada
+      // cuando dos barras difieren mucho en longitud.
+      Plot.barX(orden, Plot.pointerY({
+        x: "pct", y: "serie", fy: dim, fill: "none",
+        stroke: "#1D1D1B", strokeWidth: 1.8,
+        insetTop: 1, insetBottom: 1, pointerEvents: "none",
+        maxRadius: Infinity,
+      })),
+    ],
+  }));
+}
+
 // --- Ranking por entidad ----------------------------------------------------
 // Barras horizontales ordenadas. Solo tiene sentido con fuentes de
 // representatividad estatal o municipal (Censo, ENIGH, ENDIREH); ENADIS no.
