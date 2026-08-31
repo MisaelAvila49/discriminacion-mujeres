@@ -50,7 +50,8 @@ def main():
     import pandas as pd
 
     filas = []
-    llaves = ["anio", "sexo", "disc", "entidad", "rango_edad", "tipo_discapacidad"]
+    llaves = ["anio", "sexo", "disc", "entidad", "rango_edad",
+              "tipo_discapacidad", "decil"]
 
     def agrega(base, condicion, tema, nombre, universo):
         b = base.copy()
@@ -69,7 +70,7 @@ def main():
 
     for year in _enigh.ANIOS_ENIGH:
         pob = _enigh.cargar_poblacion(year)
-        pob = _enigh.explotar_tipo_discapacidad(pob)
+        pob = _enigh.explotar_dimensiones(pob)
 
         # --- Escolaridad ---------------------------------------------------
         if "nivelaprob" in pob.columns:

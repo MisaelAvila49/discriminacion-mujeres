@@ -27,6 +27,7 @@ const ETIQUETA_DIM = {
   rango_edad: "Rango de edad",
   anio: "Edición",
   entidad: "Entidad",
+  decil: "Decil de ingreso",
 };
 
 // Arma una gráfica completa: barras + aviso de muestra + tabla de respaldo,
@@ -95,11 +96,12 @@ function bloqueGrafica(filas, {comparacion, geo, formato, titulo,
 // válido para una sección producía geometrías imposibles en otra. Con paneles
 // independientes cada bloque solo ofrece lo que sus datos sostienen.
 function seccion({titulo, datos, fuente, construir, edadInicial = AGREGADO,
-    conEntidad = null}) {
+    conEntidad = null, conDecil = true}) {
   if (!datos.length) return null;
 
   const panel = panelFiltros(datos, {fuente, edadInicial,
-                                     mostrarEntidad: conEntidad});
+                                     mostrarEntidad: conEntidad,
+                                     mostrarDecil: conDecil});
   const cuerpo = html`<div class="seccion-cuerpo"></div>`;
   const anios = [...new Set(datos.map((d) => String(d.anio)))].sort();
 
@@ -119,22 +121,24 @@ function seccion({titulo, datos, fuente, construir, edadInicial = AGREGADO,
   </section>`;
 }
 
-// `datosTipoDisc` es opcional y viene de un archivo APARTE
-// (indicadores_tipo_disc.csv): las filas por dominio de discapacidad
-// multiplican el tamaño de los datos casi por 3, y la mayoría de las páginas
-// nunca activan ese filtro. Separarlo evita que las 9 páginas que no lo usan
-// paguen su peso de descarga. Solo lo pasan las páginas de ENIGH (ver
-// filtros.js: el selector de tipo de discapacidad solo aparece si hay más de
+// `datosTipoDisc`/`datosDecil` son opcionales y vienen de archivos APARTE
+// (indicadores_tipo_disc.csv, indicadores_decil.csv): ambos multiplican el
+// tamaño de los datos, y la mayoría de las páginas no activan ninguno de
+// los dos filtros. Separarlos evita que las páginas que no los usan paguen
+// su peso de descarga. Solo Trabajo/Apoyos/Educación (ENIGH) pasan
+// `datosDecil` por ahora; el selector de decil solo aparece si hay más de
 // un valor real en los datos, así que si esto no se pasa el filtro
-// simplemente no se ofrece).
-export function dashboardTema(clave, datos, {geoEntidades = null, datosTipoDisc = null} = {}) {
+// simplemente no se ofrece (mismo criterio que ya usa datosTipoDisc).
+export function dashboardTema(clave, datos, {geoEntidades = null,
+    datosTipoDisc = null, datosDecil = null} = {}) {
   const tema = CATALOGO[clave];
   if (!tema) return html`<p>Tema desconocido: ${clave}</p>`;
 
   const fuente = tema.fuentePrincipal;
   const base = datos.filter((d) => d.encuesta === fuente);
-  const extra = (datosTipoDisc ?? []).filter((d) => d.encuesta === fuente);
-  const datosFuente = extra.length ? base.concat(extra) : base;
+  const extraTipo = (datosTipoDisc ?? []).filter((d) => d.encuesta === fuente);
+  const extraDecil = (datosDecil ?? []).filter((d) => d.encuesta === fuente);
+  const datosFuente = base.concat(extraTipo, extraDecil);
   const principales = datosFuente.filter((d) => d.indicador === tema.indicadorPrincipal);
 
   // --- Sección 1: el indicador principal, con sus KPIs -------------------
@@ -148,6 +152,7 @@ export function dashboardTema(clave, datos, {geoEntidades = null, datosTipoDisc 
         indicador: tema.indicadorPrincipal,
         anio: v.anio, entidad: v.entidad, rangoEdad: v.rangoEdad,
         tipoDiscapacidad: v.tipoDiscapacidad,
+        decil: v.decil,
       });
 
       // Las tarjetas resumen SIEMPRE una sola edición. Mezclar años contaría
@@ -220,6 +225,7 @@ export function dashboardTema(clave, datos, {geoEntidades = null, datosTipoDisc 
         const ffil = filtrar(fsec, {
           anio: v.anio, entidad: v.entidad, rangoEdad: v.rangoEdad,
           tipoDiscapacidad: v.tipoDiscapacidad,
+          decil: v.decil,
         });
         if (!ffil.length) continue;
 
@@ -262,13 +268,18 @@ export function dashboardTema(clave, datos, {geoEntidades = null, datosTipoDisc 
   // --- Sección 3: territorio, con su propio panel ------------------------
   // Solo existe si la fuente tiene representatividad estatal. Su panel oculta
   // el selector de entidad: la vista ES la desagregación por entidad, y
-  // filtrar a una sola la dejaría sin sentido.
+  // filtrar a una sola la dejaría sin sentido. También oculta decil
+  // (conDecil: false): seriesDeCombo de abajo agrega por entidad nada más
+  // (dim: "entidad", sin "decil"), así que "Comparar deciles" aquí mezclaría
+  // la fila agregada "Todos" con las 10 filas por decil dentro del mismo
+  // grupo entidad+serie — doble conteo silencioso en vez de una vista real.
   const seccionTerritorio = admiteNivel(fuente, "estatal")
     ? seccion({
         titulo: "Territorio",
         datos: principales,
         fuente,
         conEntidad: false,
+        conDecil: false,
         construir: ({v, anios}) => {
           const comp = COMPARACION_POR_CLAVE[v.comparacion];
           const etiquetaValor = tema.formato === "pesos" ? "Ingreso"
@@ -303,6 +314,7 @@ export function dashboardTema(clave, datos, {geoEntidades = null, datosTipoDisc 
             const filas = filtrar(datosFuente, {
               indicador: tema.indicadorPrincipal, anio: c.anio, rangoEdad: c.edad,
               tipoDiscapacidad: v.tipoDiscapacidad,
+              decil: v.decil,
             });
             return {
               filas,

@@ -180,8 +180,9 @@ def _marcar_persona(pob, llaves_hogar):
 
 def indicadores(pob, year):
     fuente = "ENIGH (INEGI)"
-    llaves = ["anio", "sexo", "disc", "entidad", "rango_edad", "tipo_discapacidad"]
-    pob = _enigh.explotar_tipo_discapacidad(pob)
+    llaves = ["anio", "sexo", "disc", "entidad", "rango_edad",
+              "tipo_discapacidad", "decil"]
+    pob = _enigh.explotar_dimensiones(pob)
     filas = []
 
     for k in ("folioviv", "foliohog"):
