@@ -1,4 +1,94 @@
-# Distribución de la población
+<div class="book-hero">
+  <div class="book-hero-content">
+    <span class="book-hero-eyebrow">Tablero de datos — Social Data Ibero</span>
+    <h1 class="book-hero-title">Mujeres con discapacidad en México</h1>
+    <p class="book-hero-subtitle">Qué tan distinta es su vida de la de las mujeres sin discapacidad, y de la de los hombres con discapacidad</p>
+    <p class="book-hero-abstract">Trabajo, ingreso, educación, violencia, gasto y transporte, medidos sobre los microdatos del INEGI y siempre comparando cuatro grupos, porque la desigualdad de género y la de discapacidad no se suman: se multiplican. Cada cifra se puede filtrar por año, entidad, edad, dominio de dificultad y decil de ingreso.</p>
+    <div class="book-hero-ctas">
+      <a class="book-cta book-cta-primary" href="./encuestas/enigh/trabajo">Empezar por Trabajo e ingreso</a>
+      <a class="book-cta" href="./metodologia/fuentes">Ver las fuentes →</a>
+    </div>
+  </div>
+</div>
+
+<section class="book-meta-grid" aria-label="Información editorial">
+  <div class="book-meta-field book-meta-field--wide">
+    <span class="book-meta-label">Autores</span>
+    <ul class="book-authors">
+      <li>Mtra. Andrea Moctezuma Mendoza <a href="https://orcid.org/0000-0001-7181-3699" target="_blank" rel="noopener" aria-label="ORCID de Andrea Moctezuma Mendoza"><img class="orcid-icon" src="https://orcid.org/assets/vectors/orcid.logo.icon.svg" alt=""></a></li>
+      <li>Misael Saúl Avila López <a href="https://orcid.org/0009-0003-9606-354X" target="_blank" rel="noopener" aria-label="ORCID de Misael Saúl Avila López"><img class="orcid-icon" src="https://orcid.org/assets/vectors/orcid.logo.icon.svg" alt=""></a></li>
+      <li>Dr. Wilfrido Gómez Arias <a href="https://orcid.org/0009-0002-2406-8555" target="_blank" rel="noopener" aria-label="ORCID de Wilfrido Gómez Arias"><img class="orcid-icon" src="https://orcid.org/assets/vectors/orcid.logo.icon.svg" alt=""></a> <a href="mailto:wilfrido.gomez@ibero.mx" aria-label="Correo de Wilfrido Gómez Arias (autor de correspondencia)"><svg class="mail-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 5h16a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2z"/><polyline points="22,7 12,14 2,7"/></svg></a></li>
+    </ul>
+  </div>
+  <div class="book-meta-field">
+    <span class="book-meta-label">Afiliación</span>
+    <span class="book-meta-value">Social Data Ibero</span>
+    <span class="book-meta-sub">Universidad Iberoamericana — Ciudad de México</span>
+  </div>
+  <div class="book-meta-field">
+    <span class="book-meta-label">Año</span>
+    <span class="book-meta-value">2026</span>
+  </div>
+  <div class="book-meta-field">
+    <span class="book-meta-label">Fuentes</span>
+    <span class="book-meta-value">INEGI</span>
+    <span class="book-meta-sub">ENIGH · ENDIREH · ENADIS · Censo</span>
+  </div>
+  <div class="book-meta-field">
+    <span class="book-meta-label">DOI</span>
+    <span class="book-meta-value book-meta-placeholder">por asignar</span>
+  </div>
+  <div class="book-meta-field">
+    <span class="book-meta-label">Licencia</span>
+    <span class="book-meta-value book-meta-placeholder">por definir</span>
+  </div>
+</section>
+
+<section id="citar" class="book-citation" aria-label="Cómo citar este tablero">
+  <header class="book-citation-header">
+    <h2>Cómo citar este tablero</h2>
+    <p>Selecciona el formato que usa tu publicación.</p>
+  </header>
+  <div class="book-citation-tabs" role="tablist">
+    <button type="button" role="tab" aria-selected="true" aria-controls="cite-apa" id="tab-apa" class="book-citation-tab is-active">APA 7</button>
+    <button type="button" role="tab" aria-selected="false" aria-controls="cite-chicago" id="tab-chicago" class="book-citation-tab">Chicago</button>
+    <button type="button" role="tab" aria-selected="false" aria-controls="cite-ieee" id="tab-ieee" class="book-citation-tab">IEEE</button>
+    <button type="button" role="tab" aria-selected="false" aria-controls="cite-bibtex" id="tab-bibtex" class="book-citation-tab">BibTeX</button>
+  </div>
+
+  <div class="book-citation-panel is-active" id="cite-apa" role="tabpanel" aria-labelledby="tab-apa">
+    <div class="book-citation-text">Moctezuma Mendoza, A., Avila López, M. S., &amp; Gómez Arias, W. (2026). <em>Mujeres con discapacidad en México: tablero de indicadores</em>. Social Data Ibero, Universidad Iberoamericana.</div>
+    <button type="button" class="book-citation-copy" data-copy-target="#cite-apa .book-citation-text" aria-label="Copiar cita en formato APA 7">Copiar</button>
+  </div>
+
+  <div class="book-citation-panel" id="cite-chicago" role="tabpanel" aria-labelledby="tab-chicago" hidden>
+    <div class="book-citation-text">Moctezuma Mendoza, Andrea, Misael Saúl Avila López y Wilfrido Gómez Arias. <em>Mujeres con discapacidad en México: tablero de indicadores</em>. Ciudad de México: Social Data Ibero, Universidad Iberoamericana, 2026.</div>
+    <button type="button" class="book-citation-copy" data-copy-target="#cite-chicago .book-citation-text" aria-label="Copiar cita en formato Chicago">Copiar</button>
+  </div>
+
+  <div class="book-citation-panel" id="cite-ieee" role="tabpanel" aria-labelledby="tab-ieee" hidden>
+    <div class="book-citation-text">A. Moctezuma Mendoza, M. S. Avila López y W. Gómez Arias, <em>Mujeres con discapacidad en México: tablero de indicadores</em>. Ciudad de México: Social Data Ibero, Universidad Iberoamericana, 2026. [En línea].</div>
+    <button type="button" class="book-citation-copy" data-copy-target="#cite-ieee .book-citation-text" aria-label="Copiar cita en formato IEEE">Copiar</button>
+  </div>
+
+  <div class="book-citation-panel book-citation-panel--code" id="cite-bibtex" role="tabpanel" aria-labelledby="tab-bibtex" hidden>
+    <pre class="book-citation-bibtex"><code>@misc{moctezuma2026mujeres,
+  title     = {Mujeres con discapacidad en M{\'e}xico: tablero de indicadores},
+  author    = {Moctezuma Mendoza, Andrea and Avila L{\'o}pez, Misael Sa{\'u}l and G{\'o}mez Arias, Wilfrido},
+  year      = {2026},
+  publisher = {Social Data Ibero, Universidad Iberoamericana},
+  address   = {Ciudad de M{\'e}xico},
+  howpublished = {Tablero de datos}
+}</code></pre>
+    <button type="button" class="book-citation-copy book-citation-copy--code" data-copy-target="#cite-bibtex code" aria-label="Copiar entrada BibTeX">Copiar</button>
+  </div>
+
+  <div class="book-citation-feedback" role="status" aria-live="polite"></div>
+</section>
+
+---
+
+## Distribución de la población
 
 <p class="subtitulo-portada">
 Cuántas personas hay en cada grupo del tablero: mujeres y hombres, con y sin
@@ -164,3 +254,50 @@ del INEGI. Los detalles están en
 [Definiciones](/metodologia/definiciones).
 
 </div>
+
+```js
+// Pestañas del bloque de citación y botón de copiar. Es DOM directo y no
+// Inputs porque son controles de presentación, no filtros de datos: nada de
+// esto alimenta una gráfica.
+{
+  const tabs = document.querySelectorAll(".book-citation-tab");
+  const panels = document.querySelectorAll(".book-citation-panel");
+  for (const tab of tabs) {
+    tab.addEventListener("click", () => {
+      const targetId = tab.getAttribute("aria-controls");
+      for (const t of tabs) {
+        const active = t === tab;
+        t.classList.toggle("is-active", active);
+        t.setAttribute("aria-selected", active ? "true" : "false");
+      }
+      for (const p of panels) {
+        const active = p.id === targetId;
+        p.classList.toggle("is-active", active);
+        p.toggleAttribute("hidden", !active);
+      }
+    });
+  }
+
+  const feedback = document.querySelector(".book-citation-feedback");
+  for (const btn of document.querySelectorAll(".book-citation-copy")) {
+    const original = btn.textContent;
+    btn.addEventListener("click", async () => {
+      const target = document.querySelector(btn.dataset.copyTarget);
+      if (!target) return;
+      const text = (target.innerText || target.textContent || "").trim();
+      try {
+        await navigator.clipboard.writeText(text);
+        btn.textContent = "¡Copiado!";
+        if (feedback) feedback.textContent = "Cita copiada al portapapeles.";
+      } catch {
+        btn.textContent = "Error al copiar";
+        if (feedback) feedback.textContent = "No fue posible copiar; selecciona el texto manualmente.";
+      }
+      setTimeout(() => {
+        btn.textContent = original;
+        if (feedback) feedback.textContent = "";
+      }, 2200);
+    });
+  }
+}
+```

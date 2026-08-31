@@ -2004,3 +2004,369 @@ h2.toc-anchor {
   padding-left: 0.7rem;
   border-left: 2px solid var(--tablero-borde);
 }
+
+/* ===========================================================================
+   Portada editorial
+   ---------------------------------------------------------------------------
+   Hero, metadatos y bloque de citación, adaptados de obs-data-book para que
+   los productos de Social Data Ibero se identifiquen entre sí. Se comparten
+   las variables de marca (--brand-red, --brand-dark, --brand-gray), así que
+   el bloque se pega tal cual y hereda el tema.
+
+   Queda fuera la portada animada del libro: allá representa un objeto real
+   —el libro— y aquí sería decoración sobre un tablero de datos.
+   =========================================================================== */
+.book-hero {
+  display: grid;
+  /* Una sola columna: obs-data-book reserva la segunda para la portada
+     animada del libro, que aquí no aplica — esto es un tablero, no un
+     libro, y ese SVG sería un adorno sin referente. */
+  grid-template-columns: minmax(0, 1fr);
+  row-gap: 2rem;
+  max-width: 1100px;
+  margin: 1.5rem 0 2.5rem;
+}
+
+.book-hero-content {
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+  min-width: 0;
+}
+
+.book-hero-eyebrow {
+  font-family: var(--monospace);
+  font-size: 0.72rem;
+  font-weight: 500;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--brand-red);
+  margin-bottom: 0.25rem;
+}
+
+.book-hero-title {
+  font-family: var(--sans-serif);
+  font-size: clamp(2rem, 3.5vw, 3rem);
+  font-weight: 700;
+  line-height: 1.05;
+  letter-spacing: -0.02em;
+  color: var(--brand-dark);
+  margin: 0;
+  border-bottom: none;
+  padding-bottom: 0;
+}
+
+.book-hero-subtitle {
+  font-size: clamp(1.05rem, 1vw + 0.7rem, 1.3rem);
+  font-weight: 500;
+  line-height: 1.4;
+  color: color-mix(in srgb, var(--brand-dark) 78%, transparent);
+  margin: 0;
+}
+
+.book-hero-abstract {
+  font-size: 1rem;
+  line-height: 1.65;
+  color: color-mix(in srgb, var(--brand-dark) 70%, transparent);
+  margin: 0.35rem 0 1rem;
+  max-width: 60ch;
+}
+
+.book-hero-ctas {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  margin-top: 0.25rem;
+}
+
+.book-cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.65rem 1.25rem;
+  border-radius: 999px;
+  border: 1.5px solid var(--brand-red);
+  background: transparent;
+  color: var(--brand-red);
+  font-weight: 600;
+  font-size: 0.95rem;
+  text-decoration: none;
+  transition: background-color 0.18s ease, color 0.18s ease, transform 0.18s ease, box-shadow 0.18s ease;
+}
+
+.book-cta:hover,
+.book-cta:focus-visible {
+  background: color-mix(in srgb, var(--brand-red) 8%, transparent);
+  color: var(--brand-red-dark);
+  transform: translateY(-1px);
+}
+
+a.book-cta-primary {
+  background: var(--brand-red);
+  color: #fff;
+  box-shadow: 0 6px 18px color-mix(in srgb, var(--brand-red) 28%, transparent);
+}
+
+a.book-cta-primary:hover,
+a.book-cta-primary:focus-visible {
+  background: var(--brand-red-dark);
+  color: #fff;
+  box-shadow: 0 8px 22px color-mix(in srgb, var(--brand-red) 35%, transparent);
+}
+
+/* Bloque de metadata editorial */
+.book-meta-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+  gap: 1.25rem 2rem;
+  margin: 0 0 2.5rem;
+  padding: 1.5rem 1.75rem;
+  border: 1px solid color-mix(in srgb, var(--brand-gray) 28%, transparent);
+  border-radius: 10px;
+  background: color-mix(in srgb, var(--brand-light-gray) 55%, transparent);
+}
+
+.book-meta-field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  min-width: 0;
+}
+
+.book-meta-field--wide {
+  grid-column: 1 / -1;
+}
+
+.book-meta-label {
+  font-family: var(--sans-serif);
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+  color: var(--brand-gray);
+  margin: 0;
+}
+
+.book-meta-value {
+  font-size: 0.98rem;
+  font-weight: 500;
+  color: var(--brand-dark);
+  line-height: 1.4;
+  word-break: break-word;
+}
+
+.book-meta-sub {
+  font-size: 0.78rem;
+  color: color-mix(in srgb, var(--brand-dark) 55%, transparent);
+  line-height: 1.35;
+}
+
+.book-meta-placeholder {
+  font-style: italic;
+  color: color-mix(in srgb, var(--brand-gray) 95%, transparent);
+  font-weight: 400;
+}
+
+.book-meta-link {
+  color: var(--brand-red);
+  text-decoration: none;
+  font-weight: 500;
+  border-bottom: 1px dotted color-mix(in srgb, var(--brand-red) 50%, transparent);
+  width: fit-content;
+  word-break: break-all;
+}
+
+.book-meta-link:hover {
+  color: var(--brand-red-dark);
+  border-bottom-style: solid;
+}
+
+.book-authors {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  max-width: none;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  column-gap: 0.75rem;
+  row-gap: 0.5rem;
+}
+
+.book-authors li {
+  flex: 1 1 auto;
+  min-width: max-content;
+  margin: 0;
+  line-height: 1.5;
+  font-size: 0.95rem;
+  color: var(--brand-dark);
+  white-space: nowrap;
+}
+
+.book-authors .orcid-icon {
+  display: inline-block;
+  width: 14px;
+  height: 14px;
+  vertical-align: text-bottom;
+  margin-left: 0.2rem;
+  opacity: 0.85;
+  transition: opacity 0.15s ease;
+}
+
+.book-authors .mail-icon {
+  display: inline-block;
+  width: 14px;
+  height: 14px;
+  vertical-align: text-bottom;
+  margin-left: 0.15rem;
+  color: var(--brand-red);
+  opacity: 0.85;
+  transition: opacity 0.15s ease;
+}
+
+.book-authors a:hover .orcid-icon,
+.book-authors a:hover .mail-icon {
+  opacity: 1;
+}
+
+/* Cómo citar */
+.book-citation {
+  margin: 0 0 2.5rem;
+  padding: 1.5rem 1.75rem;
+  border: 1px solid color-mix(in srgb, var(--brand-gray) 28%, transparent);
+  border-radius: 10px;
+  background: #fff;
+  position: relative;
+}
+
+.book-citation-header {
+  margin-bottom: 1rem;
+}
+
+.book-citation-header h2 {
+  font-size: 1.15rem;
+  font-weight: 700;
+  margin: 0 0 0.35rem;
+  color: var(--brand-dark);
+  border: none;
+  padding: 0;
+  letter-spacing: -0.005em;
+  text-transform: none;
+}
+
+.book-citation-header p {
+  font-size: 0.88rem;
+  color: color-mix(in srgb, var(--brand-dark) 65%, transparent);
+  margin: 0;
+  line-height: 1.5;
+}
+
+.book-citation-tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.15rem;
+  border-bottom: 1px solid color-mix(in srgb, var(--brand-gray) 30%, transparent);
+  margin-bottom: 1rem;
+}
+
+.book-citation-tab {
+  appearance: none;
+  background: transparent;
+  border: none;
+  padding: 0.55rem 0.95rem;
+  font-family: var(--sans-serif);
+  font-size: 0.88rem;
+  font-weight: 500;
+  color: color-mix(in srgb, var(--brand-dark) 60%, transparent);
+  cursor: pointer;
+  border-bottom: 2px solid transparent;
+  margin-bottom: -1px;
+  transition: color 0.15s ease, border-color 0.15s ease;
+}
+
+.book-citation-tab:hover {
+  color: var(--brand-red);
+}
+
+.book-citation-tab.is-active {
+  color: var(--brand-red);
+  border-bottom-color: var(--brand-red);
+  font-weight: 600;
+}
+
+.book-citation-tab:focus-visible {
+  outline: 2px solid color-mix(in srgb, var(--brand-red) 50%, transparent);
+  outline-offset: 2px;
+  border-radius: 3px;
+}
+
+.book-citation-panel {
+  position: relative;
+  padding: 0.25rem 0;
+}
+
+.book-citation-text {
+  font-size: 0.94rem;
+  line-height: 1.65;
+  color: var(--brand-dark);
+  padding-right: 5.5rem;
+}
+
+.book-citation-bibtex {
+  font-family: var(--monospace);
+  font-size: 0.82rem;
+  line-height: 1.55;
+  background: color-mix(in srgb, var(--brand-dark) 4%, transparent);
+  border-left: 3px solid var(--brand-red);
+  border-radius: 4px;
+  padding: 1rem 1.25rem 1rem 1.25rem;
+  margin: 0;
+  overflow-x: auto;
+  color: var(--brand-dark);
+  white-space: pre;
+}
+
+.book-citation-bibtex code {
+  background: none;
+  padding: 0;
+  font-size: inherit;
+  color: inherit;
+  font-family: inherit;
+}
+
+.book-citation-copy {
+  position: absolute;
+  top: 0;
+  right: 0;
+  appearance: none;
+  border: 1px solid color-mix(in srgb, var(--brand-gray) 45%, transparent);
+  background: #fff;
+  color: var(--brand-dark);
+  padding: 0.35rem 0.75rem;
+  font-size: 0.78rem;
+  font-weight: 600;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.15s ease, color 0.15s ease, border-color 0.15s ease;
+}
+
+.book-citation-copy:hover,
+.book-citation-copy:focus-visible {
+  background: var(--brand-red);
+  color: #fff;
+  border-color: var(--brand-red);
+}
+
+.book-citation-copy--code {
+  top: 0.85rem;
+  right: 0.85rem;
+}
+
+.book-citation-feedback {
+  font-size: 0.78rem;
+  color: var(--brand-red);
+  margin-top: 0.5rem;
+  min-height: 1em;
+}
+
+/* --- 18b. Portada del libro --- */

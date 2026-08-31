@@ -1,0 +1,46 @@
+cff-version: 1.2.0
+message: "Si usas este tablero o sus cifras, por favor cítalo así."
+title: "Mujeres con discapacidad en México: tablero de indicadores"
+abstract: >-
+  Tablero de indicadores sobre la situación de las mujeres con discapacidad
+  en México, construido con microdatos del INEGI (ENIGH 2020, 2022 y 2024;
+  ENDIREH 2021; ENADIS 2017 y 2022; Censo de Población y Vivienda 2020,
+  cuestionario ampliado). Cubre trabajo, ingreso, educación, violencia,
+  gasto y transporte, y compara siempre cuatro grupos —mujeres y hombres,
+  con y sin discapacidad— porque la desigualdad de género y la de
+  discapacidad no se suman sino que se multiplican. Cada indicador se puede
+  filtrar por año, entidad, rango de edad, dominio de dificultad y decil de
+  ingreso del hogar.
+type: dataset
+authors:
+  - family-names: "Moctezuma Mendoza"
+    given-names: "Andrea"
+    orcid: "https://orcid.org/0000-0001-7181-3699"
+    affiliation: "Social Data Ibero, Universidad Iberoamericana"
+  - family-names: "Avila López"
+    given-names: "Misael Saúl"
+    orcid: "https://orcid.org/0009-0003-9606-354X"
+    affiliation: "Social Data Ibero, Universidad Iberoamericana"
+  - family-names: "Gómez Arias"
+    given-names: "Wilfrido"
+    orcid: "https://orcid.org/0009-0002-2406-8555"
+    affiliation: "Social Data Ibero, Universidad Iberoamericana"
+    email: "wilfrido.gomez@ibero.mx"
+repository-code: "https://github.com/MisaelAvila49/discriminacion-mujeres"
+keywords:
+  - discapacidad
+  - género
+  - México
+  - INEGI
+  - ENIGH
+  - ENDIREH
+  - desigualdad
+  - violencia contra las mujeres
+license-url: "https://github.com/MisaelAvila49/discriminacion-mujeres"
+date-released: "2026-08-31"
+# El DOI se agrega aquí cuando Zenodo lo emita, como:
+#   identifiers:
+#     - type: doi
+#       value: 10.5281/zenodo.XXXXXXX
+#       description: "DOI de todas las versiones"
+# Ver docs/como-obtener-el-doi.md para el procedimiento completo.
