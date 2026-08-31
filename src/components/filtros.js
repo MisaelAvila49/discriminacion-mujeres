@@ -352,10 +352,17 @@ export function prepararSeries(datos, {comparacion, dim = null, formato = "pct"}
       return comp.grupos.includes(`${sx}-${cd}`);
     })
     // Cuando se está separando por decil (dim incluye "decil"), la fila
-    // agregada decil="Todos" no tiene un valor numérico que graficar en
-    // el eje X — se excluye aquí, antes de agregar, para que no aparezca
-    // como una undécima barra sin sentido junto a los deciles 1-10.
-    .filter((d) => !separaDecil || d.decil !== TODOS_DECIL)
+    // agregada no tiene un valor numérico que graficar en el eje X — se
+    // excluye aquí, antes de agregar, para que no aparezca como una
+    // undécima barra sin sentido junto a los deciles 1-10. El agregado
+    // real trae decil="Todos" en indicadores_decil.csv, pero las filas que
+    // llegan concatenadas desde el archivo PRINCIPAL (indicadores.csv, que
+    // no tiene columna decil — ver armar_indicadores.py) traen
+    // d.decil === undefined en vez de "Todos": ambos casos son el mismo
+    // agregado y deben excluirse igual, o esa fila se cuela como una
+    // "undécima categoría" (agrupada bajo la llave undefined) en vez de
+    // desaparecer.
+    .filter((d) => !separaDecil || (d.decil != null && d.decil !== TODOS_DECIL))
     .map((d) => ({...d, serie: serieDe(d, comparacion)}));
 
   const agregadas = tasaPorGrupo(filas, ["serie", ...dims], formato);
