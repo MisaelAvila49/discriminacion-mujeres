@@ -10,10 +10,20 @@ src/data/raw/
 # Los dos CSV ya calculados SÍ se versionan: son lo único que el sitio lee en
 # tiempo de build, y sin ellos el deploy publica un tablero vacío. La regla
 # *.CSV de arriba los atrapa porque git en Windows no distingue mayúsculas.
-!src/data/indicadores.csv
-!src/data/indicadores_tipo_disc.csv
-!src/data/indicadores_decil.csv
+# Los archivos COMPLETOS ya no se versionan: el sitio carga las particiones
+# de abajo, y versionar ambos duplicaría 73 MB en cada regeneración. Se
+# siguen escribiendo en local porque son la fuente de las particiones y lo
+# que conviene abrir para un análisis que cruce temas.
 !src/data/inpc.csv
+# Las particiones por tema y por encuesta: son lo que cada página carga en
+# realidad, y sin ellas el sitio queda sin datos aunque los archivos
+# completos estén versionados.
+!src/data/principal/
+!src/data/principal/*.csv
+!src/data/tipo_disc/
+!src/data/tipo_disc/*.csv
+!src/data/decil/
+!src/data/decil/*.csv
 __pycache__/
 *.pyc
 .DS_Store

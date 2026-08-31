@@ -2,9 +2,9 @@
 
 ```js
 import {dashboardTema} from "../../components/tablero.js";
-const indicadores = await FileAttachment("../../data/indicadores.csv").csv({typed: true});
-const indicadoresTipoDisc = await FileAttachment("../../data/indicadores_tipo_disc.csv").csv({typed: true});
-const indicadoresDecil = await FileAttachment("../../data/indicadores_decil.csv").csv({typed: true});
+const indicadores = await FileAttachment("../../data/principal/enigh.csv").csv({typed: true});
+const indicadoresTipoDisc = await FileAttachment("../../data/tipo_disc/educacion.csv").csv({typed: true});
+const indicadoresDecil = await FileAttachment("../../data/decil/educacion.csv").csv({typed: true});
 const geoEntidades = await FileAttachment("../../data/mx_entidades.json").json();
 ```
 

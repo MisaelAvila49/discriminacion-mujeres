@@ -831,6 +831,94 @@ export function barrasPorEntidad(datos, {comparacion, titulo = "",
   }));
 }
 
+// --- Heatmap de brecha ------------------------------------------------------
+// Matriz de dos dimensiones categóricas (agresor × tipo de violencia) donde el
+// color es la RAZÓN entre las dos series de la comparación, no el nivel.
+//
+// El nivel y la brecha responden preguntas distintas y aquí importa la
+// segunda: un padre agrede a más mujeres que un hijo en términos absolutos,
+// pero la violencia del hijo es cuatro veces más frecuente cuando hay
+// discapacidad. Con color por nivel, esa fila se vería pálida y el hallazgo
+// desaparecería.
+//
+// La escala diverge en 1 (misma frecuencia en ambos grupos) a propósito: por
+// debajo de 1 el rojo se apaga hacia el gris, así que una celda intensa
+// siempre significa "aquí la desigualdad es mayor", nunca "aquí hay muchos
+// casos".
+export function heatmapBrecha(celdas, {titulo = "", subtitulo = "",
+    fuente = "", filaLabel = "Agresor", colLabel = "Tipo",
+    width = undefined} = {}) {
+  if (!celdas.length) return html`<p class="nota-indicador">Sin datos.</p>`;
+  asegurarTrama();
+
+  // Orden de filas por brecha máxima: en una matriz el orden es la mitad del
+  // mensaje, y alfabético no dice nada.
+  const peor = new Map();
+  for (const d of celdas) {
+    const v = peor.get(d.fila) ?? -Infinity;
+    if (d.razon != null && isFinite(d.razon)) {
+      peor.set(d.fila, Math.max(v, d.razon));
+    } else if (!peor.has(d.fila)) {
+      peor.set(d.fila, -Infinity);
+    }
+  }
+  const filas = [...peor.entries()].sort((a, b) => b[1] - a[1]).map(([f]) => f);
+  const columnas = [...new Set(celdas.map((d) => d.col))];
+
+  const maxRazon = Math.max(
+    ...celdas.map((d) => (isFinite(d.razon) ? d.razon : 1)), 2);
+
+  return animar(Plot.plot({
+    style: ESTILO_EJES,
+    ...(width ? {width} : {}),
+    title: titulo,
+    subtitle: subtitulo,
+    caption: fuente,
+    marginLeft: 210,
+    marginTop: 34,
+    marginBottom: 42,
+    height: Math.max(220, filas.length * 30 + 90),
+    x: {domain: columnas, label: null, tickSize: 0},
+    y: {domain: filas, label: null, tickSize: 0},
+    color: {
+      type: "linear",
+      domain: [1, maxRazon],
+      range: ["#f1f5f9", ROJO],
+      clamp: true,
+      legend: true,
+      label: "veces más frecuente con discapacidad",
+    },
+    marks: [
+      Plot.cell(celdas, {
+        x: "col", y: "fila", fill: "razon",
+        inset: 1.5, rx: 3,
+        channels: {
+          [filaLabel]: (d) => d.fila,
+          [colLabel]: (d) => d.col,
+          "Con discapacidad": (d) => formatear(d.a, "pct"),
+          "Sin discapacidad": (d) => formatear(d.b, "pct"),
+          "Brecha": (d) => isFinite(d.razon) ? `${d.razon.toFixed(2)}x` : "s/d",
+        },
+        tip: {format: {x: false, y: false, fill: false}},
+      }),
+      // La razón escrita dentro de la celda: el color por sí solo no permite
+      // leer una cifra, y sin el número la matriz solo sirve para ver el
+      // patrón, no para citarla.
+      Plot.text(celdas, {
+        x: "col", y: "fila",
+        text: (d) => isFinite(d.razon) ? `${d.razon.toFixed(1)}x` : "",
+        fontSize: TIPO.valor,
+        // Texto claro sobre celdas oscuras.
+        fill: (d) => (isFinite(d.razon) && d.razon > 1 + (maxRazon - 1) * 0.55)
+          ? "#fff" : "var(--theme-foreground)",
+      }),
+      Plot.cell(celdas.filter((d) => d.fragil), {
+        x: "col", y: "fila", fill: `url(#${ID_TRAMA})`, inset: 1.5, rx: 3,
+      }),
+    ],
+  }));
+}
+
 // --- Heatmap de entidades por corte -----------------------------------------
 // Entidades en el eje vertical y cortes (año, edad o ambos) en el horizontal.
 // `jerarquia` activa el eje de dos niveles: el año agrupa arriba y el rango de

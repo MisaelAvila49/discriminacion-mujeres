@@ -45,6 +45,10 @@ RAIZ = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SALIDA_PRINCIPAL = os.path.join(RAIZ, "src", "data", "indicadores.csv")
 SALIDA_TIPO = os.path.join(RAIZ, "src", "data", "indicadores_tipo_disc.csv")
 SALIDA_DECIL = os.path.join(RAIZ, "src", "data", "indicadores_decil.csv")
+# Un archivo por tema, para que cada página cargue solo lo suyo.
+DIR_TIPO = os.path.join(RAIZ, "src", "data", "tipo_disc")
+DIR_DECIL = os.path.join(RAIZ, "src", "data", "decil")
+DIR_PRINCIPAL = os.path.join(RAIZ, "src", "data", "principal")
 
 # Nombre de archivo -> encuesta. Lo que no esté aquí usa el nombre tal cual.
 ENCUESTA = {
@@ -56,6 +60,7 @@ ENCUESTA = {
     "enadis_discriminacion": "enadis",
     "endireh_ambito": "endireh",
     "endireh_agresor": "endireh",
+    "endireh_agresor_tipo": "endireh",
 }
 
 COLS = ["tema", "indicador", "anio", "sexo", "disc", "entidad", "rango_edad",
@@ -111,11 +116,49 @@ def main():
     decil = todo[todo["decil"] != "Todos"].drop(columns=["tipo_discapacidad"])
     decil.to_csv(SALIDA_DECIL, index=False, encoding="utf-8")
 
+    # Además del archivo completo, una copia POR TEMA de cada desglose.
+    #
+    # El archivo entero de deciles pesa 37 MB y el de dominio 22, y hasta
+    # ahora cada página cargaba los dos completos para usar solo su tema:
+    # Trabajo bajaba 60 MB para pintar 27 mil filas suyas. Con la partición
+    # cada página pide su tema y nada más.
+    #
+    # Los archivos completos se siguen escribiendo: `docs/` y cualquier
+    # análisis que cruce temas los usa, y son la fuente de la que salen
+    # estas partes.
+    for etiqueta, tabla, carpeta in (
+        ("dominio", dominio, DIR_TIPO),
+        ("decil", decil, DIR_DECIL),
+    ):
+        os.makedirs(carpeta, exist_ok=True)
+        # Se limpian los .csv previos: si un tema desaparece del catálogo, su
+        # archivo viejo se quedaría ahí y el sitio seguiría sirviéndolo.
+        for viejo_csv in glob.glob(os.path.join(carpeta, "*.csv")):
+            os.remove(viejo_csv)
+        for tema, sub in tabla.groupby("tema"):
+            destino = os.path.join(carpeta, f"{tema}.csv")
+            sub.to_csv(destino, index=False, encoding="utf-8")
+        print(f"  {etiqueta}: {tabla['tema'].nunique()} archivos por tema "
+              f"-> {carpeta}")
+
     # Principal: solo el agregado real, sin las columnas que ahí no aportan.
     principal = todo[
         (todo["tipo_discapacidad"] == "Todos") & (todo["decil"] == "Todos")
     ].drop(columns=["tipo_discapacidad", "decil"])
     principal.to_csv(SALIDA_PRINCIPAL, index=False, encoding="utf-8")
+
+    # El principal también se parte, pero por ENCUESTA y no por tema: una
+    # página necesita todos los indicadores de su fuente (el principal del
+    # tema y los secundarios, que pueden ser de otros temas de la misma
+    # encuesta), pero nunca los de otra fuente.
+    os.makedirs(DIR_PRINCIPAL, exist_ok=True)
+    for viejo_csv in glob.glob(os.path.join(DIR_PRINCIPAL, "*.csv")):
+        os.remove(viejo_csv)
+    for enc, sub in principal.groupby("encuesta"):
+        sub.to_csv(os.path.join(DIR_PRINCIPAL, f"{enc}.csv"),
+                   index=False, encoding="utf-8")
+    print(f"  principal: {principal['encuesta'].nunique()} archivos por "
+          f"encuesta -> {DIR_PRINCIPAL}")
 
     print(f"\n{len(principal):>8,} filas -> {SALIDA_PRINCIPAL}")
     print(f"{len(dominio):>8,} filas -> {SALIDA_TIPO}")

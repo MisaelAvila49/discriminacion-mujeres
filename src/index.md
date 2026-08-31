@@ -11,7 +11,7 @@ import {prepararSeries} from "./components/filtros.js";
 import {ORDEN_EDAD} from "./components/comparacion.js";
 import * as Plot from "npm:@observablehq/plot";
 import {resize} from "observablehq:stdlib";
-const indicadores = await FileAttachment("./data/indicadores.csv").csv({typed: true});
+const indicadores = await FileAttachment("./data/principal/censo.csv").csv({typed: true});
 const geoEntidades = await FileAttachment("./data/mx_entidades.json").json();
 ```
 

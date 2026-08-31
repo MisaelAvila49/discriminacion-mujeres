@@ -14,7 +14,7 @@ import {
   barrasComparadas, avisoMuestra, kpis,
   tablaDatos, formatear, heatmapEdadAnio,
   mapasMultiples, barrasPorEntidad, heatmapEntidades, explicacion,
-  rankingComparado,
+  rankingComparado, heatmapBrecha,
 } from "./graficas.js";
 import {
   COMPARACION_POR_CLAVE, FUENTES, admiteNivel, ORDEN_EDAD,
@@ -349,6 +349,92 @@ export function dashboardTema(clave, datos, {geoEntidades = null,
     });
   })() : null;
 
+  // --- Sección de cruce, con su propio panel -----------------------------
+  // Matriz de dos dimensiones categóricas donde el color es la BRECHA entre
+  // las dos series (agresor × tipo de violencia). Responde una pregunta que
+  // ni el ranking ni los ámbitos contestan: no solo quién agrede más, sino
+  // QUÉ TIPO de violencia ejerce cada quien.
+  //
+  // Se arma desde indicadores cuyo nombre codifica las dos dimensiones, así
+  // que el tema declara cómo extraerlas (`fila` y `col` reciben el nombre
+  // del indicador y devuelven la etiqueta de cada eje).
+  const seccionCruce = tema.cruce ? (() => {
+    const grupos = tema.cruce.grupos ?? [];
+    const todosInd = grupos.flatMap((g) => g.indicadores ?? []);
+    const datosCruce = todo.filter(
+      (d) => d.encuesta === (tema.cruce.encuesta ?? fuente) &&
+             todosInd.includes(d.indicador));
+    if (!datosCruce.length) return null;
+
+    return seccion({
+      titulo: tema.cruce.titulo ?? "Cruce",
+      datos: datosCruce,
+      fuente: tema.cruce.encuesta ?? fuente,
+      // La matriz ya ocupa sus dos ejes con las dimensiones del cruce: no
+      // queda eje libre para facetar por decil.
+      conDecil: false,
+      construir: ({v}) => {
+        const comp = COMPARACION_POR_CLAVE[v.comparacion];
+        const series = comp?.series ?? [];
+        const tarjetas = [];
+
+        for (const grupo of grupos) {
+          const fdat = filtrar(
+            datosCruce.filter((d) => grupo.indicadores.includes(d.indicador)), {
+              anio: v.anio, entidad: v.entidad, rangoEdad: v.rangoEdad,
+              tipoDiscapacidad: v.tipoDiscapacidad,
+            });
+          if (!fdat.length) continue;
+
+          const preparadas = prepararSeries(fdat, {
+            comparacion: v.comparacion, dim: "indicador", formato: "pct",
+          });
+
+          // Una celda por (fila, columna) con las dos series enfrentadas.
+          const celdas = new Map();
+          for (const d of preparadas) {
+            const fila = grupo.fila(d.indicador);
+            const col = grupo.col(d.indicador);
+            if (!fila || !col) continue;
+            const k = `${fila}||${col}`;
+            if (!celdas.has(k)) {
+              celdas.set(k, {fila, col, a: null, b: null, fragil: false});
+            }
+            const c = celdas.get(k);
+            if (d.serie === series[0]) c.a = d.pct;
+            if (d.serie === series[1]) c.b = d.pct;
+            if (d.fragil) c.fragil = true;
+          }
+          const lista = [...celdas.values()].map((c) => ({
+            ...c,
+            // Sin las dos series no hay brecha que calcular: la celda queda
+            // en blanco en vez de inventar un 1.
+            razon: (c.a > 0 && c.b > 0) ? c.a / c.b : NaN,
+          }));
+          if (!lista.length) continue;
+
+          tarjetas.push(html`<div class="card">
+            ${resize((width) => heatmapBrecha(lista, {
+              titulo: grupo.nombre,
+              subtitulo: grupo.subtitulo ?? "",
+              fuente: fdat[0]?.fuente ?? "",
+              filaLabel: grupo.filaLabel ?? "Agresor",
+              colLabel: grupo.colLabel ?? "Tipo de violencia",
+              width,
+            }))}
+            ${explicacion(grupo.explica ?? tema.cruce.explica)}
+          </div>`);
+        }
+
+        if (!tarjetas.length) {
+          return [html`<p class="nota-indicador">Sin datos para esta
+            combinación de filtros.</p>`];
+        }
+        return tarjetas.map((t) => html`<div class="grid">${t}</div>`);
+      },
+    });
+  })() : null;
+
   // --- Sección 3: territorio, con su propio panel ------------------------
   // Solo existe si la fuente tiene representatividad estatal. Su panel oculta
   // el selector de entidad: la vista ES la desagregación por entidad, y
@@ -547,7 +633,7 @@ export function dashboardTema(clave, datos, {geoEntidades = null,
 
   return html`<div class="tablero-tema">
     <p class="entrada-tema">${tema.entrada}</p>
-    ${[seccionPrincipal, seccionSecundarios, seccionRanking,
+    ${[seccionPrincipal, seccionSecundarios, seccionRanking, seccionCruce,
        seccionTerritorio].filter(Boolean)}
   </div>`;
 }

@@ -178,6 +178,21 @@ def _marcar_persona(pob, llaves_hogar):
     return llave_persona.isin(llaves_hogar)
 
 
+def _tema_de(indicador):
+    """
+    Las transferencias que ENTRAN al hogar (beca, pensión) y el gasto que SALE
+    de él viven en páginas distintas del tablero, así que llevan tema distinto
+    aunque este loader los calcule juntos: comparten la tabla de gastos y la
+    misma herencia hogar->persona, y separarlos en dos loaders duplicaría esa
+    carga por nada.
+
+    Sin esto todo salía con tema="apoyos", y el archivo de deciles de ese tema
+    pesaba 18 MB para una página que solo muestra dos indicadores: las diez
+    filas de gasto viajaban a Apoyos aunque solo se pinten en Gastos.
+    """
+    return "apoyos" if indicador.startswith("Recibe la ") else "gastos"
+
+
 def indicadores(pob, year):
     fuente = "ENIGH (INEGI)"
     llaves = ["anio", "sexo", "disc", "entidad", "rango_edad",
@@ -197,7 +212,7 @@ def indicadores(pob, year):
                 "den": float(x["factor"].sum()),
                 "casos": int(len(x)),
             }), include_groups=False).reset_index()
-        g["tema"] = "apoyos"
+        g["tema"] = _tema_de(indicador)
         g["indicador"] = indicador
         g["fuente"] = fuente
         g["universo"] = universo
@@ -230,7 +245,7 @@ def indicadores(pob, year):
                 "den": float(x["factor"].sum()),
                 "casos": int(len(x)),
             }), include_groups=False).reset_index()
-        g["tema"] = "apoyos"
+        g["tema"] = _tema_de(indicador)
         g["indicador"] = indicador
         g["fuente"] = fuente
         g["universo"] = "Personas de 18 años o más cuyo hogar gasta en esto"
