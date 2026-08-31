@@ -135,10 +135,15 @@ export function dashboardTema(clave, datos, {geoEntidades = null,
   if (!tema) return html`<p>Tema desconocido: ${clave}</p>`;
 
   const fuente = tema.fuentePrincipal;
-  const base = datos.filter((d) => d.encuesta === fuente);
-  const extraTipo = (datosTipoDisc ?? []).filter((d) => d.encuesta === fuente);
-  const extraDecil = (datosDecil ?? []).filter((d) => d.encuesta === fuente);
-  const datosFuente = base.concat(extraTipo, extraDecil);
+  // `todo` reúne el archivo principal con los dos de desglose SIN filtrar por
+  // encuesta, porque los indicadores secundarios de un tema pueden venir de
+  // otra (por ejemplo, un tema de ENIGH que contrasta con una cifra del
+  // Censo). Filtrar por la fuente principal aquí dejaba a la sección de
+  // secundarios leyendo solo `datos` —el archivo principal, que no trae las
+  // columnas de dominio ni de decil—, y por eso su panel nunca ofrecía esos
+  // dos filtros aunque los datos existieran.
+  const todo = datos.concat(datosTipoDisc ?? [], datosDecil ?? []);
+  const datosFuente = todo.filter((d) => d.encuesta === fuente);
   const principales = datosFuente.filter((d) => d.indicador === tema.indicadorPrincipal);
 
   // --- Sección 1: el indicador principal, con sus KPIs -------------------
@@ -195,7 +200,7 @@ export function dashboardTema(clave, datos, {geoEntidades = null,
   // construye con los datos de los secundarios, no con los del principal:
   // así el selector de año ofrece las ediciones que ellos sí tienen.
   const datosSec = (tema.secundarios ?? []).flatMap((sec) =>
-    datos.filter((d) => d.encuesta === sec.encuesta && d.indicador === sec.indicador)
+    todo.filter((d) => d.encuesta === sec.encuesta && d.indicador === sec.indicador)
   );
 
   const seccionSecundarios = seccion({
@@ -207,7 +212,7 @@ export function dashboardTema(clave, datos, {geoEntidades = null,
     construir: ({v}) => {
       const tarjetas = [];
       for (const sec of tema.secundarios ?? []) {
-        const fsec = datos.filter(
+        const fsec = todo.filter(
           (d) => d.encuesta === sec.encuesta && d.indicador === sec.indicador
         );
         const compsOk = FUENTES[sec.encuesta]?.comparaciones ?? [];
