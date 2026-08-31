@@ -216,7 +216,14 @@ def indicadores(pob, year):
         base = pob[monto > 0].copy()
         if not len(base):
             return
-        base["_masa"] = monto[monto > 0] * base["factor"]
+        # `.values` (posicional) y NO `monto[monto > 0] * base["factor"]`
+        # (por índice): explotar_dimensiones() duplica el índice de `pob`
+        # —cada persona aparece una vez por dominio y una por decil—, así que
+        # una multiplicación alineada por índice hace producto cartesiano
+        # entre filas homónimas y devuelve una masa que no corresponde a
+        # ninguna persona. El síntoma es silencioso: no lanza error, solo
+        # colapsa el indicador a un puñado de filas con montos absurdos.
+        base["_masa"] = monto[monto > 0].values * base["factor"].values
         g = base.groupby(llaves, dropna=True, observed=True).apply(
             lambda x: pd.Series({
                 "num": float(x["_masa"].sum()),
@@ -270,15 +277,27 @@ def indicadores(pob, year):
                 set(sel["_llave"]),
                 "Su hogar gasta en aparatos o cuidados por discapacidad",
                 "Personas de 18 años o más")
-            # gasto_tri: gasto trimestral estandarizado por la ENIGH a precios
-            # de AGOSTO DE SU PROPIA EDICIÓN. Eso lo deja comparable dentro de
-            # un año pero NO entre ediciones, así que aquí se lleva al año base
-            # como el resto de los montos. Viene como texto (a veces con
-            # blancos): forzar a numérico o el groupby suma cadenas.
+            # gasto_tri / gas_nm_tri: gasto trimestral estandarizado por la
+            # ENIGH a precios de AGOSTO DE SU PROPIA EDICIÓN. Eso lo deja
+            # comparable dentro de un año pero NO entre ediciones, así que
+            # aquí se lleva al año base como el resto de los montos. Vienen
+            # como texto (a veces con blancos): forzar a numérico o el
+            # groupby suma cadenas.
+            #
+            # Se suman AMBAS columnas porque la ENIGH parte el monto según
+            # `tipo_gasto`: G1 (monetario, lo que pagó el hogar) va en
+            # `gasto_tri`, mientras G3/G5 (no monetario: aparato donado,
+            # pagado por un familiar o por una institución) van en
+            # `gas_nm_tri`. Verificado en los microdatos 2024: el no
+            # monetario es el 13% del gasto total en aparatos y cuidados, y
+            # dejarlo fuera subestimaba el costo real de la discapacidad en
+            # esa proporción. Una silla de ruedas donada sigue siendo un
+            # costo que este hogar enfrenta y otro no.
             sel = sel.copy()
-            sel["gasto_tri"] = pd.to_numeric(sel["gasto_tri"], errors="coerce").fillna(0.0)
-            sel["gasto_tri"] = sel["gasto_tri"] * deflactor.factor(year)
-            montos = sel.groupby("_llave")["gasto_tri"].sum().to_dict()
+            monetario = pd.to_numeric(sel["gasto_tri"], errors="coerce").fillna(0.0)
+            no_monetario = pd.to_numeric(sel["gas_nm_tri"], errors="coerce").fillna(0.0)
+            sel["_total"] = (monetario + no_monetario) * deflactor.factor(year)
+            montos = sel.groupby("_llave")["_total"].sum().to_dict()
             agrega_monto(
                 montos, "Gasto trimestral en aparatos o cuidados por discapacidad")
         else:
