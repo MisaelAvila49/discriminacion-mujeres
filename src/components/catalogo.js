@@ -399,7 +399,6 @@ export const CATALOGO = {
     ],
     ranking: {
       titulo: "Quién agrede, dentro de cada ámbito",
-      etiqueta: "Ámbito",
       limite: 20,
       explica: `Cada barra es el porcentaje de mujeres que declararon violencia
         de esa persona en los últimos doce meses. Están ordenadas por BRECHA:

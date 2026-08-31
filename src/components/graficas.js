@@ -357,8 +357,11 @@ export function rankingComparado(datos, {dim, dimLabel = "", comparacion,
     caption: fuente,
     marginLeft: 210,
     marginRight: 56,
-    // Dos barras por categoría más el aire entre grupos.
-    height: Math.max(260, categorias.length * 38 + 70),
+    // Dos barras por categoría más el aire entre grupos. 30px por fila y no
+    // 38: con tres rankings apilados (13, 8 y 9 agresores) la diferencia son
+    // 240px menos de scroll, y las barras siguen siendo legibles porque cada
+    // una lleva su valor escrito al final.
+    height: Math.max(240, categorias.length * 30 + 64),
     x: {...ejeValor(formato), label: null},
     y: {label: null, axis: null, domain: series},
     fy: {label: null, domain: categorias},
