@@ -34,7 +34,8 @@ export default {
   // universos, los años y los instrumentos difieren entre encuestas.
   // El orden es el de prioridad editorial del proyecto.
   pages: [
-    {name: "Distribución", path: "/"},
+    // La portada NO se lista aquí: el título del sidebar ya enlaza a "/", y
+    // repetirla como "Distribución" daba dos entradas al mismo destino.
     {
       name: "Censo 2020",
       open: true,
@@ -54,7 +55,7 @@ export default {
         {name: "Trabajo e ingreso", path: "/encuestas/enigh/trabajo"},
         {name: "Educación", path: "/encuestas/enigh/educacion-enigh"},
         {name: "Jefatura del hogar", path: "/encuestas/enigh/hogar"},
-        {name: "Apoyos y transferencias", path: "/encuestas/enigh/apoyos"},
+        {name: "Ingreso y apoyos", path: "/encuestas/enigh/ingreso"},
         {name: "Gastos por discapacidad", path: "/encuestas/enigh/gastos"},
         {name: "Tecnología y conectividad", path: "/encuestas/enigh/tecnologia"},
       ],

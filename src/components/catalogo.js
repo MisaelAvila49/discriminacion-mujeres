@@ -31,7 +31,7 @@ export const ENCUESTAS = [
     resumen: `Tres ediciones (2020, 2022 y 2024) con representatividad estatal.
       Es la fuente más versátil del tablero: identifica sexo y discapacidad a
       nivel persona y cubre trabajo, ingreso y conectividad.`,
-    subtemas: ["trabajo", "educacion-enigh", "hogar", "apoyos", "gastos", "tecnologia"],
+    subtemas: ["trabajo", "educacion-enigh", "hogar", "ingreso", "gastos", "tecnologia"],
   },
   {
     clave: "endireh",
@@ -170,6 +170,24 @@ export const CATALOGO = {
        explica: `Porcentaje de personas que declararon no saber leer ni
          escribir. Es la misma pregunta que hace la ENADIS, así que las dos
          cifras se pueden contrastar.`},
+      {encuesta: "enigh", indicador: "Nivel más alto: Sin escolaridad", formato: "pct",
+       nota: `Los siete niveles suman 100 % dentro de cada grupo: dicen dónde
+         se detuvo la escolaridad, no cuántas pasaron un umbral. La brecha se
+         produce abajo, no arriba — 40 % de las mujeres con discapacidad se
+         quedó en primaria, contra 19 % de las mujeres sin discapacidad.`,
+       explica: `Ninguna instrucción formal. Porcentaje de personas de 18 años o más de cada grupo.`},
+      {encuesta: "enigh", indicador: "Nivel más alto: Primaria", formato: "pct",
+       explica: `Primaria como nivel más alto, completa o no. Porcentaje de personas de 18 años o más de cada grupo.`},
+      {encuesta: "enigh", indicador: "Nivel más alto: Secundaria", formato: "pct",
+       explica: `Secundaria como nivel más alto. Porcentaje de personas de 18 años o más de cada grupo.`},
+      {encuesta: "enigh", indicador: "Nivel más alto: Media superior", formato: "pct",
+       explica: `Preparatoria o bachillerato como nivel más alto. Porcentaje de personas de 18 años o más de cada grupo.`},
+      {encuesta: "enigh", indicador: "Nivel más alto: Técnica o normal", formato: "pct",
+       explica: `Carrera técnica o normal, que la ENIGH separa de la licenciatura. Porcentaje de personas de 18 años o más de cada grupo.`},
+      {encuesta: "enigh", indicador: "Nivel más alto: Licenciatura", formato: "pct",
+       explica: `Estudios profesionales como nivel más alto. Porcentaje de personas de 18 años o más de cada grupo.`},
+      {encuesta: "enigh", indicador: "Nivel más alto: Posgrado", formato: "pct",
+       explica: `Maestría o doctorado. Agrupa los tres códigos de posgrado porque la escala cambió en 2024 y separarlos produciría una serie falsa. Porcentaje de personas de 18 años o más de cada grupo.`},
       {encuesta: "enigh", indicador: "Asiste a la escuela (18 a 29 años, ENIGH)", formato: "pct",
        explica: `Porcentaje de personas de 18 a 29 años inscritas y asistiendo
          a la escuela.`},
@@ -192,25 +210,131 @@ export const CATALOGO = {
       qué proporción de cada grupo encabeza un hogar. A diferencia del resto
       del tablero, este indicador no mide una desventaja; en México una
       jefatura femenina suele reflejar hogares sin cónyuge varón.`,
-    secundarios: [],
-  },
-  apoyos: {
-    encuesta: "enigh",
-    titulo: "Apoyos y transferencias",
-    kicker: "Apoyos",
-    entrada: `Qué tanto llega el apoyo público a los hogares con discapacidad.
-      Aquí solo entra el dinero que ENTRA al hogar; lo que sale de su bolsillo
-      —aparatos, cuidados, educación especial, transporte— vive en la sección
-      de Gastos.`,
-    fuentePrincipal: "enigh",
-    indicadorPrincipal: "Recibe la beca de discapacidad",
-    formato: "pct",
-    explica: `Porcentaje de personas que viven en un hogar donde alguien recibe
-      la pensión federal para personas con discapacidad. Es un dato de HOGAR
-      heredado a la persona: la encuesta registra el ingreso por hogar, no por
-      individuo, así que la cifra no dice que cada persona reciba la beca sino
-      que su hogar la recibe.`,
     secundarios: [
+      {encuesta: "enigh", indicador: "Aporta la mitad o más del ingreso de su hogar", formato: "pct",
+       nota: `Encabezar el hogar y sostenerlo económicamente no son lo mismo.
+         Una jefa con discapacidad aporta la mitad o más del ingreso en la
+         mitad de los casos; un jefe sin discapacidad, en siete de cada diez.`,
+       explica: `Porcentaje de quienes encabezan un hogar cuyo ingreso propio
+         representa la mitad o más del ingreso total de ese hogar. Solo entre
+         hogares con ingreso mayor que cero.`},
+      {encuesta: "enigh", indicador: "Ingreso mensual de quien encabeza el hogar", formato: "pesos",
+       explica: `Promedio mensual del ingreso propio de quien encabeza el
+         hogar, en pesos constantes. Solo entre hogares con ingreso.`},
+      {encuesta: "enigh", indicador: "Jefatura de 60+ años", formato: "pct",
+       nota: `Es la cifra que reencuadra toda la sección: 68 % de las jefas con
+         discapacidad tiene 60 años o más, contra 32 % de las jefas sin ella.
+         La jefatura femenina en este grupo refleja sobre todo viudez, no
+         autonomía económica.`,
+       explica: `Porcentaje de quienes encabezan un hogar que tienen 60 años o
+         más. El denominador son las jefaturas, no toda la población.`},
+      {encuesta: "enigh", indicador: "Jefatura de 18-29 años", formato: "pct",
+       explica: `Porcentaje de quienes encabezan un hogar en ese rango de edad.
+         Los cuatro rangos suman 100 % dentro de cada grupo.`},
+      {encuesta: "enigh", indicador: "Jefatura de 30-44 años", formato: "pct",
+       explica: `Porcentaje de quienes encabezan un hogar en ese rango de edad.
+         Los cuatro rangos suman 100 % dentro de cada grupo.`},
+      {encuesta: "enigh", indicador: "Jefatura de 45-59 años", formato: "pct",
+       explica: `Porcentaje de quienes encabezan un hogar en ese rango de edad.
+         Los cuatro rangos suman 100 % dentro de cada grupo.`},
+      {encuesta: "enigh", indicador: "Jefatura con escolaridad: Sin escolaridad", formato: "pct",
+       nota: `La escolaridad de quien encabeza el hogar, con la misma escala
+         de la página de Educación para que las dos se lean igual.`,
+       explica: `Porcentaje de quienes encabezan un hogar cuyo nivel más alto
+         es sin escolaridad. Los seis niveles suman 100 % dentro de cada grupo.`},
+      {encuesta: "enigh", indicador: "Jefatura con escolaridad: Primaria", formato: "pct",
+       explica: `Porcentaje de quienes encabezan un hogar cuyo nivel más alto
+         es primaria. Los seis niveles suman 100 % dentro de cada grupo.`},
+      {encuesta: "enigh", indicador: "Jefatura con escolaridad: Secundaria", formato: "pct",
+       explica: `Porcentaje de quienes encabezan un hogar cuyo nivel más alto
+         es secundaria. Los seis niveles suman 100 % dentro de cada grupo.`},
+      {encuesta: "enigh", indicador: "Jefatura con escolaridad: Media superior", formato: "pct",
+       explica: `Porcentaje de quienes encabezan un hogar cuyo nivel más alto
+         es media superior. Los seis niveles suman 100 % dentro de cada grupo.`},
+      {encuesta: "enigh", indicador: "Jefatura con escolaridad: Licenciatura", formato: "pct",
+       explica: `Porcentaje de quienes encabezan un hogar cuyo nivel más alto
+         es licenciatura. Los seis niveles suman 100 % dentro de cada grupo.`},
+      {encuesta: "enigh", indicador: "Jefatura con escolaridad: Posgrado", formato: "pct",
+       explica: `Porcentaje de quienes encabezan un hogar cuyo nivel más alto
+         es posgrado. Los seis niveles suman 100 % dentro de cada grupo.`},
+    ],
+  },
+  ingreso: {
+    encuesta: "enigh",
+    titulo: "Ingreso y apoyos",
+    kicker: "Ingreso",
+    entrada: `De dónde viene el dinero del hogar y cuánto aporta cada persona.
+      Un mismo ingreso total no significa lo mismo según su origen: el que
+      viene de programas sociales depende de que esos programas sigan
+      existiendo, y el del trabajo no. Lo que SALE del bolsillo del hogar
+      —aparatos, cuidados, transporte— vive en la sección de Gastos.`,
+    fuentePrincipal: "enigh",
+    indicadorPrincipal: "Su hogar recibe ingreso de trabajo",
+    formato: "pct",
+    explica: `Porcentaje de personas que viven en un hogar con al menos un
+      ingreso por trabajo: sueldos, salarios, horas extra o aguinaldo. Es un
+      dato de HOGAR heredado a la persona, así que no dice que ella trabaje
+      sino que alguien en su hogar percibe ingreso laboral.`,
+    secundarios: [
+      {encuesta: "enigh", indicador: "Su hogar recibe ingreso de programas sociales", formato: "pct",
+       nota: `Es el contraste que da sentido a la página: 61.8 % de las mujeres
+         con discapacidad vive en un hogar que recibe programas sociales,
+         contra 33.9 % de las mujeres sin discapacidad. Su ingreso depende
+         mucho más de la política pública que del mercado laboral.`,
+       explica: `Incluye los programas del Bienestar —entre ellos la pensión
+         de discapacidad y la de adultos mayores— y los programas sociales
+         previos. Porcentaje de personas cuyo hogar recibe al menos uno.`},
+      {encuesta: "enigh", indicador: "Su hogar recibe ingreso de transferencias (pensiones, remesas)", formato: "pct",
+       explica: `Jubilaciones y pensiones contributivas, indemnizaciones,
+         remesas, donativos y becas privadas. Se reportan aparte de los
+         programas sociales porque una pensión se ganó trabajando y una beca
+         del gobierno es política social vigente: no son lo mismo para leer
+         qué tan estable es el ingreso.`},
+      {encuesta: "enigh", indicador: "Su hogar recibe ingreso de negocio propio", formato: "pct",
+       explica: `Ingreso por negocio del hogar, cooperativas o sociedades.`},
+      {encuesta: "enigh", indicador: "Su hogar recibe ingreso de rentas y alquileres", formato: "pct",
+       explica: `Alquiler de inmuebles y tierras, intereses y rendimientos.
+         Es la fuente menos frecuente en los cuatro grupos.`},
+      {encuesta: "enigh", indicador: "Ingreso mensual del hogar por trabajo", formato: "pesos",
+       nota: `Entre los hogares que sí tienen esa fuente. Las mujeres con
+         discapacidad viven en hogares que reciben tres cuartas partes de lo
+         que reciben los de las mujeres sin discapacidad.`,
+       explica: `Promedio mensual que aporta el trabajo al hogar, solo entre
+         hogares con ingreso laboral. En pesos constantes: cada edición viene
+         en pesos de su año y se deflactó con el INPC del levantamiento.`},
+      {encuesta: "enigh", indicador: "Ingreso mensual del hogar por programas sociales", formato: "pesos",
+       nota: `Es la única fuente donde los hogares con discapacidad reciben
+         MÁS que los demás (1.15 veces), y tiene una explicación directa:
+         existe una pensión dirigida a ellos.`,
+       explica: `Promedio mensual por programas sociales, entre hogares que
+         reciben alguno. En pesos constantes.`},
+      {encuesta: "enigh", indicador: "Ingreso mensual del hogar por transferencias (pensiones, remesas)", formato: "pesos",
+       explica: `Promedio mensual por transferencias, entre hogares que las
+         reciben. En pesos constantes.`},
+      {encuesta: "enigh", indicador: "Ingreso mensual propio", formato: "pesos",
+       nota: `A diferencia de los anteriores, este SÍ es individual: la
+         encuesta registra el ingreso por renglón de persona, no solo por
+         hogar.`,
+       explica: `Promedio mensual del ingreso de la propia persona, sumando
+         todas sus fuentes. Solo entre quienes viven en un hogar con ingreso
+         registrado. En pesos constantes.`},
+      {encuesta: "enigh", indicador: "Aporta la mitad o más del ingreso de su hogar", formato: "pct",
+       nota: `Responde quién sostiene económicamente al hogar. Un hombre sin
+         discapacidad lo hace en la mitad de los casos; una mujer con
+         discapacidad, en poco más de una cuarta parte.`,
+       explica: `Porcentaje de personas cuyo ingreso propio representa la
+         mitad o más del ingreso total de su hogar. Solo entre hogares con
+         ingreso mayor que cero: sin denominador la proporción no existe, y
+         contar esos casos como "no aporta" mezclaría no tener ingreso propio
+         con vivir en un hogar sin ingreso alguno.`},
+      {encuesta: "enigh", indicador: "Recibe la beca de discapacidad", formato: "pct",
+       nota: `La pensión federal para personas con discapacidad, que dentro de
+         la composición de arriba forma parte de los programas sociales.`,
+       explica: `Porcentaje de personas que viven en un hogar donde alguien
+         recibe la pensión federal para personas con discapacidad. Es un dato
+         de HOGAR heredado a la persona: la encuesta registra el ingreso por
+         hogar, no por individuo, así que no dice que cada persona reciba la
+         beca sino que su hogar la recibe.`},
       {encuesta: "enigh", indicador: "Recibe la pensión de adultos mayores", formato: "pct",
        nota: `Sirve de contraste: es el programa social de mayor cobertura del
          país, y muestra cómo se ve un apoyo verdaderamente masivo frente a la
